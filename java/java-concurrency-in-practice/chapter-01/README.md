@@ -54,7 +54,7 @@ public class UnsafeSequence {
 ```
 
 With unlucky timing, two threads executing `getNext()` at the same time might get the same exact number:
-TODO: Add screenshot
+<img src="images/1.unlucky-timing.png" width=700 />
 
 This is an example of a race condition - the program's behavior depends on how the runtime interleaves thread access.  
 
