@@ -112,3 +112,147 @@ public class UnsafeCountingFactorizer implements Servlet {
   }
 }
 ```
+
+## Locking
+In the above example, there is one state variable & it is sufficient to merely use an atomic variant of it to make the class thread-safe.  
+However, if there are two state variables, participating in the same invariant, it is not sufficient to make both of them atomic.  
+
+Example of a non-thread-safe class - counting factorizer, using caching for last number & factors:
+```java
+@NotThreadSafe
+public class UnsafeCountingFactorizer implements Servlet {
+  private final AtomicReference<BigInteger> lastNumber = new AtomicReference<>();
+  private final AtomicReference<BigInteger[]> lastFactors = new AtomicReference<>();
+  
+  public long getCount() { return count; }
+  
+  public void service(ServletRequest req, ServletResponse resp) {
+    BigInteger i = extractFromRequest(req);
+    if (i.equals(lastNumber.get())) {
+      encodeIntoResponse(resp, lastFactors.get());
+    } else {
+      BigInteger[] factors = factor(i);
+      lastNumber.set(i);
+      lastFactors.set(factors);
+      encodeIntoResponse(resp, factors);
+    }
+  }
+}
+```
+
+With unlucky timing, the invariant that the `lastFactors` are the factors of the `lastNumber` can be violated. Hence, when multiple variables participate in an invariant, they must be updated in a single atomic operation.
+
+### Intrinsic locks
+The built-in mechanism in java for locking is using the `synchronized` block:
+```java
+synchronized(variable) {
+  // block of code executing atomically
+}
+```
+
+A synchronized method is a shorthand for synchronizing on the entire object (i.e. `this`):
+```java
+public synchronized void doSomething() {
+  // synchronized method on "this"
+}
+```
+
+These locks are effectively mutexes & are often called intrinsic locks.  
+
+** If two distinct blocks of code are synchronized on the same object, they will be atomic with respect to each other**.  
+This is why, it is important to synchronize variables, belonging to the same invariant with the same lock.
+
+The `CountingFactorizer` from the previous example can be made thread-safe using locks:
+```java
+@ThreadSafe
+public class SlowCountingFactorizer implements Servlet {
+  private final BigInteger lastNumber = new BigInteger();
+  private final BigInteger[] lastFactors = new BigInteger[];
+  
+  public long getCount() { return count; }
+  
+  public synchronized void service(ServletRequest req, ServletResponse resp) {
+    BigInteger i = extractFromRequest(req);
+    if (i.equals(lastNumber.get())) {
+      encodeIntoResponse(resp, lastFactors.get());
+    } else {
+      BigInteger[] factors = factor(i);
+      lastNumber.set(i);
+      lastFactors.set(factors);
+      encodeIntoResponse(resp, factors);
+    }
+  }
+}
+```
+
+Although this is thread-safe, it is unbearable low-performant as only one request can be executed at a time. This is an example of how concurrency mechanism can bring performance problems.
+
+## Guarding state with locks
+Compound actions need to be guarded by a lock & the variables involved need to be guarded by the same lock wherever they are accessed.
+
+It is a common misunderstanding that only the write-path of a shared variable need to be synchronized. Both read and write paths need to be synchronized due to problems with visibility (See chapter 3).
+
+Additionally, related variables need to be guarded by the same lock. That lock is often "this" but that need not necessarily be so. It is merely a convenience so that one must not create an explicit lock object every time he uses synchronization.
+
+A common practice is to synchronize all public methods of a class to make it thread-safe. This is not bad practice (e.g. the `Vector` class uses this approach), but one must be wary of potential problems:
+ * Problems with liveness & performance (see previous example)
+ * Problems with insufficient synchronization on compound actions.
+For example, this is not thread-safe code, although it is using a thread-safe class:
+```java
+if (vector.contains(i)) {
+ vector.add(i);
+}
+```
+
+## Liveness & Performance
+The problem with `SlowCountingFactorizer` is that the synchronization was excessive. That servlet will execute requests in this manner:
+TODO: Add screenshot
+
+This can make users quite frustrated, especially when the servlet is under high load.
+
+Instead, strive for making the synchronized blocks are small as possible, but not too small.  
+An example of a too small synchronized block would be not synchronizing compound actions together.  
+An example of a too big synchronized block is synchronizing the whole method and/or unnecessarily synchronizing long-running I/O.
+
+Here's the above class rewritten with proper synchronization:
+```java
+@ThreadSafe
+public class CachedFactorizer implements Servlet {
+  @GuardedBy("this") private BigInteger lastNumber;
+  @GuardedBy("this") private BigInteger[] lastFactors;
+  @GuardedBy("this") private long hits;
+  @GuardedBy("this") private long cacheHits;
+ 
+ public synchronized long getHits() { return hits; }
+ public synchronized double getCacheHitRatio() {
+   return (double) cacheHits / (double) hits;
+ }
+ 
+ public void service(ServletRequest req, ServletResponse resp) {
+   BigInteger i = extractFromRequest(req);
+   BigInteger[] factors = null;
+   synchronized (this) {
+     ++hits;
+     if (i.equals(lastNumber)) {
+       ++cacheHits;
+       factors = lastFactors.clone();
+     }
+   }
+   if (factors == null) {
+     factors = factor(i);
+     synchronized (this) {
+       lastNumber = i;
+       lastFactors = factors.clone();
+     }
+   }
+   
+   encodeIntoResponse(resp, factors);
+ }
+} 
+```
+
+Notice that the hit counter is also included & guarded by the same lock & synchronized blocks. This is not necessary as that state variable is not related to the caching invariant. It can be synchronized using a different lock. 
+
+However, bear in mind that acquiring and releasing locks all the time has some overhead as well, so it is best, in this case, to just synchronize it using the same lock as the caching invariant.
+
+Avoid synchronizing long-running I/O or network operations.
