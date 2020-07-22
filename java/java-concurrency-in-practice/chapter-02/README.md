@@ -205,12 +205,13 @@ if (vector.contains(i)) {
 ```
 
 ## Liveness & Performance
-The problem with `SlowCountingFactorizer` is that the synchronization was excessive. That servlet will execute requests in this manner:
-TODO: Add screenshot
+The problem with `SlowCountingFactorizer` is that the synchronization was excessive. That servlet will execute requests in this manner:  
+<img src="images/slow-service.png" width=500 />
 
 This can make users quite frustrated, especially when the servlet is under high load.
 
 Instead, strive for making the synchronized blocks are small as possible, but not too small.  
+
 An example of a too small synchronized block would be not synchronizing compound actions together.  
 An example of a too big synchronized block is synchronizing the whole method and/or unnecessarily synchronizing long-running I/O.
 
