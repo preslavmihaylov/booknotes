@@ -67,4 +67,276 @@ E.g. the double-check idiom over plain & simple synchronization.
 Measure performance improvement before & after optimizations.
 
 # Amdahl's law
+This law basically states that the maximum utilization of an application is bounded by two parameters - the % of serial code + the % parallelization.
 
+The first parameter means how serial your instructions are. Can they be performed in parallel.
+The second parameter means, in the context of multi-threading, how many threads/processors you are using.
+
+It also expresses exactly how much % performance gain you can get based on the % serialization of your routine.
+
+In sum, the more serial your routine is, the less parallelizable it is.
+
+Example serialized runnable:
+```java
+public class WorkerThread extends Thread {
+    private final BlockingQueue<Runnable> queue;
+
+    public WorkerThread(BlockingQueue<Runnable> queue) {
+        this.queue = queue;
+    }
+
+    public void run() {
+        while (true) {
+            try {
+                Runnable task = queue.take();
+                task.run();
+            } catch (InterruptedException e) {
+                break; /* Allow thread to exit */
+            }
+        }
+    }
+}
+```
+
+This piece of code is limited by the serialized portion, which is the blokcking take on the blocking queue.
+
+## Example: serialization hidden in frameworks
+![Blocking queue comparison](images/blocking-queue-comparison.png)
+
+This graphic shows that merely the choice of a concurrent data structure can greatly improve/degrade scalability.
+
+## Applying Amdahl's law qualitatively
+It is hard to measure the % serialization of a routine, but Amdahl's law can still be applied by measuring the relative serialization of different versions of a routine.
+
+In the later parts of the chapter, by applying the techniques of splitting a lock in two & lock striping, one can see that lock striping provides relatively better % serialization, hence scales better.
+
+# Costs introduced by threads
+Single-threaded programs have no scheduling or synchronization overhead. Multi-threaded programs, on the other hand, have some overhead in this regard.
+
+The use of threads should outweigh the costs they bring.
+
+## Context switching
+When a thread is scheduled out in favor of another one, a context switch occurs.
+
+In this event, the OS has to persist the thread's execution context in memory & load the new thread's context in the CPU.
+
+Additionally, the new thread will most probably make a lot of cache misses when it is first loaded. This is why when a thread is first loaded, it has a "grace period" during which it is not scheduled out even if it blocks.
+
+A single-threaded program never context switches as there is only one thread.
+
+A high quantity of context switches will lead to a lot of time spent in the kernel space (over 10%). This can indicate a lot of context switches occurring.
+
+## Memory synchronization
+The performance cost of using `synchronized` and `volatile` keywords is that caches are invalidated & the JVM is prohibited from performing certain optimizations.
+Nevertheless, the cost of synchronization is not that great to advocate compromising safety.
+
+However, one must differentiate between contended & uncontended synchronization:
+ * Uncontended synchronization - synchronizing when no other threads are waiting for the lock
+ * Contended synchronization - synchronizing when there are multiple threads waiting for the lock, leading to blocked threads.
+
+Uncontended synchronization can be entirely handled by the JVM and a developer shouldn't bother with them.
+What's more, the JVM can remove synchronized blocks if it discovers that there is no need for the lock.
+
+Examples - an empty synchronized block, synchronizing on a `new Object()`, synchronizing on a thread-confined variable, etc.
+
+## Blocking
+Contended locking causes threads to block. Blocking a thread can be implemented either by spin-waiting (actively polling the state) or by suspension, which involves the OS (incurring overhead).
+
+Spin-waiting is better for short wait times, suspension is better for long ones. Most JVMs simply use suspension. Some choose between both based on profiling data.
+
+# Reducing lock contention
+Contended locks are the root cause for most performance bottlenecks in concurrent routines.
+
+Lock contention is based on two parameters:
+ * How long a lock is held
+ * How often a lock is acquired
+
+If the product of these two is sufficiently small, most lock acquisitions will be uncontended. Hence one can optimize concurrent algorithms by reducing either of these.
+
+Alternatively, one can avoid using locking altogether & relying on alternative concurrency mechanisms to guarantee safety.
+
+## Narrowing lock scope ("Get in, get out")
+If you try your best to hold the lock for as little as possible, lock contention will be reduced.
+
+Bad example, leading to lock contention:
+```java
+@ThreadSafe
+public class AttributeStore {
+    @GuardedBy("this") private final Map<String, String> attributes = new HashMap<String, String>();
+
+    public synchronized boolean userLocationMatches(String name, String regexp) {
+        String key = "users." + name + ".location";
+        String location = attributes.get(key);
+        if (location == null)
+            return false;
+        else
+            return Pattern.matches(regexp, location);
+    }
+}
+```
+
+In the above example, only the map access needs to be synchronized, not the whole method.
+
+A better way to implement this:
+```java
+@ThreadSafe
+public class BetterAttributeStore {
+    @GuardedBy("this") private final Map<String, String> attributes = new HashMap<String, String>();
+
+    public boolean userLocationMatches(String name, String regexp) {
+        String key = "users." + name + ".location";
+        String location;
+        synchronized (this) {
+            location = attributes.get(key);
+        }
+
+        if (location == null)
+            return false;
+        else
+            return Pattern.matches(regexp, location);
+    }
+}
+```
+
+In can even be further improved by delegating thread-safety to a thread-safe collection entirely (such as `ConcurrentHashMap`).
+
+A synchronized block needs to be shrank only if a significant computation is performed inside of it.
+Shrinking a synchronized block too much can lead to safety issues - e.g. not synchronizing compound actions.
+
+## Reducing lock granularity
+One could improve lock contention by using more granular locks for independent objects.
+
+Example:
+```java
+@ThreadSafe
+public class ServerStatus {
+    @GuardedBy("this") public final Set<String> users;
+    @GuardedBy("this") public final Set<String> queries;
+
+    ...
+
+    public synchronized void addUser(String u) { users.add(u); }
+    public synchronized void addQuery(String q) { queries.add(q); }
+    public synchronized void removeUser(String u) { users.remove(u); }
+    public synchronized void removeQuery(String q) { queries.remove(q); }
+}
+```
+
+In this example, the same lock is used for two independent state variables. If two separate locks are used for the two variables, the routines will be more scalable:
+```java
+@ThreadSafe
+public class ServerStatus {
+    @GuardedBy("users") public final Set<String> users;
+    @GuardedBy("queries") public final Set<String> queries;
+
+    ...
+
+    public void addUser(String u) {
+        synchronized (users) {
+            users.add(u);
+        }
+    }
+
+    public void addQuery(String q) {
+        synchronized (queries) {
+            queries.add(q);
+        }
+    }
+
+    // remove methods similarly refactored to use split locks
+}
+```
+
+This technique is useful when a lock experiences moderate contention. 
+Using lock splitting on moderately contended locks can turn them into mostly uncontended locks.
+
+When there is little contention, the net improvement in performance/throughput will be small.
+But this will increase the threshold at which performance starts to suffer.
+
+For highly contended locks, this might not improve performance significantly.
+
+## Lock stripping
+Lock splitting on a heavily contended lock can lead to two heavily contended locks. This will not improve matters greatly.
+
+This technique can be extended to partitioning a variable-set of independent objects into multiple locks.
+
+For example, `ConcurrentHashMap` uses 16 different locks to synchronize access to different parts of the underlying hash buckets.
+
+This technique is called lock stripping & improves performance greatly on objects susceptible to such partitioning.
+
+However, it makes dealing with synchronization much more complex. 
+For example, when the hashmap needs to expand, it has to acquire all the locks before doing so, which is more complex than acquiring a single object lock.
+
+Example implementation of a hash map using lock stripping:
+```java
+@ThreadSafe
+public class StripedMap {
+    // Synchronization policy: buckets[n] guarded by locks[n%N_LOCKS]
+    private static final int N_LOCKS = 16;
+    private final Node[] buckets;
+    private final Object[] locks;
+
+    private static class Node { ... }
+
+    public StripedMap(int numBuckets) {
+        buckets = new Node[numBuckets];
+        locks = new Object[N_LOCKS];
+        for (int i = 0; i < N_LOCKS; i++)
+            locks[i] = new Object();
+    }
+
+    private final int hash(Object key) {
+        return Math.abs(key.hashCode() % buckets.length);
+    }
+
+    public Object get(Object key) {
+        int hash = hash(key);
+        synchronized (locks[hash % N_LOCKS]) {
+        for (Node m = buckets[hash]; m != null; m = m.next)
+            if (m.key.equals(key))
+                return m.value;
+        }
+
+        return null;
+    }
+
+    public void clear() {
+        for (int i = 0; i < buckets.length; i++) {
+            synchronized (locks[i % N_LOCKS]) {
+                buckets[i] = null;
+            }
+        }
+    }
+    ...
+}
+```
+
+## Avoiding hot fields
+Using lock stripping & lock splitting can improve matters when two threads are accessing independent objects.
+
+However, if the implementation has some kind of a "hot field", which is used in all synchronized operations, regardless of the objects, this hinders scalability.
+For example, in the hashmap implementation, one has to provide a `size()` method. 
+
+You could implement size by counting each element every time the method is invoked or by changing the counter on every insert/deletion.
+
+The later approach would introduce a hot field as that field will be updated on every object insertion/deletion regardless of whether the objects are independent of one another.
+This is an example where performance is at odds with scalability -> optimizing the `size()` method will hinder the data structure's scalability.
+
+In the `ConcurrentHashMap` implementation, this is handled by counting the size of each stripe. Size increments are guarded by that stripe's lock. 
+When `size()` is invoked, all the stripes' sizes are summed. This is more performant than counting all objects from scratch and yet, preserves scalability.
+
+## Alternatives to exclusive locks
+Other means of optimizing contended locks is by using different means for synchronization:
+ * Delegating thread-safety to concurrent collections
+ * Using read-write locks
+ * Using immutable objects & atomic variables
+
+Read-write locks allow multiple readers & a single writer for a given synchronized block.
+When a collection is more often read, than written, this provides better concurrency than the `synchronized` keyword.
+
+When a collections is written once & read-only, using an immutable object offers the best concurrency.
+
+When you have hot fields, they can be optimized by using atomic variables. They are better than synchronizing the hot fields as they use lower-level synchronization mechanisms.
+Removing hot fields altogether will improve scalability even more.
+
+# Monitoring CPU utilization
