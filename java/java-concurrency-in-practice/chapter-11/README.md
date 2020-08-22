@@ -340,3 +340,39 @@ When you have hot fields, they can be optimized by using atomic variables. They 
 Removing hot fields altogether will improve scalability even more.
 
 # Monitoring CPU utilization
+When looking for performance improvements, you can see how much your multi-threaded program utilizes the CPUs.
+
+If the CPUs are asymmetrically utilized, this indicates some bottleneck in your code. Here are some potential reasons:
+ * Insufficient load - try increasing the load on your system first to make sure it is fully saturated. This could be bottlenecked by the client system causing the load.
+ * I/O Bound - your code might be waiting on external resources
+ * Externally bound - your application might be blocked waiting on external web services or a database
+ * Lock contention - your application might be bottlenecked by "hot locks". This can be additionally monitored by a profiler, showing which locks are contended a lot.
+
+If your application is keeping your CPUs sufficiently utilized, you can monitor if adding additional CPUs will improve performance.
+
+## Just say no to object pooling
+Object pooling is a technique where instead of deallocating objects, you recycle them into a pool, where they can be reclaimed.
+
+This was used as a performance optimization when garbage collection was expensive. Nowadays, it isn't and this shouldn't be used.
+
+It is more complex and it also degrades performance for small & medium objects. It only makes sense for very large objects.
+
+This technique, nowadays, makes sense in VERY constrained environments.
+
+# Example: Comparing Map performance
+This simply shows that using the concurrent collections is better than using the synchronized versions:
+![Concurrent collections comparison](images/concurrent-collections-comparison.png)
+
+The bottleneck with the synchronized collections is the lock contention imposed by using intrinsic locks.
+
+# Reducing context switch overhead
+An example problem involving context switching is logging.
+
+Many logging libraries are thin wrappers around `println` utilities. This is an approach where each thread logs in its own context.
+
+An alternative is to have a dedicated logging thread which solely logs incoming requests. All other threads append their messages to a blocking queue & continue their work.
+This is often more performant than the former approach as it involves less context switching.
+
+When multiple threads are trying to write to stdin, they are all blocked on I/O & context switching occurs, waiting for the bounded resource.
+By having a dedicated background logging thread, it is only that thread which is blocked on the I/O. All other threads can continue its work.
+
