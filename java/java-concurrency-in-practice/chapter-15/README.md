@@ -247,6 +247,7 @@ public class ConcurrentStack <E> {
 
         return oldHead.item;
     }
+    
     private static class Node <E> {
         public final E item;
         public Node<E> next;
