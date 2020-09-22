@@ -15,16 +15,16 @@ These principles are applied to mid-level components, meaning just one level abo
 However, they aren't sufficient for a good architecture as one can make a substantial mess with good mid-level components.
 
 The executive summary of the principles is:
- * Single Responsibility Principle
+ * Single Responsibility Principle (SRP)
    * Every class should have exactly one reason to change
    * In other words, there should be only one person/group of people who would like to change it.
- * The Open-Closed Principle
+ * The Open-Closed Principle (OCP)
    * In order for software components to be easy to change, their design should be made such that changes are applied by adding new code, not changing existing code
- * The Liskov Substitution Principle
+ * The Liskov Substitution Principle (LSP)
    * The gist of this principle is that in order to build systems from interchangeable parts, those parts must adhere to a contract in a way that they can be easily changed without this affecting the rest of the code
- * The Interface Segregation Principle
+ * The Interface Segregation Principle (ISP)
    * Don't depend on things you don't need
- * The Dependency Inversion Principle
+ * The Dependency Inversion Principle (DIP)
    * The code that implements high-level policy should not depend on the code that implements low-level details. It is the details which should depend on the policies
 
 ## The Single Responsibility Principle
@@ -79,3 +79,43 @@ This problem can be alleviated by using the `Facade` pattern:
 ![Employee Facade](images/employee-facade.png)
 
 ## The Open-Closed Principle
+> A software artifact should be open for extension but closed for modification
+
+In other words, a software component should be extendible without having to modify that component.
+
+Why is this important?
+
+If small extensions in requirements force massive changes throughout the codebase, then there is clearly an architectural issue.
+The purpose of this principle is to guide you in designing your system in a way that extensions to requirements can be satisfied by adding additional code, not by changing existing code.
+
+### A thought experiment
+Say we are given a system that displays financial summary on a web page.
+Stakeholders come and want us to extend the system to support printing the same info on a PDF to be printed.
+
+A good architecture would allow this to be achieved by only adding additional code, not changing existing code.
+A sidenote here is that, of course, some code will have to be changed - e.g. the wiring-related code which creates class instances, but that should be a small, isolated part of the system.
+
+This can be achieved by properly separating things that change for different reasons (SRP) and properly organizing dependencies between these components (DIP).
+
+The provided solution is:
+![System comforming to OCP](images/ocp-system.png)
+
+The main insight is that the classes responsible for calculating the data need to be different from the classes displaying it.
+Additionally, the source code dependencies need to be organized in a way that changes to one of these responsibilities doesn't cause changes in the other one.
+
+The full design of the system:
+![Full OCP System Design](images/full-ocp-system-design.png)
+
+One thing to notice is that all dependencies between components are unidirectional:
+![Simplified system design](images/distilled-ocp-system.png)
+
+The higher-level components (e.g. Interactor) know nothing about the lower level components which implement the higher-level interfaces.
+If we want to protect a component A from changes in component B, then component B should depend on component A, not the other way around.
+
+In this diagram, the Interactor is the highest-level component, which holds the business rules. It should be protected from changes in any other component.
+The Controller, on the other hand, is dependent on the Interactor, but is protected from changes in the Presenters and the Views.
+
+This dependency chain should flow from the highest-level components to the lowest-level ones.
+
+## The Liskov Substitution Principle
+
