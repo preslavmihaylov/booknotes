@@ -1,6 +1,6 @@
 # Chapter 01 - Introduction
 
-Concurrency is the easiest way to leverate multiprocessor systems to exploit better performance. They are also inescapable in Java nowadays. E.g. Every time you're making a Spring application, you are making a concurrent application.
+Concurrency is the easiest way to leverage multiprocessor systems to exploit better performance. They are also inescapable in Java nowadays. E.g. Every time you're making a Spring application, you are making a concurrent application.
 
 However, it makes writing programs a lot harder as now, programming constructs are not accessed in a sequential fashion.
 
