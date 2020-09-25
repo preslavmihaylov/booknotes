@@ -1,5 +1,5 @@
 # booknotes
-My notes from various books I've read
+A collection of my book notes on various computer science books
 
 ## Categories
  * [Java](/java)
