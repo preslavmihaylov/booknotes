@@ -163,3 +163,86 @@ In the beginning, it is typically beneficial to focus on CCP in order for the pr
 In the future, you can shift the project to be reusable in order to e.g. be more easily used by other teams in the organization.
 
 ## Component Coupling
+These next principles deal with relationships between components (i.e. dependencies)
+
+### The Acyclic Dependencies Principle
+> Allow no cycles in the component dependency graph
+
+This principle states that you shouldn't have any cyclic dependencies between components. In Golang, for example, this is not possible as the language prohibits it altogether.
+
+Why is this a problem?  
+Because it leads to "the morning after" syndrome" - you make some changes in the evening, go home and the next morning, your code no longer works.
+This happens because someone has stayed later than you that evening & changed components you depend on.
+
+Here are some solutions to this problem.
+
+#### The weekly build
+The developers ignore each other for a week & develop in isolation. When the end of the week comes, there is an "integration cycle", where someone is tasked to integrate all the pieces together.
+
+The problem with this approach is the large integration time overhead.
+And this overhead grows as the project and team grows.
+
+#### Eliminating dependency cycles
+An alternative is to partition the development environment into releasable components.
+
+When a team/developer gets a component working, they release it with a version number & the rest of the teams can now use it.
+The other teams can decide whether they will use the new component immediately, or stick to the old version for a while.
+
+This is efficient but in order for this mechanism to work, there must be no cyclic dependencies across components. Otherwise, the "morning after" syndrome is unavoidable.
+
+A good example of acyclic dependency graph:
+![Acyclic Dependency Graph](images/acyclic-dependency-graph.png)
+
+This depedency graph has no cycles - it is acyclic.
+
+In this scheme, the developers of the `Presenters` component don't care at all about the `Main` component. It has no effect on the rest of the system.
+On the other hand, they consider the versions of `Interactors` and `Entities` they prefer to use and stick to them. No need to involve the developers of any of those components.
+
+#### The effect of a cycle in the component dependency graph
+If a cycle is introduced, say by making a dependency of `Entities` to `Authorizer`, then the `Entities`, `Authorizer` and `Interactors` become one big indivisible component.
+In our example, a cycle appears by making the `User` class in `Entities` use the `Permissions` class from `Authorizer`. 
+
+Now, developers have to carefully coordinate what version of each component they are using and the morning after syndrome is unavoidable.
+
+Additionally, if you want to test the `Entities` component, you now have to depend on the `Authorizer` and `Interactors` as well.
+This leads to unit tests where you have to import a bunch of unrelated libraries/components in order to set up your tests.
+
+In sum, having cycles in the dependency graph makes independent development of components and testing very hard.
+
+#### Breaking the cycle
+The above specific problem, we encountered, can be solved in the following way:
+ * Apply the Dependency Inversion Principle (DIP) - create an interface, which has the methods the `User` needs. This interface can be placed in `Entities` and the class from `Authorizer` inherits it.
+   * This way, the dependency is inverted and the DAG property of the dependencies is maintained
+![DIP in Practice](images/dip-in-practice.png)
+
+ * Create a new component, which both `Entities` and `Authorizer` depend on.
+![Extract new component example](images/extract-new-component.png)
+
+#### The "Jitters"
+As requirements change, your dependency graph changes accordingly.
+In order to maintain the DAG property, you should set up some monitoring in place to check whether new cycles have reappeared.
+
+### Top-down design
+The problem we discussed so far leads to the conclusion that the component structure cannot be made top-down - ie starting with the high-level architecture towards the low-level classes.
+Instead, the structure evolves as the system grows and changes.
+
+The dependency graph is not something describing the functionality of an application.
+What it helps us see is the **buildability** and **maintainability** of an application.
+
+Hence, you can't desing the dependency graph before you have any classes to maintain. 
+Attempting to do so would be rather hard as you don't know about any common use-cases of the system yet in order for you to e.g. apply the Common Closure Principle.
+
+Typically, the way all these principles so far are applied is:
+ * First, the CCP and SRP principles come into play to structure your components into the known use-cases which tend to change often
+ * As the program size grows, we start becoming more concerned about extracting reusable components to avoid duplicate efforts. At this point, the Common Reuse Principle is typically applied
+ * Finally, as dependency cycles appear, the Acyclic Dependencies principle is applied in order to keep the developability of the system at a high level
+
+One overriding concern, however, is to separate the volatile components from the non-volatile ones.
+E.g. the GUI is a volatile component which often changes, while the high-level application policies is a non-volatile component.
+
+Changes in the GUI should not have an effect on the high-level application policies.
+
+The next principle helps us tackle this problem.
+
+### The stable dependencies principle
+
