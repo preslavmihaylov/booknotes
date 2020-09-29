@@ -245,4 +245,129 @@ Changes in the GUI should not have an effect on the high-level application polic
 The next principle helps us tackle this problem.
 
 ### The stable dependencies principle
+> Depend in the direction of stability
 
+Designs cannot be made static - they are meant to change often.
+The Common Closure Principle helps us mold components in a way in which they are sensitive to particular changes, but immune to others.
+
+Some components, are designed to be volatile - they change quite often.
+
+Any component which is volatile should not be depended on by a component which is difficult to change.
+Otherwise, the volatile component will also be difficult to change.
+
+You can make a volatile component very hard to change simply by making a dependency on it - not a single line of code will change in the component itself.
+
+By comforming to the Stable Dependencies Principle (SDP), we ensure that components which are hard to change don't depend on components which are easy to change.
+
+#### Stability
+Stability != frequency of change
+
+If you set a penny to stand on its side, you wouldn't call it stable. However, if nothing ever touches it, it will stay in the same position.
+
+Stability is related to the amount of work necessary to make a change.
+If the amount is high, then the component is stable.
+
+Many factors affect the stability of a component. But one sure parameter is the amount of dependent components.
+
+If a component is heavily depended on, it will be difficult to change as any change will have to propagate to all users of that component.
+
+Example of a stable component:
+![Stable Component Example](images/stable-component-example.png)
+
+On the other hand, if a component has a lot of dependencies, then it is not stable as changes in any of the dependencies will propagate to this component as well.
+
+Example:
+![Unstable Component Example](images/unstable-component.png)
+
+#### Stability Metrics
+Stability of a component can be measured based on its dependencies and dependent component.
+
+Fan-in == number of dependent components
+Fan-out == number of dependencies
+
+Instability (I) = Fan-out / (Fan-in + Fan-out)
+
+I = 0 -> Very stable component. No dependencies and at least one dependent component
+I = 1 -> Very instable component. No dependent components and at least one dependency
+
+The SDP states that a component should depend on another component only if I<sub>first</sub> >= I<sub>second</sub>.
+
+#### Not all components should be stable
+If all components in a system are stable, then the system will not be susceptible to any changes.
+
+Indeed, some components in the system should be unstable by design.
+It is how we manage the dependencies between the stable & unstable components what SDP is about.
+
+Here is an ideal configuration, adhering to SDP:
+![Ideal SDP Configuration](images/ideal-sdp-configuration.png)
+
+Example SDP Violation:
+![SDP Violation Example](images/sdp-violation-example.png)
+
+Whenever a stable component needs to depend on a flexible (instable) component, we can apply DIP to invert the dependency & create a new (stable) component:
+![SDP Dependency Inversion](images/sdp-dependency-invert.png)
+
+### The Stable Abstractions Principle
+> A component should be as abstract as it is stable
+
+Some software in the system doesn't change very often - the components which contain high-level policies.
+
+Since we don't want these policies to change very often, they should be placed in stable components.
+However, if the high-level policies are placed into stable components, then the source code representing those policies will be hard to change.
+
+This could make the architecture very inflexible.
+
+To solve this issue, we should design our high-level policy components to adhere to OCP (Open-Closed Principle).
+Hence, the classes in these components should be abstract, since they are designed for extension.
+
+The Stable Abstractions Principle (SAP) sets up a relationship between stability and abstractness.
+Stable components should be abstract in order to prevent them from being extended.
+Unstable components should be concrete in order to be easily changeable.
+
+Applying SAP and SDP implies that **dependencies run in the direction of abstraction**.
+
+#### Measuring abstraction
+
+Abstractness of component (A) = number of abstract classes (Na) / number of classes (Nc)
+
+A == 1 -> component consists of abstract classes only
+A == 0 -> component consists of concrete classes only
+
+#### The main sequence
+If we plot all the components based on their abstractness (A) and instability (I), we can derive a chart like this:
+![Abtractness/Instability Chart](images/ai-chart.png)
+
+Having a chart like this, we can identify some segments of the chart where the components **should not be**:
+![Exclusion Zones](images/exclusion-zones.png)
+
+#### The Zone of Pain
+In this area, components are highly stable and highly concrete.
+
+Such a component is not desirable as it is hard to change (due to stability) and hard to extend (due to concreteness).
+
+There are some good use-cases of components in the zone of pain. For example, the `String` class is in the zone of pain as it is highly concrete & highly depended on.
+Changing it will cause havoc among developers. However, since the class rarely changes since it was designed, it is practically nonvolatile.
+
+#### The Zone of Uselessness
+In this area, components are maximally abstract and there are no dependent packages.
+
+This is undesirable as such components are useless.
+
+#### Avoiding the zones of exclusion
+The best position for components is at the endpoints of a line called the "Main Sequence".
+
+The best architects strive to position their components in each of these endpoints.
+However, in reality, there are components which do not sit on the endpoints.
+
+These components are considered "good enough" if they sit along the line of the main sequence.
+
+#### Distance from the main sequence
+Since we want our components to sit on the main sequence for them to be deemed "good", we can derive a metric showing the distance of a component from the main sequence:
+
+D = |A+I-1|
+
+D = 0 -> component sits on main sequence
+D = 1 -> component is as far away from the main sequence as possible (in the zones of exclusion)
+
+Given this metric, each component can have its D plotted on a graph. Large deviance from the main sequence indicates that a component should be more closely examined:
+![Distance from main sequence chart](images/distance-from-main-sequence.png)
