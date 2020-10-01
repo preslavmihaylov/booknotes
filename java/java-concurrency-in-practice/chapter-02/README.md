@@ -1,5 +1,15 @@
 # Chapter 02 - Thread Safety
 
+- [What is thread-safety?](#what-is-thread-safety)
+  * [Example - a stateless servlet](#example---a-stateless-servlet)
+- [Atomicity](#atomicity)
+  * [Race conditions](#race-conditions)
+  * [Compound actions](#compound-actions)
+  * [Locking](#locking)
+    + [Intrinsic locks](#intrinsic-locks)
+  * [Guarding state with locks](#guarding-state-with-locks)
+  * [Liveness & Performance](#liveness--performance)
+
 Concurrency is more about achieving thread-safety, than it is about creating & managing threads. Those are mechanisms, but at its core, concurrency aims to encapsulate shared mutable state from uncontrolled concurrent access.
 
 Shared mutable state - properties of a class and/or properties of a dependent class (usually part of the class' properties). Any piece of data which can affect the class' externally visible behavior.
