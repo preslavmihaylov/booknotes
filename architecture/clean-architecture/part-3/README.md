@@ -242,6 +242,7 @@ This is necessary as creating a concrete instance requires a source code depende
 This problem is typically solved by using abstract factories.
 
 Example:
+
 ![Abstract Factory Example](images/abstract-factory-example.png)
 
 Note that the flow of control is opposite to the source code dependencies - i.e. control flow goes from `Application` to `ConcreteImpl` although it is `ConcreteImpl` which has a source code dependency on the `Application`'s module
