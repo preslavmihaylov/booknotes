@@ -17,6 +17,7 @@ The measure of good software architecture is the effort needed to satisfy client
 Here's real data from a company & its product's growth over time.
 
 Here's a graphic of the growth of engineering staff:
+
 ![Engineering staff growth](images/engineering-staff-growth.png)
 
 Here's a graphic of the company's productivity measured in simple lines of code:
