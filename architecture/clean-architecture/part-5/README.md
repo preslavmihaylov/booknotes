@@ -80,3 +80,104 @@ The author goes on to share yet another story about how he worked on a project, 
 I've omitted this one for brevity.
 
 ## Independence
+As already stated, a good architecture must support:
+ * The use cases and operations of the system
+ * The maintenance of the system
+ * The development of the system
+ * The deployment of the system
+
+### Use cases
+One of the architect's top priorities is to support the use cases of the system.
+If you're making a shopping cart application, the architecture should support shopping cart behavior.
+
+But architecture is not about behavior, as already mentioned. However, it should expose the behavior so that it is visible at the structural level.
+A shopping cart application should look like a shopping cart application when you look at it from a bird's eye view.
+
+### Operation
+One of the goals of the architecture is to support the scaling needs of the application.
+If the application needs to process a lot of data, then the architecture should support that operation.
+
+However, a good architecture should leave this option open - if an architecture is good, it an easily be migrated from a monolithic structure into a micro-service architecture, for example.
+
+### Development
+Architecture plays a significant role in supporting the development environment.
+
+A system operated by many development teams should be aided by an architecture, which enables these teams to work in parallel, independently.
+
+### Deployment
+Architecture plays a significant role in the deployment process of a system.
+
+A good architecture, supporting deployment, doesn't require manual file/directory creations or various config file tweaking.
+This is achieved by properly partitioning and isolating the different components of the system.
+
+### Leaving options open
+One of the hardest parts about designing an architecture which satisfies all these conditions is that we often don't have knowledge of the use cases and/ro scale which the system has to support.
+
+This is why it's crucial that the architecture enables the system to be easy to change.
+
+### Decoupling layers
+The architect doesn't know the use cases of the system but wants to support them all.
+However, one does know the basic intent of the system - e.g. it's a shopping cart application.
+
+Hence, the architect can employ SRP and CCP to collect the things that change for the same reason.
+
+There are also some obvious components, which should be separated from the business rules - UI, database, schema, etc.
+All these are technical details, which should be decoupled from the rest of the system.
+
+### Decoupling use cases
+Use cases also change for different reasons among themselves. Use cases are a very natural way to divide the system.
+
+They are thin vertical slices which use different parts of our horizontal layers.
+Hence, we need to keep the horizontal layers decoupled from each other on the vertical as well - e.g. the UI for the "add-order" use case should be separate from the "delete order" use-case UI.
+
+### Decoupling mode
+Some of the use cases we talked about so far might have different operational needs than others - they might need to run at higher throughputs.
+
+Since we decoupled those use cases from one another, we can now independently scale them as needed - e.g. we could separate a particular use-case in a separate micro service or process.
+
+### Independent develop-ability
+So long as the use cases & horizontal layers are separate from each other, the system will support independent developability via multiple teams.
+
+E.g. the UI team need not know anything about how the business rules are implemented and vice versa. What's more, one could separate the system further per use case.
+The team of use case X doesn't know or care about the team of use case Y.
+
+### Independent deployability
+By separating the use cases in this way, we can also achieve a higher degree of deployability.
+
+For example, if there is a change in a particular use case, that can be deployed independently without causing the whole system to have downtime.
+
+### Duplication
+There are two kinds of duplication - real and accidental.
+
+Real duplication is the one we are honor-bound to avoid by e.g. extracting a common function.
+However, there is also accidental duplication - it is duplicated code, present in separate use-cases which can be reused.
+This kind of duplication should not be addressed by reusing it.
+
+The reason is that although the two components have a similar structure and/or code, they change for very different reasons.
+Hence, although they look similar now, they will likely diverge a lot in the future.
+
+Reusing a common function/component which changes for different reasons violates SRP and will lead to maintenance issues.
+
+Same goes for reusing data structure which look similar - e.g. one could directly pass the database data structure to the UI since the view model looks the same as the model.
+This should be avoided as this is also accidental duplication. Addressing it will lead to coupling between components which change for different reasons.
+
+### Decoupling modes (again)
+There are many ways to decouple layers and use cases. They can be decoupled at the source code/binary or even service layer:
+ * Source level - we can control the dependencies we use in our source code so that changes in a component doesn't lead to changes in an unrelated component, which is in the same address space
+ * Deployment level - we can control the dependencies between our deployment units (e.g. jar files) so that changes in one component don't lead to redeployment of unrelated components.
+ * Service level - We can reduce the dependencies at a minimum and eventually make separate components execute in different binaries and reside in different source trees
+
+Which decoupling mode to use is based on what needs our system has. Those needs can change as time passes.
+A good architecture should allow for migrating to a different decoupling mode if there is need for it.
+
+A modern approach to this is to start from the service level decoupling from the very get-go. This is a bad approach as service level decoupling leads to a lot more maintenance, development effort & wasted network cycles.
+
+Instead, a system usually starts from a monolith, keeping options open as it has clear boundaries between unrelated components.
+
+And, if need be, it can grow into decoupled deployment units and eventually - separate services.
+
+### Conclusion
+The decoupling mode is one of those things which can change over time and a good architecture should setup the system to easily change the mode if necessity comes.
+
+## Boundaries: Drawing Lines
+
