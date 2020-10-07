@@ -180,4 +180,80 @@ And, if need be, it can grow into decoupled deployment units and eventually - se
 The decoupling mode is one of those things which can change over time and a good architecture should setup the system to easily change the mode if necessity comes.
 
 ## Boundaries: Drawing Lines
+Software architecture == the art of drawing lines, called "boundaries"
 
+Boundaries which are drawn early are for the purposes of deferring decisions for much later in order to prevent those decisions from polluting the core business logic.
+One of the main reasons development slows down as a project evolves is because of the coupling of the project with early decisions.
+
+### A couple of stories
+The first "sad story" being told is about a company which had a successful GUI application & clients wanted a web version of it.
+To accomplish this, the developers decided to create a complex "three-tier architecture" which was meant to live in multiple servers.
+
+This complicated development tremendously as any message had to be marshalled/unmarshalled multiple times & there was, in general, a lot of overhead.
+
+In the end, the company never utilized server farms and sold their solution as a single-server application. The overdesign was unnecessary.
+
+Another sad story being told is about a company running a small taxi-like business, managing fleets of cars. They hired an "architect" to help with their software.
+The guy decided, off of the get-go, that what this company needed was a full-blown enterprise-level service-oriented architecture.
+
+Needless to say, this whole effort consumed tremendous amounts of people hours for an unneedlessly complex system.
+
+Finally, a good example of a story is given about developing "FitNesse" - a project created by Uncle Bob and his son for managing acceptance tests.
+Early on, they drew boundaries between the core business rules and the database layer.
+
+Since their needs initially were small, they used a mock database, which simply stubbed the methods altogether.
+Eventually, they needed some form of persistence, so they wrote an in-memory "database" for a short amount of time, which comformed to the interface they needed.
+
+Finally, when they had to achieve persistence, they wrote a component to store the data in flat files, since they decided that they don't need MySQL for now.
+And they never did, eventually.
+
+This way of scaling the system iteratively saved them a lot of headaches around dealing with a real database and the way they had architected their system allowed them to defer decisions for a lot later.
+And when the time to migrate came, the migration was extremely easy as the database layer was independent from the business rules.
+
+### Which lines do you draw and when do you draw them
+Lines should be drawn between things that matter and things that don't.
+
+The things that matter are the business rules. The things that don't are all technical details such as the GUI or what database is being used.
+
+Example:
+![Separate Database Layer](images/separate-database-layer.png)
+
+At a higher level, this is how this component looks:
+![High-level database layer view](images/high-level-database-layer-view.png)
+
+Note that the database knows about the business rules, but not vice versa.
+This means that the database can be changed with whatever is necessary, without that having an effect whatsoever on the business rules.
+
+### What about input and output?
+The IO is irrelevant. The customers often just see the GUI and think that the application is the GUI, which is wrong.
+
+The GUI is merely a means to visualize the data managed by the core business rules.
+![GUI Layer Example](images/gui-layer.png)
+
+### Plugin architecture
+Putting this altogether, what we are creating is a plugin architecture - a system which allows third-party plugins to be embedded in the system without changing the rest of the system.
+![Plugin architecture](images/plugin-architecture.png)
+
+Because the database and the GUI are plugins in this architecture, they can easily be changed to whatever:
+ * MySQL, Oracle, NoSQL, etc for the database
+ * Web-based, CLI, Desktop app, mobile, etc for the GUI
+
+### The plugin argument
+An analogy is how Visual Studio works with ReSharper - both tools are developed by different teams, working in very distant countries.
+
+And yet, both tools integrate together quite well. This is because Visual Studio supports plugin architecture.
+
+What's more Visual Studio is immune to any problems caused by the ReSharper team due to the direction of the dependencies:
+![Resharper Dependency](images/resharper-dependency.png)
+
+On the other hand, if Visual Studio collapses, the ReSharper team will be seriously affected.
+
+This is how we want to structure the dependencies between our components as well.
+
+We want our business rules to not be dependent on database/gui/etc.
+It should be the other way around.
+
+In sum, boundaries should be drawn between components which change at different rates and for different reasons.
+This is the Single Responsibility Principle, applied to architecture.
+
+## Boundary Anatomy
