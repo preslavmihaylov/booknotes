@@ -257,3 +257,65 @@ In sum, boundaries should be drawn between components which change at different 
 This is the Single Responsibility Principle, applied to architecture.
 
 ## Boundary Anatomy
+Architecture of a system == set of components + boundaries between them
+
+This chapter focuses on the most common types of boundaries.
+
+### Boundary crossing
+Boundary crossing == function on one side of a boundary calling a function on the other side of a boundary and passing along some data
+
+The trick to creating good boundary crossings lies in appropriately managing source code dependencies.
+
+The reason source code dependencies matter is because changing source code leads to recompilation and redeployment.
+Managing and building firewalls against these changes is what boundaries are all about.
+
+### The dreaded monolith
+The simplest way of structuring an application is in a single monolithic binary - be it an EXE file, a statically linked C/C++ binary, a java JAR, etc.
+
+In these applications, boundaries still exist, but they are at the source code level. From a deployment's perspective, there is a single binary, regardless of internal boundaries.
+
+Even so, making appropriate boundaries is still valuable as this enables easier testing & developability of different components (in other words, different teams can focus on different parts of the system).
+
+For example, without appropriate boundaries, a high-level component will have to depend on low-level components:
+![No boundaries example](images/no-boundaries-example.png)
+
+If an appropriate boundary is made, the low-level component will depend on the high-level one, allowing different teams to focus on different parts of the system:
+![Good boundary example](images/good-boundary-example.png)
+
+### Deployment components
+The simplest physical version of an architectural boundary is a dynamically linked library - e.g. DLL files, JAR files, Unix shared library.
+
+Deploymeny doesn't involve compilation. Instead, the components are delivered in binary form. They are typically bundled in a conveninent form, eg. an archive.
+
+Other than that deployment specific, deployment-level decoupling is the same as the monolith-level of decoupling. The functions generally all exist in the same address space.
+The strategies for segregating the components and managing their dependencies are the same.
+
+### Threads
+Threads are not architectural boundaries. They are a way to organize and schedule the order of execution.
+Both monoliths and deployment components can leverage threads.
+
+### Local processes
+A stronger architectural boundary is the local process.
+
+Local processes run in the same processor space, but are not running in the same address space.
+Typically, the processes do not share memory, although that is possible.
+
+From an architectural perspective, the same rules apply when defining dependencies between local processes.
+Lower-level processes have to depend on higher-level processes, not the other way around.
+
+The goal is for lower-level processes to be plugins to the higher-level ones.
+
+One thing to consider in addition to this is that communication between local processes has moderate overhead, meaning that one should be careful when making external calls.
+
+### Services
+Services are the strongest level of boundary. Services assume that they are running in independent process and address space & all calls to other services are network calls.
+
+Communication across service boundaries are very slow compared to normal function calls or local process communication. Communications at this level must deal with high levels of latency.
+
+Other than that, the same rules apply here as for all other architectural boundaries.
+
+### Conclusion
+Most applications use several forms of boundaries, not just one type. Hence, one must often deal with all boundary types which were enumerated thus far.
+
+## Policy and level
+
