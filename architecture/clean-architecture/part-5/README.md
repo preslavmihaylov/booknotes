@@ -318,4 +318,118 @@ Other than that, the same rules apply here as for all other architectural bounda
 Most applications use several forms of boundaries, not just one type. Hence, one must often deal with all boundary types which were enumerated thus far.
 
 ## Policy and level
+Software systems == statements of policy.
 
+Applications are merely detailed sets of policies which govern how input data is to be transformed into output.
+
+Software architecture is partly about effectively grouping and separating policies based on the way they change.
+
+In any case, low-level policies should depend on high-level ones.
+
+### Level
+Definition of level == distance from inputs and outputs
+
+The farther a policy is from the inputs and outputs, the higher-level it is.
+
+Structure of a simple encryption program:
+![Encryption program example](images/encryption-program-example.png)
+
+An incorrect way to structure this program would be:
+```
+function encrypt() {
+    while(true)
+        writeChar(translate(readChar()));
+}
+```
+
+This is incorrect as the high-level `encrypt` function depends on the lower-level `readChar` and `writeChar` functions.
+
+A better approach would be:
+![Better approach for the encrypt program](images/encrypt-program-better-approach.png)
+
+The reason this approach is better is because the low-level IO-related components are separated from the higher-level policy.
+
+This allows the components to change in different rates and for different reasons.
+
+## Business rules
+We are dividing our application into business rules and plugins.
+
+What are business rules - rules or procedure that make or save the business money.
+They don't have to necessarily be implemented by a computer & would be executed manually if a computer were not present.
+
+We shall call these **critical business rules**. These rules often need some data to work with - **the critical business data**.
+
+Critical business rules & data are inextricably bound and we'll bound them to an object, which we'll call an **Entity**.
+
+### Entities
+Entity == an object which embodies a small set of critical business rules, operating on critical business data.
+
+The interface of the entity consists of functions that implement the critical business rules that operate on the data:
+![Loan Entity](images/loan-interface.png)
+
+The entity is pure business and nothing else - it is not concerned with databases or IO. It will look the same way regardless of how the system is used.
+
+### Use cases
+Use case == description of how an automated system is used
+
+They provide **application-specific** business rules as opposed to **critical business rules**.
+
+Example of a use case:
+![Use case example](images/use-case-example.png)
+
+Use cases work with entities & control how they are managed.
+
+From use cases, one cannot determine if the application is web-based or console-based.
+How the data gets in the application is irrelevant to the use-cases.
+
+Use cases depend on Entities, not the other way around.
+
+Why?
+
+Because use-cases are specific to a particular application, while entities are generalizations that can be used across many applications.
+
+### Request and response models
+The way use-cases communicate with the IO layer is via request/response data structures, which have no notion of the specific IO being used.
+
+These data structures shouldn't know anything about HTTP or Console or HTML.
+
+These data structures should not have references to the Entity objects, although they might share a lot of the data.
+The purpose of these two objects is very different and over time, will change for different reasons.
+
+### Conclusion
+The business rule should be the most independent and reusable code in the system.
+
+## Screaming architecture
+When you look at the structure of your code base at a high level, it should show what the system is about, NOT what frameworks it uses.
+
+If you are developing an inventory management system, the structure of the codebase should scream "Inventory Management System". It shouldn't scream "ASP" or "Sprint" or "Rails".
+
+### The theme of an architecture
+The structure of an application should scream about the **use cases** of that application.
+
+Architecture is not about frameworks. It should be about supporting the use cases of the business.
+
+### The purpose of an architecture
+A good architecture focuses on supporting the use cases and leaving the specific tools to be used a peripheral concern.
+
+It is also about making it easy to change your mind about the tools you use.
+
+### But what about the web?
+The web is not an architecture, it is an IO device and your architecture should treat it as such.
+
+A good architecture should enable the application to be ignorant of the specific IO being used - whether it's web or console or Desktop.
+
+### Frameworks are tools, not ways of life
+You should not embrace a let-the-framework-do-everything approach.
+
+Every framework should be considered with skepticism - how can it help, how can it get in the way?
+
+Think about how you can preserve the use-case emphasis of the system. You shouldn't let any framework take over the architecture of a system.
+
+### Testable architectures
+If your architecture is independent of the frameworks, you should be able to test it in isolation.
+
+You shouldn't need to have the database or web server running to run your unit tests.
+
+### Conclusion
+Your architecture should tell readers about the system, not the frameworks that you used.
