@@ -433,3 +433,76 @@ You shouldn't need to have the database or web server running to run your unit t
 
 ### Conclusion
 Your architecture should tell readers about the system, not the frameworks that you used.
+
+## Clean Architecture
+Over the year, there were multiple ideas for an ideal architecture.
+
+The "clean architecture" is the author's attempt to consolidate all those ideas into a single actionable approach:
+![Clean Architecture](images/clean-architecture.png)
+
+All those architectures have several things in common, as does the "clean architecture":
+ * Independent of frameworks
+ * Independent of the UI
+ * Independent of the database
+ * Independent of any external agent
+ * Testable
+
+### The dependency rule
+The concentric circles in the "clean architecture" picture are different areas of the software.
+
+The deeper you go, the higher-level the components at this level.
+
+To abide by this architecture, one must follow the "dependency rule":
+> Source code dependencies must point only inward, toward higher-level policies
+
+### Entities
+Entities encapsulate the enterprise-wide critical business rules. It can be an object with methods or a set of data structures and functions.
+It doesn't matter so long as the entities can be used by many different applications in the enterprise.
+
+If you don't have an enterprise, but merely a simple application, then these entities encapsulate the business rules of your application.
+
+Those are the highest-level rules in the application which change the least often.
+
+### Use cases
+Use cases contain the application-specific business rules. They encapsulate all the use cases the application needs to support.
+
+This layer works with Entities and manage all the interactions with them.A
+
+Changes in this layer should not affect use cases and it shouldn't be affected by changes in UI/database/etc.
+
+### Interface adapters
+This layer contains the components responsible for transforming the data from a format suitable to the use cases and entities, to a format suitable for the frameworks and tools.
+Typically, the MVC structure of an application resides at this layer.
+
+All layers inward of this one should not be aware of any of the tools being used.
+This layer is the deepest one where knowledge of SQL/HTML/etc can reside.
+
+### Frameworks and drivers
+This layer is where all the details go.
+Typically, you need not write much code in this layer, only glue code at times.
+
+### Only four circles?
+This schematic is guidance, not strict rules. You may have more than 4 layers depending on the nature of your application.
+
+What still applies, however, is the dependency rule.
+
+### Crossing boundaries
+Boundaries across layers are crossed via dependency inversion.
+
+At the boundary between the use cases and the interface adapters, there are interfaces, which some components in the interface adapters implement.
+The same technique is used across all the boundaries in the architecture.
+
+### Which data crosses the boundaries
+When we pass data across a boundary, it is always in a format most suitable for the components in the inner circles.
+
+We shouldn't pass database result rows to the use cases and we shouldn't pass entities back to the interface adapters/tools.
+
+### A typical scenario
+Here's an example of a java application, which follows the clean architecture:
+![Clean Architecture Example](images/clean-architecture-example.png)
+
+### Conclusion
+Following these rules is not hard and it will save you a lot of headaches.
+
+## Presenters and humble objects
+
