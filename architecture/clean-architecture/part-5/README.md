@@ -505,4 +505,73 @@ Here's an example of a java application, which follows the clean architecture:
 Following these rules is not hard and it will save you a lot of headaches.
 
 ## Presenters and humble objects
+Presenters are in the clean architecture to protect us from crossing architectural boundaries.
+They, very often, follow the humble object design pattern.
 
+### The humble object pattern
+This pattern was invented with the aim of helping people doing unit tests.
+
+Its goal is to separate the hard to test behavior from the easy to test behavior by separating the two in separate classes/modules.
+
+For example, GUIs are very hard to unit test. However, some of the behavior of a GUI is easy to test.
+We can separate that part via the humble object pattern and write unit tests for that.
+
+### Presenters and views
+The "View" is the humble object, which is hard to test. The code in this object is stripped to its bare minimum.
+
+The presenter, on the other hand, is testable. Its job is to accept application data and format it in a nice way for the view to display on the UI.
+E.g. format the dates/currencies appropriately.
+
+Nothing should be left for the View, other than loading the data from the ViewModel to the UI.
+
+### Testing and architecture
+The humble object pattern is a technique which creates an architectural boundary between testable and non-testable objects.
+
+### Database gateways
+Between the use case interactors and the databases are the database gateways.
+They create methods for the CRUD operations you need on a database.
+
+The classes, which implement database gateways in the database layer are humble objects.
+
+### Data mappers
+The ORM data structures are another humble object. They should reside at the database layer.
+
+### Service listeners
+Your service boundaries are also humble objects - the classes which interact with external services.
+
+## Partial boundaries
+Oftentimes, creating a full-fledged boundary between two components can be considered an overkill because you might not need that boundary.
+
+Creating boundaries left and right in anticipation of "a more complex system" is often frowned upon via YAGNI - You aren't gonna need it.
+
+This is why, sometimes architects don't create full-fledged boundaries where they have to be, but instead, create partial boundaries which enable one to migrate to a full-fledged one if need be.
+
+### Skip the last step
+One way to create a partial boundary is to go through all the work of creating the boundary, but in the end, not separating it in a new component.
+
+This requires the same amount of effort as a full boundary, but it does not incur the same administration overhead of managing multiple components.
+
+### One-dimensional boundaries
+The full-fledged boundary maintains reciprocal interfaces (interfaces on both sides of the boundary) to maintain isolation in both directions.
+
+Maintaining separation in both directions is often expensive in terms of maintenance and ongoing development.
+
+A simpler approach is to still use DIP but with a single interface:
+![One dimensional boundary example](images/one-dimensional-boundary-example.png)
+
+This sets the stage for a future architectural boundary, but also poses danger that the dependency rule can be violated as shown by the red dotted line.
+
+### Facades
+An even simpler partial boundary is using the `Facade` pattern:
+![Facade pattern example](images/facade-pattern-example.png)
+
+In this case, even dependency inversion is sacrificed. The point of this approach is that the client doesn't have direct access to the service implementations.
+
+Note, however, that the client still has a transitive dependency on the service implementations -> changes in any of the services will lead to recompilation of the client.
+
+### Conclusion
+In this chapter, three approaches for partial boundaries were shown. Each has its trade-offs and use-cases.
+
+Each can also be degraded if a boundary never materializes and each can be upgraded to a full-fledged architectural boundary.
+
+## Layers and boundaries
