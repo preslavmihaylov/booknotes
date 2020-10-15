@@ -575,3 +575,55 @@ In this chapter, three approaches for partial boundaries were shown. Each has it
 Each can also be degraded if a boundary never materializes and each can be upgraded to a full-fledged architectural boundary.
 
 ## Layers and boundaries
+This chapter is a case study of implementing a simple video game using clean architecture.
+
+### Hunt the wumpus
+This is a text-based computer game, where a player is hunting for the wumpus while avoiding traps. The user controls the player by issuing commands go left, go right, etc.
+
+One of the first decisions is to decouple the game rules from the UI, which allows the game to be translated to any language:
+![Game rules decoupled from UI](images/game-rules-decoupled-from-ui.png)
+
+Additionally, the game rules can be stored in some kind of persistent storage. We will form the dependencies in a way that the game rules don't care about the details of how the rules are persisted:
+![Game rules persistence](images/game-rules-persistence.png)
+
+### Clean architecture?
+Clean architecture can be applied to this problem. But we haven't discovered all architectural boundaries yet.
+
+For example, we don't know if decoupling the language from the game rules is enough of an architectural boundary & if it is the only axis of change for the UI.
+
+What if, e.g. we want to deliver the game via different output devices? Perhaps we can form an architectural boundary between the language processing and the text delivery:
+![Hunt the wumpus clean architecture](images/htw-clean-architecture.png)
+
+The main thing to have in mind in this design is that the boundary interfaces are owned by the upstream components.
+For example, the boundary interface for language is owned by the game rules component, not the languages component.
+
+Here's a simplified version of the previous diagram:
+![Hunt the wumpus clean architecture simplified](images/htw-clean-architecture-simplified.png)
+
+Notice that the dependency rule is adhered to as all components point up towards the highest level component - the game rules.
+Additionally, in the current design, there are two separate streams which are not crossed - the data persistence and the output stream.
+
+### Crossing the streams
+There might be more than two streams in this game, and in any application. For example, if one wants to implement an online HTW, then you'd need a network stream as well:
+![Hunt the wumpus network stream example](images/htw-network-stream.png)
+
+### Splitting the streams
+In the current design, all streams eventually meet at the top in a single component. In reality, the design might be more complicated than that.
+
+For example, the game rules can be split in two components - one which manages the player and the other which manages movement:
+![Splitting streams example](images/splitting-streams-example.png)
+
+One could even split the components into microservices and e.g. the player management can be handled by an online server.
+In this case, one would have to define a `PlayerManagement` interface, which is implemented by a proxy to a distant server:
+![hunt the wumpus microservices](images/htw-microservices.png)
+
+### Conclusion
+This is a simple game, which can be written in 200 lines of code, but the author has taken it and extrapolated it into a full-fledged architecture with a lots of boundaries.
+
+An architect needs to balance the act of setting boundaries in anticipation of future changes and not setting them in an effort to not over-engineer the solution.
+Hence, it is a guessing game. One must be vigilant over the lifetime of the project & put those boundaries when they are really needed.
+
+Putting them too early can cause the system to be over-engineered. Putting them too late can, well, be too late as the system is already hard to change.
+
+## The main component
+
