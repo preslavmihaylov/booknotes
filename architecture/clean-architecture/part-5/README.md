@@ -626,4 +626,26 @@ Hence, it is a guessing game. One must be vigilant over the lifetime of the proj
 Putting them too early can cause the system to be over-engineered. Putting them too late can, well, be too late as the system is already hard to change.
 
 ## The main component
+In any system, there is at least one component which creates, coordinates and oversees others. The author calls that the "Main" component.
+
+### The ultimate detail
+The main component is the lowest-level policy possible. Nothing, other than the operating system, depends on it.
+
+It's job is to instantiate all major objects in your system and hand over control to the high-level abstract portions of the system.
+This is where the Dependency Injection Framework should reside.
+
+Once the dependencies are instantiated by the framework, the Main component should distribute the dependencies normally.
+
+The author then shares some code snippets from his "Hunt the Wumpus" main function.
+In it, one can find:
+ * Instantiations of all constant strings which the game needs to use but not know about.
+ * Basic input/output processing via the terminal
+ * Creation of the game map
+
+One interesting hint the author gives about the "Main" component is that you can have separate main components per configuration - one for test, one for dev, etc.
+
+But in sum, it is yet another plugin to the system.
+
+## Services: Great and Small
+
 
