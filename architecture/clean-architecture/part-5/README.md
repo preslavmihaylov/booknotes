@@ -647,5 +647,68 @@ One interesting hint the author gives about the "Main" component is that you can
 But in sum, it is yet another plugin to the system.
 
 ## Services: Great and Small
+Microservices & Service-oriented architectures have become very popular because:
+ * Services seem to be very decoupled from each other
+ * Services seem to support independence of development and deployment
+
+### Service Architecture?
+Just because you are using services, doesn't mean that you have an architecture.
+
+Architecture is defined by boundaries that follow the dependency rule. Services that simply have decoupled behavior are little more than a more expensive function call.
+
+### Service Benefits?
+This section is going to challenge some of the popular believes around service-oriented architecture benefits
+
+#### The decoupling fallacy
+One supposed benefit of using microservices is that services are decoupled from one another.
+
+This is only partially true - yes, services are decoupled as they run in different processes, but they can strongly depend on each other due to the data which they share.
+If a new public field is added in the data which a service returns, all dependent services need to be changed.
+
+#### The fallacy of independent development and deployment
+Another supposed benefit of services is that they can be independently developed and deployed by different teams.
+
+There is some truth to this, but only some. History has shown that big enterprises can be built from big monoliths and yet, be scalable. Services are not the only option for this.
+
+Apart from that, services might still be dependent on one another in terms of development & deployment if they are strongly coupled to each other.
+
+### The kitty problem
+This section shows examples of the previously stated fallacies by exploring a taxi aggregation system, which is built using microservices:
+![Taxi Aggregator architecture](images/taxi-supplier-architecture.png)
+
+If, at some point, the marketing department comes and says that they want to offer a kitty delivery service, all these services need to be changed because that kitty delivery service is a cross-cutting concern.
+
+Neither monoliths, nor service-oriented architectures are resilient to cross-cutting concerns.
+
+### Objects to the rescue
+This section explores a solution to the above problem in a component-based system (ie no microservices):
+![Taxi aggregator v2](images/taxi-aggregator-v2.png)
+
+The main idea behind this structure above is that there is a set of abstract classes & interfaces - Taxi Finder, Taxi Selector, Taxi Dispatcher, Taxi supplier.
+None of these are concrete implementations.
+
+There is also a component factory which creates instances of components with a set of classes inside which implement all these interfaces.
+If the kitty delivery problem is faced here, one would have to create a new component, which inherits all the interfaces & instantiate it in the component factory.
+
+### Component-based services
+The question is - can we do this for services? Yes, we can.
+
+This structure can be created in a service-oriented architecture by creating services, which have their own internal component structure, which implements this structure:
+![Taxi Aggregator v3](images/taxi-aggregator-v3.png)
+
+Each service has its own internal component design. New features can be added as new derivative classes.
+Those derivative classes live within their own components.
+
+### Cross-cutting concerns
+The services don't define the architectural boundaries in the system. The components inside those services do.
+
+### Conclusion
+Although services can be useful to the developability and deployability of the system, they are not architecturally significant elements.
+
+The architecture is defined by the components inside the services. They define the architectural boundaries.
+
+## The Test Boundary
+
+
 
 
