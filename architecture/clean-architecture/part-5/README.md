@@ -708,7 +708,51 @@ Although services can be useful to the developability and deployability of the s
 The architecture is defined by the components inside the services. They define the architectural boundaries.
 
 ## The Test Boundary
+Tests are part of the system and they participate in its architecture.
 
+### Tests as system components
+Tests, whatever they are - unit, integration, system, acceptance, BDD, etc, etc, follow the same rules.
+
+They all follow the dependency rule. They are among the most concrete and detailed components there are - the outermost circle of the clean architecture.
+Nothing within the system depends on the tests and the tests depend on components in the system.
+
+### Design for testability
+Oftentimes, developers tend to think tests are beyond the scope of the system design, which is not a good point of view.
+If one takes such a stance, tests in his system might be extremely coupled to the system components, making the system very rigid and hard to change.
+
+Trivial changes in common system components can cause hundreds of tests to fail - this is called the **Fragile Tests Problem**.
+
+An example of fragile tests are ones which test the GUI by relying on how one navigates through a login screen. Changing the layout of the login screen can cause all these tests to fail.
+
+The solution is to not depend on volatile things. GUIs are volatile - design your system in a way that the business rules can be tested without the GUI.
+
+### The Testing API
+The way to accomplish this is by creating an API which the tests can use to verify all the business rules.
+
+This API should have superpowers which short-circuit the tests' access to the system - it bypasses security, middleware, etc.
+The purpose of this API is to decouple the tests from the application.
+
+This API decouples the structure of the tests from the structure of the application.
+
+#### Structural Coupling
+Imagine a system where there is a test for every test class and a test function for every public class function.
+Such a test suite is deeply coupled to the structure of the application.
+
+When one of those production methods changes, a large number of tests must change as well.
+
+The testing API's goal is to hide the structure of the application from the tests. This allows the application structure to be refactored without that affecting the tests and vice versa.
+
+This is necessary as the tests & the application evolve in different directions - tests tend to become more concrete, the application tends to become more abstract.
+
+Structural coupling prevents this necessary evolution of an application.
+
+#### Security
+If the testing API is deployed in a production system, then security might be a concern. That is why, it is advisable to deploy this API in a separate testing environment.
+
+### Conclusion
+The system should be designed with tests in mind. Otherwise, tests tend to become more and more difficult to maintain, which leads to them being discarded altogether at some point.
+
+## Clean Embedded Architecture
 
 
 
