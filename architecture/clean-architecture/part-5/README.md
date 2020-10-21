@@ -753,6 +753,68 @@ If the testing API is deployed in a production system, then security might be a 
 The system should be designed with tests in mind. Otherwise, tests tend to become more and more difficult to maintain, which leads to them being discarded altogether at some point.
 
 ## Clean Embedded Architecture
+This chapter focuses on explaining clean architecture principles/techniques, specific to embedded development.
 
+The driving force behind this is the notion that firmware and hardware change more often than software.
+Hence, there should be strict boundaries between those three layers.
 
+Firmware == code which tightly depends on hardware.
 
+In order for an embedded application to be scalable, the firmware and hardware should be detached from the rest of the software.
+
+### App-titude test
+The reason why so much software & firmware becomes coupled is because developers typically consider their software don on step one of this process:
+ 1. Make it work
+ 2. Make it right
+ 3. Make it fast
+
+Most embedded software is written with the first point and optionally the third point in mind, but not the second one.
+
+Real-life example of a source file from an embedded project:
+```c
+ISR(TIMER1_vect) { ... }
+ISR(INT2_vect) { ... }
+void btn_Handler(void) { ... }
+float calc_RPM(void) { ... }
+static char Read_RawData(void) { ... }
+void Do_Average(void) { ... }
+void Get_Next_Measurement(void) { ... }
+void Zero_Sensor_1(void) { ... }
+void Zero_Sensor_2(void) { ... }
+void Dev_Control(char Activation) { ... }
+char Load_FLASH_Setup(void) { ... }
+void Save_FLASH_Setup(void) { ... }
+void Store_DataSet(void) { ... }
+float bytes2float(char bytes[4]) { ... }
+void Recall_DataSet(void) { ... }
+void Sensor_init(void) { ... }
+void uC_Sleep(void) { ... }
+```
+
+This file contains routines from across various boundaries.
+This kind of file structure implies that the only way to test the code is on the physical embedded target.
+
+This software passed the app-titude test - it works. But that's not enough to make a scalable application.
+
+### The target-hardware bottleneck
+If the target embedded device is the only place where you can test your code, you will have the target-hardware bottleneck.
+
+### A clean embedded architecture is a testable embedded architecture
+This section explores how to apply some of the clean architecture principles to embedded development.
+
+#### Layers
+We'll start from a simple layered view, which includes three layers:
+![Three-layered embedded architecture](images/three-layered-embedded-arch.png)
+
+The hardware layer is the one which will change the most due to Moore's law - hardware quickly becomes obsolete.
+
+The separation between hardware and the rest of the system is a given as it is quite physical and has strict interfaces the firmware has to adhere to.
+The problem is that oftentimes, the separation between software and firmware is not so well defined.
+
+When one is only focusing on making the application work, they're polluting the software with hardware-related details. This effectively makes the whole software - firmware:
+![Software as Firmware](images/software-as-firmware.png)
+
+This kind of structure makes changing the software very hard and risky.
+The only way to prevent oneself from regressions is by running full-blown manual system tests on the target hardware. This will force one to spend a lot of time doing manual testing.
+
+#### The Hardware is a detail
