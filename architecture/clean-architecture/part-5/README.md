@@ -818,3 +818,86 @@ This kind of structure makes changing the software very hard and risky.
 The only way to prevent oneself from regressions is by running full-blown manual system tests on the target hardware. This will force one to spend a lot of time doing manual testing.
 
 #### The Hardware is a detail
+The line between software and firmware is typically not so well defined as the line between hardware and firmware:
+![Software-firmware boundary](images/software-firmware-boundary.png)
+
+Your job, as an embedded developer, is to make that line firm by introducing the Hardware Abstraction Layer (HAL):
+![HAL Example](images/HAL-example.png)
+
+An example of an interaction between software and the HAL is - the software needs to persist some data in persistent memory.
+The HAL should provide a routine which e.g. stores data in flash memory. The software should in no way know that its data is persisted in flash memory, only that it is persisted somewhere.
+
+Another example is that there is a LED which can turn on somewhere on the hardware. The API for turning it on from the hardware library might be `Led_TurnOn(5)`.
+This is a very low API and the HAL should hide it beneath its own API, indicating what the LED is used for - e.g. `Indicate_LowBattery()`.
+
+### Don't reveal hardware details to the user of a HAL
+A clean embedded architecture is testable off the target embedded device. A successful HAL provides that set of substitution points which facilitates off-target testing.
+
+#### The processor is a detail
+When you use a specific hardware, the manufacturer typically provides some header files to help you interact with their hardware.
+Any code which uses these header files is firmware. These files should only be used in the HAL layer.
+
+Alternatively, if the header files are important and meant to be used throughout the software, they should be wrapped in your own header.
+
+For example, this is a vendor-provided header file defining the standard integer types for a specific processor:
+```c
+#if defined(_ACME_X42)
+    typedef unsigned int Uint_32;
+    typedef unsigned short Uint_16;
+    typedef unsigned char Uint_8;
+    typedef int Int_32;
+    typedef short Int_16;
+    typedef char Int_8;
+#elif defined(_ACME_A42)
+    typedef unsigned long Uint_32;
+    typedef unsigned int Uint_16;
+    typedef unsigned char Uint_8;
+    typedef long Int_32;
+    typedef int Int_16;
+    typedef char Int_8;
+#else
+    #error <acmetypes.h> is not supported for this environment
+#endif
+```
+
+You shouldn't use this directly in your source files. Instead, wrap that in your own header file:
+```c
+#ifndef _STDINT_H_
+#define _STDINT_H_
+#include <acmetypes.h>
+
+typedef Uint_32 uint32_t;
+typedef Uint_16 uint16_t;
+typedef Uint_8 uint8_t;
+typedef Int_32 int32_t;
+typedef Int_16 int16_t;
+typedef Int_8 int8_t;
+
+#endif
+```
+
+The reason is that otherwise, you won't be able to test your code off-target as it is tied to the specific processor you're using.
+
+#### The Operating System is a detail
+In some systems, a HAL is sufficient for am embedded applications.
+In others, you might need to have some kind of an operating system - e.g. a Real-Time Operating System (RTOS).
+
+You have to threat the OS as a detail as well and put it behind a boundary, just like the firmware:
+![OS Layer](images/os-layer.png)
+
+To protect yourself against the OS changing because e.g. the provider is acquired by another company & the OS is no longer supported, you need an OS Abstraction Layer (OSAL):
+![OSAL Example](images/osal-example.png)
+
+The OSAL provides similar benefits to the HAL - your application is testable off-target and off-OS.
+Additionally, you might e.g. provide a common mechanisms for message passing across threads instead of letting threads handcraft their own concurrency models.
+
+#### Programming to interfaces and substitutability
+Apart from having a HAL and OSAL layers, you should also apply the principles covered in this book to separate the rest of the software into separate layers.
+
+#### DRY conditional compilation directives
+One common use-case in embedded software is the use of `#ifdef`s.
+
+This should also be encapsulated in the HAL layer in order to not have an `#ifdef` span across your entire code base.
+
+
+
