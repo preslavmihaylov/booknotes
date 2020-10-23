@@ -41,15 +41,15 @@ Notice that all these paradigms don't add anything to the programmer's capabilit
 
 Paradigms tell us what not to do, rather than telling us what to do.
 
-All these paradigms were discovered in the 1950s' and 1960s'. There were no major paradigms added afterwards.
+All these paradigms were discovered in the 1950s' and 1960s'. There were no major paradigms added afterward.
 
 ## Structured programming
-The paradigm was discovered by Edsger Dijkstra by analysing existing programs in an attempt to establish mathematical proofs for programs.
+The paradigm was discovered by Edsger Dijkstra by analyzing existing programs in an attempt to establish mathematical proofs for programs.
 
 What he discovered was that if a program uses simple constructs - sequence (e.g. `cmd1; cmd2;`), selection (e.g. `if/then/else`), iteration (e.g. `do/while`), such programs were provable.
 However, if a program used `goto`s to do undisciplined jumps across function boundaries, these were very hard to prove.
 
-Along the same time, some computer scientists proved that **all programs can be constructed from these simple structures**.
+At the same time, some computer scientists proved that **all programs can be constructed from these simple structures**.
 
 Hence, it was concluded that sticking to these three simple structures allowed one to construct any program he'd like, while also keeping his program mathematically provable.
 This is how structured programming was born.
@@ -183,7 +183,7 @@ Additionally, this kind of inheritance relies on the fact that the member variab
 OO languages get half a point for inheritance here as it is easier to use inheritance in those languages.
 
 ### Polymorphism
-Polymorphism could be achieverd in C way before any OO language was invented.
+Polymorphism could be achieved in C way before any OO language was invented.
 
 It was achieved via the use of function pointers. Example definition of a old-style "interface":
 ```c
@@ -225,19 +225,19 @@ OO languages removed the need for these conventions as they've made the usage of
 So that's the big breakthrough of OO languages.
 
 ### The power of polymorphism
-The great power of polymorphism is that if in the future a new driver is developed, the program using the driver needs not be recompiled as it has a source code dependency on the `FILE` interface, rather than the specific driver implemeentation.
+The great power of polymorphism is that if in the future a new driver is developed, the program using the driver needs not be recompiled as it has a source code dependency on the `FILE` interface, rather than the specific driver implementation.
 
 In short, drivers are plugins to the UNIX OS.
-This was necessary as we've learned in the 1950s that we want our programs to be device independent as otherwise, we would need to write a lot of device specific code which differs by little.
+This was necessary as we've learned in the 1950s that we want our programs to be device-independent as otherwise, we would need to write a lot of device-specific code which differs by little.
 
 Even though this was very convenient, programmers didn't use it that much as using function pointers was quite dangerous & best left to experts.
 With the advent of OO languages, polymorphism has become something simple enough that anyone could do.
 
 ### Dependency inversion
-In a typical software architecture, predating OO languages, the flow of control followed the source code dependencies:
+In typical software architecture, predating OO languages, the flow of control followed the source code dependencies:
 ![Flow of control without dependency inversion](images/no-dependency-inversion.png)
 
-This meant that any change in a low-level component required recompilation of the entire stack.
+This meant that any change in a low-level component required the recompilation of the entire stack.
 
 However, something very different happened when polymorphism is used:
 ![Dependency Inversion](images/dependency-inversion.png)
@@ -274,7 +274,7 @@ In clojure, it would be implemented like so:
 (println (take 25 (map (fn [x] (* x x)) (range))))
 ```
 
-What the above means is print the first 25 elements of a never-ending list, whose elements are evaluated as `x = x * x`.
+What the above means is to print the first 25 elements of a never-ending list, whose elements are evaluated as `x = x * x`.
 
 The big difference between the two implementation is that the java implementation relies on mutating a single variable `i`.
 In the clojure variant, there is no mutability whatsoever. Every time an operation is performed, a new object is created.
@@ -284,7 +284,7 @@ In other words, elements are immutable by default.
 ### Immutability and architecture
 The great benefit of immutability is that it saves us from all possible concurrency problems - race conditions, deadlocks, etc.
 
-If variabls aren't mutated, there can't be any concurrency issues. This makes developing programs for multiple processors/threads much easier.
+If variables aren't mutated, there can't be any concurrency issues. This makes developing programs for multiple processors/threads much easier.
 
 Total immutability, however, is only practical if one has infinite storage and infinite processor speed.
 Hence, in order for this to be practical, certain compromises need to be done.
@@ -307,10 +307,10 @@ Using such a scheme, there cannot be any concurrent update issues as there are n
 
 
 ## Conclusion
-These are the three major sotware engineering paradigms ever invented.
+These are the three major software engineering paradigms ever invented.
 
 None of them adds anything to our capabilities, they only take away something from us.
 Hence, realize that software is not a rapidly-evolving discipline. It has stayed the same ever since Alan Turing wrote his first line of code.
 
-All programs consists of some permutation of sequence, selection, iteration and indirection. Nothing more, nothing less.
-It is only our tools and knowledge of how to write software which has evolved.
+All programs consist of some permutation of sequence, selection, iteration and indirection. Nothing more, nothing less.
+It is only our tools and knowledge of how to write software that has evolved.

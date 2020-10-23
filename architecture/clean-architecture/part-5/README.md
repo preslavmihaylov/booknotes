@@ -7,15 +7,15 @@ They may not write as much code as everyone else does, but they do continue enga
 
 The architecture of a system is its shape - the way the application is decomposed into components & the way those components interact with each other.
 
-**The purpose of architecture is to make it easier to develop, maintain, deploy and operate the application. It is not to make the application work.**
+**The purpose of architecture is to make it easier to develop, maintain, deploy, and operate the application. It is not to make the application work.**
 
 ### Development
 
-A software system which is hard to develop is not likely to have a long and healthy lifetime.
+A software system which is hard to develop is not likely to have a long and healthy life.
 Hence, the architecture of a system should make it easy to develop for the owning teams.
 
 Very often, when a system is developed by a small team, the team decides to not invest in building proper interfaces and superstructures to avoid the impediment of one.
-This is likely the reason why so many applications lack a good architecture these days.
+This is likely the reason why so many applications lack good architecture these days.
 
 ### Deployment
 To be effective, a software system has to be deployable.
@@ -38,7 +38,7 @@ This is not to say that architecture which aids operation is not desirable. But 
 ### Maintenance
 Of all aspects of a software system, maintenance is the most costly.
 
-The never ending flow of new features and the inevitable trail of defects consumes vast amounts of man hours.A
+The never-ending flow of new features and the inevitable trail of defects consumes vast amounts of man-hours.
 
 The cost of maintenance is expressed in the time it takes to determine the best place for a new feature and the risk associated with adding it.
 
@@ -57,20 +57,20 @@ Examples of details are:
  * Is this a web server/GUI application/Sprint application, etc
  * Is it using a dependency injection framework
 
-A good software architecture should defer making the decision whether any of these technologies will be used to as late as possible.
+Good software architecture should defer making the decision whether any of these technologies will be used to as late as possible.
 
 The longer you defer making any of these decisions, the more information you have whether you actually need them.
 
 > A good architect maximizes the number of decisions not made
 
 ### Device independence
-The author shares an example of not following this approach from the 1960s, when he wrote software which was heavily device specific.
+The author shares an example of not following this approach from the 1960s when he wrote software which was heavily device-specific.
 Once they had to migrate the software to a different device, that operation was extremely difficult as all the code had to be rewritten for the new device.
 
-In the end, the programming society has learnt its lesson by abstracting away the specific devices being used behind an operating system interface.
+In the end, the programming society has learned its lesson by abstracting away the specific devices being used behind an operating system interface.
 
 ### Junk Mail
-Here, the author shows a constrasting story to the previous one in which he worked for a company, which had to print junk mail on a particular medium.
+Here, the author shows a contrasting story to the previous one in which he worked for a company, which had to print junk mail on a particular medium.
 At some point, they had to change the medium and since they were using the OS interface for interacting with the external device, they were able to migrate seamlessly.
 
 And the value of "keeping options open" was enormous as the new medium saved the company a lot of time and money, and it was achieved with insignificant development effort.
@@ -97,7 +97,7 @@ A shopping cart application should look like a shopping cart application when yo
 One of the goals of the architecture is to support the scaling needs of the application.
 If the application needs to process a lot of data, then the architecture should support that operation.
 
-However, a good architecture should leave this option open - if an architecture is good, it an easily be migrated from a monolithic structure into a micro-service architecture, for example.
+However, a good architecture should leave this option open - if an architecture is good, it can easily be migrated from a monolithic structure into a micro-service architecture, for example.
 
 ### Development
 Architecture plays a significant role in supporting the development environment.
@@ -111,7 +111,7 @@ A good architecture, supporting deployment, doesn't require manual file/director
 This is achieved by properly partitioning and isolating the different components of the system.
 
 ### Leaving options open
-One of the hardest parts about designing an architecture which satisfies all these conditions is that we often don't have knowledge of the use cases and/ro scale which the system has to support.
+One of the hardest parts about designing an architecture that satisfies all these conditions is that we often don't have knowledge of the use cases and/or scale which the system has to support.
 
 This is why it's crucial that the architecture enables the system to be easy to change.
 
@@ -127,13 +127,13 @@ All these are technical details, which should be decoupled from the rest of the 
 ### Decoupling use cases
 Use cases also change for different reasons among themselves. Use cases are a very natural way to divide the system.
 
-They are thin vertical slices which use different parts of our horizontal layers.
+They are thin vertical slices that use different parts of our horizontal layers.
 Hence, we need to keep the horizontal layers decoupled from each other on the vertical as well - e.g. the UI for the "add-order" use case should be separate from the "delete order" use-case UI.
 
 ### Decoupling mode
 Some of the use cases we talked about so far might have different operational needs than others - they might need to run at higher throughputs.
 
-Since we decoupled those use cases from one another, we can now independently scale them as needed - e.g. we could separate a particular use-case in a separate micro service or process.
+Since we decoupled those use cases from one another, we can now independently scale them as needed - e.g. we could separate a particular use-case in a separate microservice or process.
 
 ### Independent develop-ability
 So long as the use cases & horizontal layers are separate from each other, the system will support independent developability via multiple teams.
@@ -150,7 +150,7 @@ For example, if there is a change in a particular use case, that can be deployed
 There are two kinds of duplication - real and accidental.
 
 Real duplication is the one we are honor-bound to avoid by e.g. extracting a common function.
-However, there is also accidental duplication - it is duplicated code, present in separate use-cases which can be reused.
+However, there is also accidental duplication - it is duplicated code, present in separate use-cases that can be reused.
 This kind of duplication should not be addressed by reusing it.
 
 The reason is that although the two components have a similar structure and/or code, they change for very different reasons.
@@ -158,8 +158,8 @@ Hence, although they look similar now, they will likely diverge a lot in the fut
 
 Reusing a common function/component which changes for different reasons violates SRP and will lead to maintenance issues.
 
-Same goes for reusing data structure which look similar - e.g. one could directly pass the database data structure to the UI since the view model looks the same as the model.
-This should be avoided as this is also accidental duplication. Addressing it will lead to coupling between components which change for different reasons.
+The same goes for reusing data structure which look similar - e.g. one could directly pass the database data structure to the UI since the view model looks the same as the model.
+This should be avoided as this is also accidental duplication. Addressing it will lead to coupling between components that change for different reasons.
 
 ### Decoupling modes (again)
 There are many ways to decouple layers and use cases. They can be decoupled at the source code/binary or even service layer:
@@ -168,7 +168,7 @@ There are many ways to decouple layers and use cases. They can be decoupled at t
  * Service level - We can reduce the dependencies at a minimum and eventually make separate components execute in different binaries and reside in different source trees
 
 Which decoupling mode to use is based on what needs our system has. Those needs can change as time passes.
-A good architecture should allow for migrating to a different decoupling mode if there is need for it.
+A good architecture should allow for migrating to a different decoupling mode if there is the need for it.
 
 A modern approach to this is to start from the service level decoupling from the very get-go. This is a bad approach as service level decoupling leads to a lot more maintenance, development effort & wasted network cycles.
 
@@ -177,21 +177,21 @@ Instead, a system usually starts from a monolith, keeping options open as it has
 And, if need be, it can grow into decoupled deployment units and eventually - separate services.
 
 ### Conclusion
-The decoupling mode is one of those things which can change over time and a good architecture should setup the system to easily change the mode if necessity comes.
+The decoupling mode is one of those things which can change over time and a good architecture should set up the system to easily change the mode if necessity comes.
 
 ## Boundaries: Drawing Lines
 Software architecture == the art of drawing lines, called "boundaries"
 
-Boundaries which are drawn early are for the purposes of deferring decisions for much later in order to prevent those decisions from polluting the core business logic.
+Boundaries that are drawn early are for the purposes of deferring decisions for much later in order to prevent those decisions from polluting the core business logic.
 One of the main reasons development slows down as a project evolves is because of the coupling of the project with early decisions.
 
 ### A couple of stories
-The first "sad story" being told is about a company which had a successful GUI application & clients wanted a web version of it.
+The first "sad story" being told is about a company that had a successful GUI application & clients wanted a web version of it.
 To accomplish this, the developers decided to create a complex "three-tier architecture" which was meant to live in multiple servers.
 
-This complicated development tremendously as any message had to be marshalled/unmarshalled multiple times & there was, in general, a lot of overhead.
+This complicated development tremendously as any message had to be marshaled/unmarshaled multiple times & there was, in general, a lot of overhead.
 
-In the end, the company never utilized server farms and sold their solution as a single-server application. The overdesign was unnecessary.
+In the end, the company never utilized server farms and sold its solution as a single-server application. The overdesign was unnecessary.
 
 Another sad story being told is about a company running a small taxi-like business, managing fleets of cars. They hired an "architect" to help with their software.
 The guy decided, off of the get-go, that what this company needed was a full-blown enterprise-level service-oriented architecture.
@@ -202,13 +202,13 @@ Finally, a good example of a story is given about developing "FitNesse" - a proj
 Early on, they drew boundaries between the core business rules and the database layer.
 
 Since their needs initially were small, they used a mock database, which simply stubbed the methods altogether.
-Eventually, they needed some form of persistence, so they wrote an in-memory "database" for a short amount of time, which comformed to the interface they needed.
+Eventually, they needed some form of persistence, so they wrote an in-memory "database" for a short amount of time, which conformed to the interface they needed.
 
 Finally, when they had to achieve persistence, they wrote a component to store the data in flat files, since they decided that they don't need MySQL for now.
 And they never did, eventually.
 
 This way of scaling the system iteratively saved them a lot of headaches around dealing with a real database and the way they had architected their system allowed them to defer decisions for a lot later.
-And when the time to migrate came, the migration was extremely easy as the database layer was independent from the business rules.
+And when the time to migrate came, the migration was extremely easy as the database layer was independent of the business rules.
 
 ### Which lines do you draw and when do you draw them
 Lines should be drawn between things that matter and things that don't.
@@ -224,7 +224,7 @@ At a higher level, this is how this component looks:
 ![High-level database layer view](images/high-level-database-layer-view.png)
 
 Note that the database knows about the business rules, but not vice versa.
-This means that the database can be changed with whatever is necessary, without that having an effect whatsoever on the business rules.
+This means that the database can be changed with whatever is necessary, without that having any effect whatsoever on the business rules.
 
 ### What about input and output?
 The IO is irrelevant. The customers often just see the GUI and think that the application is the GUI, which is wrong.
@@ -233,7 +233,7 @@ The GUI is merely a means to visualize the data managed by the core business rul
 ![GUI Layer Example](images/gui-layer.png)
 
 ### Plugin architecture
-Putting this altogether, what we are creating is a plugin architecture - a system which allows third-party plugins to be embedded in the system without changing the rest of the system.
+Putting this all together, what we are creating is a plugin architecture - a system that allows third-party plugins to be embedded in the system without changing the rest of the system.
 ![Plugin architecture](images/plugin-architecture.png)
 
 Because the database and the GUI are plugins in this architecture, they can easily be changed to whatever:
@@ -256,7 +256,7 @@ This is how we want to structure the dependencies between our components as well
 We want our business rules to not be dependent on database/gui/etc.
 It should be the other way around.
 
-In sum, boundaries should be drawn between components which change at different rates and for different reasons.
+In sum, boundaries should be drawn between components that change at different rates and for different reasons.
 This is the Single Responsibility Principle, applied to architecture.
 
 ## Boundary Anatomy
@@ -288,9 +288,9 @@ If an appropriate boundary is made, the low-level component will depend on the h
 ### Deployment components
 The simplest physical version of an architectural boundary is a dynamically linked library - e.g. DLL files, JAR files, Unix shared library.
 
-Deploymeny doesn't involve compilation. Instead, the components are delivered in binary form. They are typically bundled in a conveninent form, eg. an archive.
+Deployment doesn't involve compilation. Instead, the components are delivered in binary form. They are typically bundled in a convenient form, eg. an archive.
 
-Other than that deployment specific, deployment-level decoupling is the same as the monolith-level of decoupling. The functions generally all exist in the same address space.
+Other than that deployment-specific, deployment-level decoupling is the same as the monolith-level of decoupling. The functions generally all exist in the same address space.
 The strategies for segregating the components and managing their dependencies are the same.
 
 ### Threads
@@ -323,7 +323,7 @@ Most applications use several forms of boundaries, not just one type. Hence, one
 ## Policy and level
 Software systems == statements of policy.
 
-Applications are merely detailed sets of policies which govern how input data is to be transformed into output.
+Applications are merely detailed sets of policies that govern how input data is to be transformed into output.
 
 Software architecture is partly about effectively grouping and separating policies based on the way they change.
 
@@ -353,7 +353,7 @@ A better approach would be:
 
 The reason this approach is better is because the low-level IO-related components are separated from the higher-level policy.
 
-This allows the components to change in different rates and for different reasons.
+This allows the components to change at different rates and for different reasons.
 
 ## Business rules
 We are dividing our application into business rules and plugins.
@@ -477,7 +477,7 @@ This layer works with Entities and manage all the interactions with them.A
 Changes in this layer should not affect use cases and it shouldn't be affected by changes in UI/database/etc.
 
 ### Interface adapters
-This layer contains the components responsible for transforming the data from a format suitable to the use cases and entities, to a format suitable for the frameworks and tools.
+This layer contains the components responsible for transforming the data from a format suitable to the use cases and entities to a format suitable for the frameworks and tools.
 Typically, the MVC structure of an application resides at this layer.
 
 All layers inward of this one should not be aware of any of the tools being used.
