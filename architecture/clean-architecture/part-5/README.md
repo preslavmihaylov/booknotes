@@ -220,6 +220,7 @@ Example:
 ![Separate Database Layer](images/separate-database-layer.png)
 
 At a higher level, this is how this component looks:
+
 ![High-level database layer view](images/high-level-database-layer-view.png)
 
 Note that the database knows about the business rules, but not vice versa.
@@ -890,6 +891,7 @@ In some systems, a HAL is sufficient for am embedded applications.
 In others, you might need to have some kind of an operating system - e.g. a Real-Time Operating System (RTOS).
 
 You have to threat the OS as a detail as well and put it behind a boundary, just like the firmware:
+
 ![OS Layer](images/os-layer.png)
 
 To protect yourself against the OS changing because e.g. the provider is acquired by another company & the OS is no longer supported, you need an OS Abstraction Layer (OSAL):
