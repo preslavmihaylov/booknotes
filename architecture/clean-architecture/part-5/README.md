@@ -216,6 +216,7 @@ Lines should be drawn between things that matter and things that don't.
 The things that matter are the business rules. The things that don't are all technical details such as the GUI or what database is being used.
 
 Example:
+
 ![Separate Database Layer](images/separate-database-layer.png)
 
 At a higher level, this is how this component looks:
@@ -244,6 +245,7 @@ An analogy is how Visual Studio works with ReSharper - both tools are developed 
 And yet, both tools integrate together quite well. This is because Visual Studio supports plugin architecture.
 
 What's more Visual Studio is immune to any problems caused by the ReSharper team due to the direction of the dependencies:
+
 ![Resharper Dependency](images/resharper-dependency.png)
 
 On the other hand, if Visual Studio collapses, the ReSharper team will be seriously affected.
@@ -345,7 +347,8 @@ function encrypt() {
 This is incorrect as the high-level `encrypt` function depends on the lower-level `readChar` and `writeChar` functions.
 
 A better approach would be:
-![Better approach for the encrypt program](images/encrypt-program-better-approach.png)
+
+<img src="images/encrypt-program-better-approach.png" alt="Better approach for the encrypt program" width="400"/>
 
 The reason this approach is better is because the low-level IO-related components are separated from the higher-level policy.
 
@@ -365,7 +368,8 @@ Critical business rules & data are inextricably bound and we'll bound them to an
 Entity == an object which embodies a small set of critical business rules, operating on critical business data.
 
 The interface of the entity consists of functions that implement the critical business rules that operate on the data:
-![Loan Entity](images/loan-interface.png)
+
+<img src="images/loan-interface.png" alt="Loan Entity" width="350"/>
 
 The entity is pure business and nothing else - it is not concerned with databases or IO. It will look the same way regardless of how the system is used.
 
@@ -375,7 +379,8 @@ Use case == description of how an automated system is used
 They provide **application-specific** business rules as opposed to **critical business rules**.
 
 Example of a use case:
-![Use case example](images/use-case-example.png)
+
+<img src="images/use-case-example.png" alt="Use case example" width="350"/>
 
 Use cases work with entities & control how they are managed.
 
@@ -804,6 +809,7 @@ This section explores how to apply some of the clean architecture principles to 
 
 #### Layers
 We'll start from a simple layered view, which includes three layers:
+
 ![Three-layered embedded architecture](images/three-layered-embedded-arch.png)
 
 The hardware layer is the one which will change the most due to Moore's law - hardware quickly becomes obsolete.
@@ -812,6 +818,7 @@ The separation between hardware and the rest of the system is a given as it is q
 The problem is that oftentimes, the separation between software and firmware is not so well defined.
 
 When one is only focusing on making the application work, they're polluting the software with hardware-related details. This effectively makes the whole software - firmware:
+
 ![Software as Firmware](images/software-as-firmware.png)
 
 This kind of structure makes changing the software very hard and risky.
@@ -886,6 +893,7 @@ You have to threat the OS as a detail as well and put it behind a boundary, just
 ![OS Layer](images/os-layer.png)
 
 To protect yourself against the OS changing because e.g. the provider is acquired by another company & the OS is no longer supported, you need an OS Abstraction Layer (OSAL):
+
 ![OSAL Example](images/osal-example.png)
 
 The OSAL provides similar benefits to the HAL - your application is testable off-target and off-OS.
