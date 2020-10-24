@@ -6,8 +6,8 @@ When you write software right, you don't need gigantic issue tracking systems or
 When software is written right, you need only a handful of developers to maintain it. Otherwise, you need a hoard of them to maintain it.
 
 ## What is design and architecture?
-Design == Architecture. Design implies focus on low-level structuring details. Architecture implies focusing on higher-level components divorced from the low-level details.
-Architecture is actually both as both are important for a good architecture.
+Design == Architecture. Design implies a focus on low-level structuring details. Architecture implies focusing on higher-level components divorced from the low-level details.
+Architecture is actually both as both are important for good architecture.
 
 The goal of good software architecture is to minimize the human resources needed to build & maintain a project.
 
@@ -31,9 +31,9 @@ This is clearly disastrous as a company cannot sustain this cost for so long. At
 From the developers' perspective, here's how their productivity looks like:
 ![Productivity per release](images/productivity-per-release.png)
 
-Although they are working hard & doing overtime, their focus is slowly shifted from developing new features to managing the ever increasing mess.
+Although they are working hard & doing overtime, their focus is slowly shifted from developing new features to managing the ever-increasing mess.
 
-From the executive's perspective, this looks even more grim:
+From the executive's perspective, this looks even grimmer:
 ![Monthly Payroll per Release](images/monthly-payroll-per-release.png)
 
 ### What went wrong?
@@ -44,7 +44,7 @@ The cleaning up, however, never comes.
 
 Hence, the only way to go fast is to stay clean. There is no such thing as being fast in the short term and cleaning things up in the long term.
 
-Example \w an acquintance of the author attempting to solve a popular problem using TDD & no TDD over a span of a week:
+Example \w an acquaintance of the author attempting to solve a popular problem using TDD & no TDD over a span of a week:
 ![TDD vs. No TDD](images/tdd-vs-no-tdd.png)
 
 > The only way to go fast is to go well
@@ -68,7 +68,7 @@ Good architecture provides the means to achieve that.
 Bad architecture, on the other hand, makes engineering costs higher with every release.
 
 ### The greater value
-Function or achitecture? Which is more important?
+Function or architecture? Which is more important?
 
 Clients will often say that function is more important than later flexibility.
 However, that is the wrong attitude.
@@ -84,11 +84,11 @@ The behavior of the system is in quadrants 1 and 3. The architecture is in quadr
 What business developers often make as a mistake is to promote problems in quadrant 3 to quadrant 1.
 This way, the important bits of quadrant 2 never get the proper attention.
 
-It is the software developer's job to stress the importance of architecture to the business & prioritise quadrant 2 over quadrant 3.
+It is the software developer's job to stress the importance of architecture to the business & prioritize quadrant 2 over quadrant 3.
 
 ### Fight for the architecture
 Fulfilling your duty of emphasizing the importance of architecture to the business is part of your responsibilities as a software developer.
 
 This will inevitably lead to a fight with other stakeholders, but remember - you are also a stakeholder. A stakeholder of the code you write.
-It is your responsibility to safeguard it & ensure that it grows with a sustainable architecture.
+It is your responsibility to safeguard it & ensure that it grows with sustainable architecture.
 

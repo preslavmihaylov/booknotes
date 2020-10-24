@@ -28,7 +28,7 @@ Hence, they were doing this to ensure that library code could be compiled separa
 
 Otherwise, compilation times were enormous.
 
-And if the application code grew too big, this lead to fragmentation:
+And if the application code grew too big, this leads to fragmentation:
 ![Fragmented memory example](images/fragmented-memory-example.png)
 
 Hence, at this point, programmers had to manually adjust memory locations to avoid fragmentation & allocate enough space for library/application code.
@@ -59,7 +59,7 @@ The linked was responsible for outputting a relocatable binary and the loader co
 This way, if your source code was already compiled & linked, the deployment of it was very quick.
 It would only be slow if you had to recompile it again.
 
-Despite these improvements though, in the 1980s programs started become quite big again and we were experiencing huge compile/link times again.
+Despite these improvements though, in the 1980s programs started to become quite big again and we were experiencing huge compile/link times again.
 
 Loading time was fast, but compile/link time was the bottleneck.
 
@@ -72,7 +72,7 @@ And that did happen, which lead to a situation where the hardware capabilities o
 Computers and devices had gotten so fast that linking could once again be done at load time.
 This enabled the rise of component plugin architecture.
 
-Previously, it was unthought of due to the cost of linking. But now, it was once more in reach as link times were fast again.
+Previously, it was unthought-of due to the cost of linking. But now, it was once more in reach as link times were fast again.
 
 ## Component Cohesion
 Which classes belong to which components?
@@ -88,13 +88,13 @@ This is an important decision guided by several principles:
 The gist of this principle is that in order for a component to be reused, it has to be tracked through a release process and assigned release numbers (versions).
 
 This is done so that clients of a component know what version of that component they're using and decide if they should upgrade to the new version based on the changes in it.
-Additionally, without release numbers it would be impossible to ensure that the reused components are compatible with each other.
+Additionally, without release numbers, it would be impossible to ensure that the reused components are compatible with each other.
 
-From an architect's point of view, this principle means that classes which are part of a component should be part of the same cohesive group.
+From an architect's point of view, this principle means that classes that are part of a component should be part of the same cohesive group.
 The component cannot simply consist of a random set of classes and modules. Instead, there must be some overarching theme or purpose for them.
 
-For example, the `java.util.concurrent` is a component which contains classes with the overarching theme of providing concurrency primitives & collections.
-A bad example would be a component which contains several different kinds of classes which are unrelated in function.
+For example, the `java.util.concurrent` is a component that contains classes with the overarching theme of providing concurrency primitives & collections.
+A bad example would be a component that contains several different kinds of classes which are unrelated in function.
 
 ### The Common Closure Principle
 > Gather into components those classes that change for the same reasons and at the same times. 
@@ -151,13 +151,13 @@ At most, you can satisfy two.
 
 The edges in the diagram show the cost of abandoning the principle in the opposite vertex.
 
- * If you Adhere to CCP and REP, you will have a package which contains classes with the same reason to change and the package will be reusable via release numbers.
+ * If you Adhere to CCP and REP, you will have a package that contains classes with the same reason to change and the package will be reusable via release numbers.
    * But that doesn't mean that the components inside are typically used together (CRP). Hence, dependent packages will have to often be redeployed together
  * If you adhere to REP and CRP, you will have a releasable package with classes, which tend to be reused together.
    * But changes in the system will touch too many components all at once
  * If you adhere to CCP and CRP, ??? - I have a lot of unanswered questions regarding this chapter, so I'll complete the notes after follow-up research
 
-Typically, you strive towards one edge of that tension diagram based on the phase in which you're project is at.
+Typically, you strive towards one edge of that tension diagram based on the phase in which your project is at.
 
 In the beginning, it is typically beneficial to focus on CCP in order for the project to be easily maintainable.
 In the future, you can shift the project to be reusable in order to e.g. be more easily used by other teams in the organization.
@@ -171,7 +171,7 @@ These next principles deal with relationships between components (i.e. dependenc
 This principle states that you shouldn't have any cyclic dependencies between components. In Golang, for example, this is not possible as the language prohibits it altogether.
 
 Why is this a problem?  
-Because it leads to "the morning after" syndrome" - you make some changes in the evening, go home and the next morning, your code no longer works.
+Because it leads to "the morning-after" syndrome" - you make some changes in the evening, go home and the next morning, your code no longer works.
 This happens because someone has stayed later than you that evening & changed components you depend on.
 
 Here are some solutions to this problem.
@@ -180,7 +180,7 @@ Here are some solutions to this problem.
 The developers ignore each other for a week & develop in isolation. When the end of the week comes, there is an "integration cycle", where someone is tasked to integrate all the pieces together.
 
 The problem with this approach is the large integration time overhead.
-And this overhead grows as the project and team grows.
+And this overhead grows as the project and team grow.
 
 #### Eliminating dependency cycles
 An alternative is to partition the development environment into releasable components.
@@ -188,12 +188,12 @@ An alternative is to partition the development environment into releasable compo
 When a team/developer gets a component working, they release it with a version number & the rest of the teams can now use it.
 The other teams can decide whether they will use the new component immediately, or stick to the old version for a while.
 
-This is efficient but in order for this mechanism to work, there must be no cyclic dependencies across components. Otherwise, the "morning after" syndrome is unavoidable.
+This is efficient but in order for this mechanism to work, there must be no cyclic dependencies across components. Otherwise, the "morning-after" syndrome is unavoidable.
 
 A good example of acyclic dependency graph:
 ![Acyclic Dependency Graph](images/acyclic-dependency-graph.png)
 
-This depedency graph has no cycles - it is acyclic.
+This dependency graph has no cycles - it is acyclic.
 
 In this scheme, the developers of the `Presenters` component don't care at all about the `Main` component. It has no effect on the rest of the system.
 On the other hand, they consider the versions of `Interactors` and `Entities` they prefer to use and stick to them. No need to involve the developers of any of those components.
@@ -202,7 +202,7 @@ On the other hand, they consider the versions of `Interactors` and `Entities` th
 If a cycle is introduced, say by making a dependency of `Entities` to `Authorizer`, then the `Entities`, `Authorizer` and `Interactors` become one big indivisible component.
 In our example, a cycle appears by making the `User` class in `Entities` use the `Permissions` class from `Authorizer`. 
 
-Now, developers have to carefully coordinate what version of each component they are using and the morning after syndrome is unavoidable.
+Now, developers have to carefully coordinate what version of each component they are using and the morning-after syndrome is unavoidable.
 
 Additionally, if you want to test the `Entities` component, you now have to depend on the `Authorizer` and `Interactors` as well.
 This leads to unit tests where you have to import a bunch of unrelated libraries/components in order to set up your tests.
@@ -229,7 +229,7 @@ Instead, the structure evolves as the system grows and changes.
 The dependency graph is not something describing the functionality of an application.
 What it helps us see is the **buildability** and **maintainability** of an application.
 
-Hence, you can't desing the dependency graph before you have any classes to maintain. 
+Hence, you can't design the dependency graph before you have any classes to maintain. 
 Attempting to do so would be rather hard as you don't know about any common use-cases of the system yet in order for you to e.g. apply the Common Closure Principle.
 
 Typically, the way all these principles so far are applied is:
@@ -250,14 +250,14 @@ The next principle helps us tackle this problem.
 Designs cannot be made static - they are meant to change often.
 The Common Closure Principle helps us mold components in a way in which they are sensitive to particular changes, but immune to others.
 
-Some components, are designed to be volatile - they change quite often.
+Some components are designed to be volatile - they change quite often.
 
 Any component which is volatile should not be depended on by a component which is difficult to change.
 Otherwise, the volatile component will also be difficult to change.
 
 You can make a volatile component very hard to change simply by making a dependency on it - not a single line of code will change in the component itself.
 
-By comforming to the Stable Dependencies Principle (SDP), we ensure that components which are hard to change don't depend on components which are easy to change.
+By conforming to the Stable Dependencies Principle (SDP), we ensure that components which are hard to change don't depend on components which are easy to change.
 
 #### Stability
 Stability != frequency of change
@@ -267,9 +267,9 @@ If you set a penny to stand on its side, you wouldn't call it stable. However, i
 Stability is related to the amount of work necessary to make a change.
 If the amount is high, then the component is stable.
 
-Many factors affect the stability of a component. But one sure parameter is the amount of dependent components.
+Many factors affect the stability of a component. But one sure parameter is the number of dependent components.
 
-If a component is heavily depended on, it will be difficult to change as any change will have to propagate to all users of that component.
+If a component is heavily dependent on, it will be difficult to change as any change will have to propagate to all users of that component.
 
 Example of a stable component:
 ![Stable Component Example](images/stable-component-example.png)
@@ -280,7 +280,7 @@ Example:
 ![Unstable Component Example](images/unstable-component.png)
 
 #### Stability Metrics
-Stability of a component can be measured based on its dependencies and dependent component.
+The stability of a component can be measured based on its dependencies and dependent component.
 
 Fan-in == number of dependent components
 Fan-out == number of dependencies
@@ -288,7 +288,7 @@ Fan-out == number of dependencies
 Instability (I) = Fan-out / (Fan-in + Fan-out)
 
 I = 0 -> Very stable component. No dependencies and at least one dependent component
-I = 1 -> Very instable component. No dependent components and at least one dependency
+I = 1 -> Very unstable component. No dependent components and at least one dependency
 
 The SDP states that a component should depend on another component only if I<sub>first</sub> >= I<sub>second</sub>.
 

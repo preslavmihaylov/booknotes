@@ -29,15 +29,15 @@ The executive summary of the principles is:
 
 ## The Single Responsibility Principle
 
-SRP is the least well understood principle as it is very easy to confuse it for:
+SRP is the least well-understood principle as it is very easy to confuse it for:
 > A module should do exactly one thing
 
 That's not what SRP is about. The official definition is:
 > A module should have one, and only one, reason to change
 
-A "reason to change" refers to the user or stakeholders which might want to change something.
+A "reason to change" refers to the user or stakeholders who might want to change something.
 However, users & stakeholders aren't a good formal definition, so a better word would be "actor":
-> A module should be responsible to one, and only one, actor.
+> A module should be responsible for one, and only one, actor.
 
 The reason for us to want to adhere to this principle is to make sure that if different teams/people working on different tasks don't modify the same classes/modules.
 If we let this happen, there is a possibility that when someone makes a change in a class to satisfy stakeholder A, it might accidentally make changes to the behavior demanded by stakeholder B.
@@ -58,7 +58,7 @@ With such a structure, here's an example bad scenario:
 
 `reportHours()` and `calculatePay()` use the same shared function `regularHours()` which mandates the calculation of a user's regular hours.
 
-If the HR department want to change the way the regular hours are calculated, one might go to this class, change the shared function, carefully test it and satisfy the new requirements laid out by HR.
+If the HR department wants to change the way the regular hours are calculated, one might go to this class, change the shared function, carefully test it and satisfy the new requirements laid out by HR.
 
 However, since this function is also used by the `calculatePay()` method, which is used by accounting, you've accidentally changed the way regular hours are calculated from an accountant's perspective, resulting in wrong documents, which can lead to huge liability risk and/or incident expenses.
 
@@ -89,7 +89,7 @@ If small extensions in requirements force massive changes throughout the codebas
 The purpose of this principle is to guide you in designing your system in a way that extensions to requirements can be satisfied by adding additional code, not by changing existing code.
 
 ### A thought experiment
-Say we are given a system that displays financial summary on a web page.
+Say we are given a system that displays a financial summary on a web page.
 Stakeholders come and want us to extend the system to support printing the same info on a PDF to be printed.
 
 A good architecture would allow this to be achieved by only adding additional code, not changing existing code.
@@ -98,7 +98,7 @@ A side-note here is that, of course, some code will have to be changed - e.g. th
 This can be achieved by properly separating things that change for different reasons (SRP) and properly organizing dependencies between these components (DIP).
 
 The provided solution is:
-![System comforming to OCP](images/ocp-system.png)
+![System conforming to OCP](images/ocp-system.png)
 
 The main insight is that the classes responsible for calculating the data need to be different from the classes displaying it.
 Additionally, the source code dependencies need to be organized in a way that changes to one of these responsibilities doesn't cause changes in the other one.
@@ -109,7 +109,7 @@ The full design of the system:
 One thing to notice is that all dependencies between components are unidirectional:
 ![Simplified system design](images/distilled-ocp-system.png)
 
-The higher-level components (e.g. Interactor) know nothing about the lower level components which implement the higher-level interfaces.
+The higher-level components (e.g. Interactor) know nothing about the lower-level components which implement the higher-level interfaces.
 If we want to protect a component A from changes in component B, then component B should depend on component A, not the other way around.
 
 In this diagram, the Interactor is the highest-level component, which holds the business rules. It should be protected from changes in any other component.
@@ -145,7 +145,7 @@ The only way to guard themselves, the user has to type-check whether the `Rectan
 Since the behavior of the user depends on the types they use, these types are not substitutable.
 
 ### LSP And Architecture
-In the beginning, LSP was used as a guiding principle on designing subclasses.
+In the beginning, LSP was used as a guiding principle for designing subclasses.
 
 With time, it also became acknowledged as a principle applicable to high-level software design.
 The interfaces in question, need not explicitly be (e.g.) Java interfaces. They can be a set of classes conforming to a REST API.
@@ -180,7 +180,7 @@ This is problematic because a change in `op2` and `op3` would force `User1` to r
 If this is segregated into interfaces, this is how the diagram looks like:
 ![ISP Good Example](images/isp-good-example.png)
 
-Note that there is still only one class which implements all three operations, but now, each user only depends on the interface they need.
+Note that there is still only one class that implements all three operations, but now, each user only depends on the interface they need.
 Hence, a change in `OPS`, which `User1` doesn't care about won't force `User1` to recompile & redeploy.
 
 ### ISP and Language
@@ -226,7 +226,7 @@ Typically, those are the custom modules created in our project.
 The reason for following this principle is that abstractions tend to be stable & rarely change.
 Concrete classes, on the other hand, change quite often but rarely do those changes cause changes in their interfaces.
 
-This is why, depending on abstractions will lead you to create more stable components which change less often.
+This is why, depending on abstractions will lead you to create more stable components that change less often.
 At the other extreme, a change in a low-level module might propagate changes in all other modules in the system.
 
 This principle boils down to a very specific set of coding practices:
@@ -250,7 +250,7 @@ This is why this principle is referred to as dependency inversion.
 
 ### Concrete Components
 Although DIP is applied here, there will be a necessity for a module which instantiates `ServiceFactory` to `ServiceFactoryImpl`. This is inevitable and expected.
-However, we should keep the amount of such components as low as possible. Typically, this wiring is done in the main function.
+However, we should keep the number of such components as low as possible. Typically, this wiring is done in the main function.
 
 This can also be achieved by relying on a dependency injection framework.
 
