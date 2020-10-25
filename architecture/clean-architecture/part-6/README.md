@@ -130,3 +130,60 @@ When faced with a framework, don't marry it right away. Consider putting the fra
 
 Try to find a way to get the milk, without buying the cow.
 
+## Case Study: Video Sales
+This chapter puts all rules and practices covered in the book into an example use case - online video sales.
+
+This case study depicts the process and decisions a good architect makes.
+
+### The product
+The case study is reminiscent of cleancoders.com, the author's website for selling his videos online.
+
+It's stripped from all use cases the site has to support to keep the chapter short.
+
+We have a batch of videos we want to sell.
+They are sold to both individuals and businesses.
+
+Individuals can pay one price to stream the videos and a higher price to download them and own them permanently.
+Business licenses are streaming only.
+
+Individuals act as both viewers and purchasers. Businesses often purchase for other people to view.
+
+Video authors supply video files, descriptions, auxillary files with exams, problems, solutions, etc.
+
+Administrators can add/delete videos, video series, establish prices for licenses.
+
+The first step is to identify the actors and use cases.
+
+### Use case analysis
+Here's a typical use case analysis:
+![Use case analysis](images/use-case-analysis.png)
+
+According to the SRP, these four actors will be the four primary sources of change for the system.
+
+Every time some change to the system is to happen, it will be to serve one of these actors.
+A change to one actor should not affect the rest of the actors.
+
+Note that not all use cases were listed to keep the chapter simple.
+
+### Component architecture
+Now that the actors and use cases are known, an initial component architecture can be created:
+![Component Architecture](images/component-architecture.png)
+
+Each of the categories are broken down by their corresponding actors.
+Each of those components represents a potential `.jar` or `.dll` file.
+
+Would the system really be broken down to all these jar files?
+The author suggests that he will indeed break down the components into separate build artifacts, but the delivered artifacts don't need to necessarily adhere to this.
+In the end, one could ship a single jar file, but with this architecture, you reserve the right to modify this behavior in the future.
+
+### Dependency Management
+Notice that the flow of control goes from right to left, but the dependencies mostly go from left to right.
+This is in accordance to the dependency rule - lower-level components depend on higher-level ones.
+
+### Conclusion
+This architecture includes two dimensions of separation - one is based on actor, the other is based on the dependency rule.
+The purpose of both is to separate components that change for different reasons and at different rates.
+
+Different reason == change from actors. Different rates == change from technology.
+
+## The Missing Chapter
