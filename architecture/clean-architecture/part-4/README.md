@@ -149,7 +149,7 @@ CRP suggests we don't depend on components with classes we don't use.
 These three principles are exclusive to one another - you cannot satisfy all three of them.
 At most, you can satisfy two.
 
-<img src="images/tension-diagram.png" alt="Tension Diagram" width="70%" height="70%">
+<img src="images/tension-diagram.png" alt="Tension Diagram" width="50%" height="50%">
 
 The edges in the diagram show the cost of abandoning the principle in the opposite vertex.
 
