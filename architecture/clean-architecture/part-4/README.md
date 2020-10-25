@@ -1,5 +1,21 @@
 # Part 4 - Component Principles
 
+- [Part 4 - Component Principles](#part-4-component-principles)
+  * [Components](#components)
+    + [A brief history of components](#a-brief-history-of-components)
+    + [Relocatability](#relocatability)
+    + [Linkers](#linkers)
+  * [Component Cohesion](#component-cohesion)
+    + [The Reuse/Release Equivalence Principle](#the-reuse-release-equivalence-principle)
+    + [The Common Closure Principle](#the-common-closure-principle)
+    + [The Common Reuse Principle](#the-common-reuse-principle)
+    + [The tension diagram for component cohesion](#the-tension-diagram-for-component-cohesion)
+  * [Component Coupling](#component-coupling)
+    + [The Acyclic Dependencies Principle](#the-acyclic-dependencies-principle)
+    + [Top-down design](#top-down-design)
+    + [The stable dependencies principle](#the-stable-dependencies-principle)
+    + [The Stable Abstractions Principle](#the-stable-abstractions-principle)
+
 If the SOLID principles tell us how to arrange the bricks into walls and rooms, then the component
 principles tell us how to arrange the rooms into buildings. 
 
