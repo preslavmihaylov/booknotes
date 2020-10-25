@@ -1,6 +1,5 @@
 # Part 6 - Details
 
-- [Part 6 - Details](#part-6-details)
   * [The database is a detail](#the-database-is-a-detail)
     + [Relational databases](#relational-databases)
       - [Why are database systems so prevalent?](#why-are-database-systems-so-prevalent)
