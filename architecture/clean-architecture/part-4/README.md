@@ -122,7 +122,6 @@ CCP and SRP can both be summarized the following way:
 ### The Common Reuse Principle
 > Don't force users of a component to depend on things they don't need.
 
-
 CRP states that classes that tend to be reused together should reside in the same component.
 
 Reusable classes are seldom used in isolation. They are typically reused together with other classes.
@@ -146,18 +145,17 @@ ISP suggests that we don't depend on classes with methods we don't need.
 CRP suggests we don't depend on components with classes we don't use.
 
 ### The tension diagram for component cohesion
-These three principles are exclusive to one another - you cannot satisfy all three of them.
-At most, you can satisfy two.
-
+These three principles form a tension diagram. You sacrifice something if you skip one of them. But you can't satisfy all of them.
 <img src="images/tension-diagram.png" alt="Tension Diagram" width="50%" height="50%">
 
 The edges in the diagram show the cost of abandoning the principle in the opposite vertex.
-
  * If you Adhere to CCP and REP, you will have a package that contains classes with the same reason to change and the package will be reusable via release numbers.
    * But that doesn't mean that the components inside are typically used together (CRP). Hence, dependent packages will have to often be redeployed together
  * If you adhere to REP and CRP, you will have a releasable package with classes, which tend to be reused together.
    * But changes in the system will touch too many components all at once
- * If you adhere to CCP and CRP, ??? - I have a lot of unanswered questions regarding this chapter, so I'll complete the notes after follow-up research
+ * Although the book provides an example of sticking to CCP and CRP, I don't see how one can stick to both of them as they are exclusive to each other
+
+Instead, I see this relationship as - choosing REP is optional and always availabe, but then you should choose among CCP or CRP.
 
 Typically, you strive towards one edge of that tension diagram based on the phase in which your project is at.
 
