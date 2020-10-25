@@ -187,3 +187,115 @@ The purpose of both is to separate components that change for different reasons 
 Different reason == change from actors. Different rates == change from technology.
 
 ## The Missing Chapter
+This chapter focuses on covering the implementation details, which all previous chapters lack.
+
+We are, again, using a case-study as our basis and we're building an online book store. 
+We are asked to implement a feature that allows customers to view the status of their orders.
+
+Let's put aside clean architecture for a moment and explore several ways to implement this.
+
+### Package by layer
+The first and simplest design approach is to use the traditional horizontal layered architecture.
+In it, we separate the code based on what it does from a technical perspective.
+
+Example implementation:
+![Package by layer](images/package-by-layer.png)
+
+In this example, there is one layer for web code, one for business logic and one for the persistence.
+
+Martin Fowler suggests that adopting such a partitioning is a good start and many share his view. 
+The problem is that as your project grows, having only three distinct buckets of code is insufficient and you will have to modularize further.
+
+Another problem is that layered architecture doesn't scream anything about the business domain. Put the code for two very different domains side by side and they will look very similar.
+
+### Package by feature
+An alternative is to adopt an approach where you are packaging your code based on the feature it implements - this is vertical slicing.
+
+All the types/classes are placed in the same package, which is named to reflect the domain it serves:
+![Package by feature](images/package-by-feature.png)
+
+This is simple refactoring from the package by layer design, but the top-level structure of the code now screams about the business domain.
+This also makes making changes easier as all the code you need for a given feature is in the same package.
+
+Both package by layer and package by feature are suboptimal, as this book has showcased.
+
+### Ports and adapters
+Ports and adapters, hexagonal architecture, etc.
+All of them aim to create architectures where the business/domain-focused code is separate from the infrastructure.
+
+The business rules are independent from the frameworks and databases being used.
+
+Here's a high-level view of such an architecture:
+![Ports and adapters](images/ports-and-adapters.png)
+
+The major rule is that the outside depends on the inside. Never the other way around.
+
+Example implementation for our use case:
+![Ports and adapters](images/ports-and-adapters.png)
+
+One caveat here is that the `OrdersRepository` has been renamed to `Orders`. This is an advice from domain-driven design.
+Classes inside the business rules should have names specific to the domain. They shouldn't contain any technology-related terms.
+
+Additionally, this diagram is simplified as it is missing some of the interactors and objects which deal with data marshal/unmarshal between boundaries.
+
+### Package by component
+In this section, the author of this chapter (who is not Uncle Bob) will present an alternative to clean architecture, which he finds more convenient and practical.
+This approach is called package by component.
+
+Layered architecture has already be condemned as bad, but there is an additional option the author considers it so.
+It is easy to keep the dependency graph acyclic (in other words, correct) while violating the architectural boundaries by doing this:
+![Layered architecture violation](images/layered-architecture-violation.png)
+
+The problem here, is that to prevent doing this, one has to either follow a strict coding review discipline or introduce some kind of CI step which verifies dependencies are not violated.
+The problem with both approaches is that the feedback loop is too big. The author prefers having this enforced compile-time.
+
+That's what "package by component" is trying to address. It's a hybrid approach where the business rules and persistence layers are bundled in the same component while keeping the UI separate.
+
+Example:
+![Package by component](images/package-by-component.png)
+
+This is a very similar structure to what you might end up with when using micro-services.
+
+A key benefit of this approach is that when you want to change "orders", there's only one component which you have to change - the OrdersComponent.
+Inside it, the separation of concerns is still maintained, but that is not visible to the consumer.
+
+Well-defined components are a stepping stone to a micro-services architecture.
+
+### The devil is in the implementation details
+All these four approaches can be thought of as different architectural styles.
+
+But if one messes up the implementation details, then your architecture doesn't matter.
+
+For example, if you make all your classes public, then whatever architecture you choose merely aids code organization, but doesn't help encapsulate it at all.
+
+### Organization vs. Encapsulation
+If you make all your classes `public`, all your components are simply organizational mechanisms, rather than encapsulation mechanisms.
+
+If you ignore the packages, because all classes are public, what architectural style you use makes no difference.
+
+Here's how the packages should look like if encapsulation is applied properly:
+![Correctly encapsulated components](images/correctly-encapsulated-components.png)
+
+### Other decoupling modes
+In addition to access modifiers, different environments might have alternative ways to decouple source code dependencies.
+
+For example, Java 9's modules system allows one to distinguish between public and published classes.
+
+Another alternative is to decouple your components at the source code level by e.g. grouping components into separate jar/dll files.
+Although this is idealistic, it is often impractical due to performance constraints.
+
+Instead, a more practical approach is to separate your code into "domain" and "infrastructure":
+![Domain-Infrastructure diagram](images/domain-infrastructure-diagram.png)
+
+This approach also works but we wary of the problem that components in the infrastructure layer might invoke other components in the same layer without going through the domain first.
+
+### Conclusion
+The best design choices could be destroyed in a flash if you don't consider the implementation details.
+
+When choosing a design approach, think about time and budget constraints, the size of your team & its skill level.
+Also, try to make the compiler help you in establishing the ideal design for your system.
+
+The devil is in the implementation details.
+
+
+
