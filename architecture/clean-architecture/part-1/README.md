@@ -1,5 +1,8 @@
 # Part 1 - Introduction
 
+  * [What is design and architecture?](#what-is-design-and-architecture-)
+  * [A tale of two values](#a-tale-of-two-values)
+
 Writing software to work is easy - kids in high-school can do it nowadays. Writing software right is hard - it requires patience, knowledge, discipline & dedication.
 
 When you write software right, you don't need gigantic issue tracking systems or a global programmer farm. The defect rates are low & support cost is minimal.
