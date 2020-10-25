@@ -1,5 +1,11 @@
 # Part 3 - Design Principles
 
+  * [The Single Responsibility Principle](#the-single-responsibility-principle)
+  * [The Open-Closed Principle](#the-open-closed-principle)
+  * [The Liskov Substitution Principle](#the-liskov-substitution-principle)
+  * [The Interface Segregation Principle](#the-interface-segregation-principle)
+  * [The Dependency Inversion Principle](#the-dependency-inversion-principle)
+
 Good software systems begin with clean code. If your bricks aren't well made, the architecture of a house doesn't really matter.
 
 On the other hand, you can make a substantial mess will well-made bricks.
