@@ -217,11 +217,11 @@ The things that matter are the business rules. The things that don't are all tec
 
 Example:
 
-![Separate Database Layer](images/separate-database-layer.png)
+<img src="images/separate-database-layer.png" alt="Separate Database Layer" width="50%" height="50%">
 
 At a higher level, this is how this component looks:
 
-![High-level database layer view](images/high-level-database-layer-view.png)
+<img src="images/high-level-database-layer-view.png" alt="High-level database layer view" width="50%" height="50%">
 
 Note that the database knows about the business rules, but not vice versa.
 This means that the database can be changed with whatever is necessary, without that having any effect whatsoever on the business rules.
@@ -230,11 +230,13 @@ This means that the database can be changed with whatever is necessary, without 
 The IO is irrelevant. The customers often just see the GUI and think that the application is the GUI, which is wrong.
 
 The GUI is merely a means to visualize the data managed by the core business rules.
-![GUI Layer Example](images/gui-layer.png)
+
+<img src="images/gui-layer.png" alt="GUI Layer Example" width="50%" height="50%">
 
 ### Plugin architecture
 Putting this all together, what we are creating is a plugin architecture - a system that allows third-party plugins to be embedded in the system without changing the rest of the system.
-![Plugin architecture](images/plugin-architecture.png)
+
+<img src="images/plugin-architecture.png" alt="Plugin architecture" width="50%" height="50%">
 
 Because the database and the GUI are plugins in this architecture, they can easily be changed to whatever:
  * MySQL, Oracle, NoSQL, etc for the database
@@ -247,7 +249,7 @@ And yet, both tools integrate together quite well. This is because Visual Studio
 
 What's more Visual Studio is immune to any problems caused by the ReSharper team due to the direction of the dependencies:
 
-![Resharper Dependency](images/resharper-dependency.png)
+<img src="images/resharper-dependency.png" alt="Resharper Dependency" width="25%" height="25%">
 
 On the other hand, if Visual Studio collapses, the ReSharper team will be seriously affected.
 
@@ -280,10 +282,12 @@ In these applications, boundaries still exist, but they are at the source code l
 Even so, making appropriate boundaries is still valuable as this enables easier testing & developability of different components (in other words, different teams can focus on different parts of the system).
 
 For example, without appropriate boundaries, a high-level component will have to depend on low-level components:
-![No boundaries example](images/no-boundaries-example.png)
+
+<img src="images/no-boundaries-example.png" alt="No boundaries example" width="50%" height="50%">
 
 If an appropriate boundary is made, the low-level component will depend on the high-level one, allowing different teams to focus on different parts of the system:
-![Good boundary example](images/good-boundary-example.png)
+
+<img src="images/good-boundary-example.png" alt="Good boundary example" width="50%" height="50%">
 
 ### Deployment components
 The simplest physical version of an architectural boundary is a dynamically linked library - e.g. DLL files, JAR files, Unix shared library.
@@ -335,7 +339,8 @@ Definition of level == distance from inputs and outputs
 The farther a policy is from the inputs and outputs, the higher-level it is.
 
 Structure of a simple encryption program:
-![Encryption program example](images/encryption-program-example.png)
+
+<img src="images/encryption-program-example.png" alt="Encryption program example" width="50%" height="50%">
 
 An incorrect way to structure this program would be:
 ```
@@ -370,7 +375,7 @@ Entity == an object which embodies a small set of critical business rules, opera
 
 The interface of the entity consists of functions that implement the critical business rules that operate on the data:
 
-<img src="images/loan-interface.png" alt="Loan Entity" width="350"/>
+<img src="images/loan-interface.png" alt="Loan Entity" width="25%" height="25%"/>
 
 The entity is pure business and nothing else - it is not concerned with databases or IO. It will look the same way regardless of how the system is used.
 
@@ -444,7 +449,8 @@ Your architecture should tell readers about the system, not the frameworks that 
 Over the year, there were multiple ideas for an ideal architecture.
 
 The "clean architecture" is the author's attempt to consolidate all those ideas into a single actionable approach:
-![Clean Architecture](images/clean-architecture.png)
+
+<img src="images/clean-architecture.png" alt="Clean Architecture" width="75%" height="75%">
 
 All those architectures have several things in common, as does the "clean architecture":
  * Independent of frameworks
@@ -505,7 +511,8 @@ We shouldn't pass database result rows to the use cases and we shouldn't pass en
 
 ### A typical scenario
 Here's an example of a java application, which follows the clean architecture:
-![Clean Architecture Example](images/clean-architecture-example.png)
+
+<img src="images/clean-architecture-example.png" alt="Clean Architecture Example" width="70%" height="70%">
 
 ### Conclusion
 Following these rules is not hard and it will save you a lot of headaches.
@@ -563,13 +570,15 @@ The full-fledged boundary maintains reciprocal interfaces (interfaces on both si
 Maintaining separation in both directions is often expensive in terms of maintenance and ongoing development.
 
 A simpler approach is to still use DIP but with a single interface:
-![One dimensional boundary example](images/one-dimensional-boundary-example.png)
+
+<img src="images/one-dimensional-boundary-example.png" alt="One dimensional boundary example" width="50%" height="50%">
 
 This sets the stage for a future architectural boundary, but also poses danger that the dependency rule can be violated as shown by the red dotted line.
 
 ### Facades
 An even simpler partial boundary is using the `Facade` pattern:
-![Facade pattern example](images/facade-pattern-example.png)
+
+<img src="images/facade-pattern-example.png" alt="Facade pattern example loading" width="50%" height="50%">
 
 In this case, even dependency inversion is sacrificed. The point of this approach is that the client doesn't have direct access to the service implementations.
 
@@ -587,10 +596,12 @@ This chapter is a case study of implementing a simple video game using clean arc
 This is a text-based computer game, where a player is hunting for the wumpus while avoiding traps. The user controls the player by issuing commands go left, go right, etc.
 
 One of the first decisions is to decouple the game rules from the UI, which allows the game to be translated to any language:
-![Game rules decoupled from UI](images/game-rules-decoupled-from-ui.png)
+
+<img src="images/game-rules-decoupled-from-ui.png" alt="Game rules decoupled from UI" width="50%" height="50%">
 
 Additionally, the game rules can be stored in some kind of persistent storage. We will form the dependencies in a way that the game rules don't care about the details of how the rules are persisted:
-![Game rules persistence](images/game-rules-persistence.png)
+
+<img src="images/game-rules-persistence.png" alt="Game rules persistence" width="50%" height="50%">
 
 ### Clean architecture?
 Clean architecture can be applied to this problem. But we haven't discovered all architectural boundaries yet.
@@ -598,30 +609,35 @@ Clean architecture can be applied to this problem. But we haven't discovered all
 For example, we don't know if decoupling the language from the game rules is enough of an architectural boundary & if it is the only axis of change for the UI.
 
 What if, e.g. we want to deliver the game via different output devices? Perhaps we can form an architectural boundary between the language processing and the text delivery:
-![Hunt the wumpus clean architecture](images/htw-clean-architecture.png)
+
+<img src="images/htw-clean-architecture.png" alt="Hunt the wumpus clean architecture" width="70%" height="70%">
 
 The main thing to have in mind in this design is that the boundary interfaces are owned by the upstream components.
 For example, the boundary interface for language is owned by the game rules component, not the languages component.
 
 Here's a simplified version of the previous diagram:
-![Hunt the wumpus clean architecture simplified](images/htw-clean-architecture-simplified.png)
+
+<img src="images/htw-clean-architecture-simplified.png" alt="Hunt the wumpus clean architecture simplified" width="50%" height="50%">
 
 Notice that the dependency rule is adhered to as all components point up towards the highest level component - the game rules.
 Additionally, in the current design, there are two separate streams which are not crossed - the data persistence and the output stream.
 
 ### Crossing the streams
 There might be more than two streams in this game, and in any application. For example, if one wants to implement an online HTW, then you'd need a network stream as well:
-![Hunt the wumpus network stream example](images/htw-network-stream.png)
+
+<img src="images/htw-network-stream.png" alt="Hunt the wumpus network stream example" width="50%" height="50%">
 
 ### Splitting the streams
 In the current design, all streams eventually meet at the top in a single component. In reality, the design might be more complicated than that.
 
 For example, the game rules can be split in two components - one which manages the player and the other which manages movement:
-![Splitting streams example](images/splitting-streams-example.png)
+
+<img src="images/splitting-streams-example.png" alt="Splitting streams example" width="50%" height="50%">
 
 One could even split the components into microservices and e.g. the player management can be handled by an online server.
 In this case, one would have to define a `PlayerManagement` interface, which is implemented by a proxy to a distant server:
-![hunt the wumpus microservices](images/htw-microservices.png)
+
+<img src="images/htw-microservices.png" alt="hunt the wumpus microservices" width="50%" height="50%">
 
 ### Conclusion
 This is a simple game, which can be written in 200 lines of code, but the author has taken it and extrapolated it into a full-fledged architecture with a lots of boundaries.
@@ -680,7 +696,8 @@ Apart from that, services might still be dependent on one another in terms of de
 
 ### The kitty problem
 This section shows examples of the previously stated fallacies by exploring a taxi aggregation system, which is built using microservices:
-![Taxi Aggregator architecture](images/taxi-supplier-architecture.png)
+
+<img src="images/taxi-supplier-architecture.png" alt="Taxi Aggregator architecture" width="75%" height="75%">
 
 If, at some point, the marketing department comes and says that they want to offer a kitty delivery service, all these services need to be changed because that kitty delivery service is a cross-cutting concern.
 
@@ -688,7 +705,8 @@ Neither monoliths, nor service-oriented architectures are resilient to cross-cut
 
 ### Objects to the rescue
 This section explores a solution to the above problem in a component-based system (ie no microservices):
-![Taxi aggregator v2](images/taxi-aggregator-v2.png)
+
+<img src="images/taxi-aggregator-v2.png" alt="Taxi aggregator v2" width="50%" height="50%">
 
 The main idea behind this structure above is that there is a set of abstract classes & interfaces - Taxi Finder, Taxi Selector, Taxi Dispatcher, Taxi supplier.
 None of these are concrete implementations.
@@ -700,7 +718,8 @@ If the kitty delivery problem is faced here, one would have to create a new comp
 The question is - can we do this for services? Yes, we can.
 
 This structure can be created in a service-oriented architecture by creating services, which have their own internal component structure, which implements this structure:
-![Taxi Aggregator v3](images/taxi-aggregator-v3.png)
+
+<img src="images/taxi-aggregator-v3.png" alt="Taxi Aggregator v3" width="75%" height="75%">
 
 Each service has its own internal component design. New features can be added as new derivative classes.
 Those derivative classes live within their own components.
@@ -811,7 +830,7 @@ This section explores how to apply some of the clean architecture principles to 
 #### Layers
 We'll start from a simple layered view, which includes three layers:
 
-![Three-layered embedded architecture](images/three-layered-embedded-arch.png)
+<img src="images/three-layered-embedded-arch.png" alt="Three-layered embedded architecture" width="25%" height="25%">
 
 The hardware layer is the one which will change the most due to Moore's law - hardware quickly becomes obsolete.
 
@@ -820,17 +839,20 @@ The problem is that oftentimes, the separation between software and firmware is 
 
 When one is only focusing on making the application work, they're polluting the software with hardware-related details. This effectively makes the whole software - firmware:
 
-![Software as Firmware](images/software-as-firmware.png)
+
+<img src="images/software-as-firmware.png" alt="Software as Firmware" width="25%" height="25%">
 
 This kind of structure makes changing the software very hard and risky.
 The only way to prevent oneself from regressions is by running full-blown manual system tests on the target hardware. This will force one to spend a lot of time doing manual testing.
 
 #### The Hardware is a detail
 The line between software and firmware is typically not so well defined as the line between hardware and firmware:
-![Software-firmware boundary](images/software-firmware-boundary.png)
+
+<img src="images/software-firmware-boundary.png" alt="Software-firmware boundary" width="25%" height="25%">
 
 Your job, as an embedded developer, is to make that line firm by introducing the Hardware Abstraction Layer (HAL):
-![HAL Example](images/HAL-example.png)
+
+<img src="images/HAL-example.png" alt="HAL Example" width="25%" height="25%">
 
 An example of an interaction between software and the HAL is - the software needs to persist some data in persistent memory.
 The HAL should provide a routine which e.g. stores data in flash memory. The software should in no way know that its data is persisted in flash memory, only that it is persisted somewhere.
@@ -892,11 +914,13 @@ In others, you might need to have some kind of an operating system - e.g. a Real
 
 You have to threat the OS as a detail as well and put it behind a boundary, just like the firmware:
 
-![OS Layer](images/os-layer.png)
+
+<img src="images/os-layer.png" alt="OS Layer" width="25%" height="25%">
 
 To protect yourself against the OS changing because e.g. the provider is acquired by another company & the OS is no longer supported, you need an OS Abstraction Layer (OSAL):
 
-![OSAL Example](images/osal-example.png)
+
+<img src="images/osal-example.png" alt="OSAL Example" width="25%" height="25%">
 
 The OSAL provides similar benefits to the HAL - your application is testable off-target and off-OS.
 Additionally, you might e.g. provide a common mechanisms for message passing across threads instead of letting threads handcraft their own concurrency models.

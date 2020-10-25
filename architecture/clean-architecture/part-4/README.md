@@ -19,7 +19,8 @@ Initially, library code and application code was shipped as a single binary.
 Additionally, developers had to decide where to store the different sections of their programs in memory.
 
 The following scheme was used:
-![Manual memory loading](images/manual-memory-loading.png)
+
+<img src="images/manual-memory-loading.png" alt="Manual memory loading" width="50%" height="50%">
 
 There were some hardcoded addresses for library code and for application code.
 
@@ -29,7 +30,8 @@ Hence, they were doing this to ensure that library code could be compiled separa
 Otherwise, compilation times were enormous.
 
 And if the application code grew too big, this leads to fragmentation:
-![Fragmented memory example](images/fragmented-memory-example.png)
+
+<img src="images/fragmented-memory-example.png" alt="Fragmented memory example" width="50%" height="50%">
 
 Hence, at this point, programmers had to manually adjust memory locations to avoid fragmentation & allocate enough space for library/application code.
 
@@ -147,7 +149,7 @@ CRP suggests we don't depend on components with classes we don't use.
 These three principles are exclusive to one another - you cannot satisfy all three of them.
 At most, you can satisfy two.
 
-![Tension Diagram](images/tension-diagram.png)
+<img src="images/tension-diagram.png" alt="Tension Diagram" width="70%" height="70%">
 
 The edges in the diagram show the cost of abandoning the principle in the opposite vertex.
 
@@ -191,7 +193,8 @@ The other teams can decide whether they will use the new component immediately, 
 This is efficient but in order for this mechanism to work, there must be no cyclic dependencies across components. Otherwise, the "morning-after" syndrome is unavoidable.
 
 A good example of acyclic dependency graph:
-![Acyclic Dependency Graph](images/acyclic-dependency-graph.png)
+
+<img src="images/acyclic-dependency-graph.png" alt="Acyclic Dependency Graph" width="50%" height="50%">
 
 This dependency graph has no cycles - it is acyclic.
 
@@ -213,10 +216,12 @@ In sum, having cycles in the dependency graph makes independent development of c
 The above specific problem, we encountered, can be solved in the following way:
  * Apply the Dependency Inversion Principle (DIP) - create an interface, which has the methods the `User` needs. This interface can be placed in `Entities` and the class from `Authorizer` inherits it.
    * This way, the dependency is inverted and the DAG property of the dependencies is maintained
-![DIP in Practice](images/dip-in-practice.png)
+
+<img src="images/dip-in-practice.png" alt="DIP in Practice" width="50%" height="50%">
 
  * Create a new component, which both `Entities` and `Authorizer` depend on.
-![Extract new component example](images/extract-new-component.png)
+
+<img src="images/extract-new-component.png" alt="Extract new component example" width="50%" height="50%">
 
 #### The "Jitters"
 As requirements change, your dependency graph changes accordingly.
@@ -272,12 +277,14 @@ Many factors affect the stability of a component. But one sure parameter is the 
 If a component is heavily dependent on, it will be difficult to change as any change will have to propagate to all users of that component.
 
 Example of a stable component:
-![Stable Component Example](images/stable-component-example.png)
+
+<img src="images/stable-component-example.png" alt="Stable Component Example" width="50%" height="50%">
 
 On the other hand, if a component has a lot of dependencies, then it is not stable as changes in any of the dependencies will propagate to this component as well.
 
 Example:
-![Unstable Component Example](images/unstable-component.png)
+
+<img src="images/unstable-component.png" alt="Unstable Component Example" width="50%" height="50%">
 
 #### Stability Metrics
 The stability of a component can be measured based on its dependencies and dependent component.
@@ -299,13 +306,16 @@ Indeed, some components in the system should be unstable by design.
 It is how we manage the dependencies between the stable & unstable components what SDP is about.
 
 Here is an ideal configuration, adhering to SDP:
-![Ideal SDP Configuration](images/ideal-sdp-configuration.png)
+
+<img src="images/ideal-sdp-configuration.png" alt="Ideal SDP Configuration" width="50%" height="50%">
 
 Example SDP Violation:
-![SDP Violation Example](images/sdp-violation-example.png)
+
+<img src="images/sdp-violation-example.png" alt="SDP Violation Example" width="50%" height="50%">
 
 Whenever a stable component needs to depend on a flexible (instable) component, we can apply DIP to invert the dependency & create a new (stable) component:
-![SDP Dependency Inversion](images/sdp-dependency-invert.png)
+
+<img src="images/sdp-dependency-invert.png" alt="SDP Dependency Inversion" width="50%" height="50%">
 
 ### The Stable Abstractions Principle
 > A component should be as abstract as it is stable
@@ -335,10 +345,12 @@ A == 0 -> component consists of concrete classes only
 
 #### The main sequence
 If we plot all the components based on their abstractness (A) and instability (I), we can derive a chart like this:
-![Abtractness/Instability Chart](images/ai-chart.png)
+
+<img src="images/ai-chart.png" alt="Abtractness/Instability Chart" width="50%" height="50%">
 
 Having a chart like this, we can identify some segments of the chart where the components **should not be**:
-![Exclusion Zones](images/exclusion-zones.png)
+
+<img src="images/exclusion-zones.png" alt="Exclusion Zones" width="50%" height="50%">
 
 #### The Zone of Pain
 In this area, components are highly stable and highly concrete.
@@ -370,4 +382,6 @@ D = 0 -> component sits on main sequence
 D = 1 -> component is as far away from the main sequence as possible (in the zones of exclusion)
 
 Given this metric, each component can have its D plotted on a graph. Large deviance from the main sequence indicates that a component should be more closely examined:
-![Distance from main sequence chart](images/distance-from-main-sequence.png)
+
+<img src="images/distance-from-main-sequence.png" alt="Distance from main sequence chart" width="50%" height="50%">
+

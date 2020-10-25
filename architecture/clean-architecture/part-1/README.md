@@ -29,11 +29,13 @@ Finally, taking this altogether produces the $ cost per LOC for the company:
 This is clearly disastrous as a company cannot sustain this cost for so long. At some point, the cost of development will greatly outweigh the income the software brings.
 
 From the developers' perspective, here's how their productivity looks like:
+
 ![Productivity per release](images/productivity-per-release.png)
 
 Although they are working hard & doing overtime, their focus is slowly shifted from developing new features to managing the ever-increasing mess.
 
 From the executive's perspective, this looks even grimmer:
+
 ![Monthly Payroll per Release](images/monthly-payroll-per-release.png)
 
 ### What went wrong?

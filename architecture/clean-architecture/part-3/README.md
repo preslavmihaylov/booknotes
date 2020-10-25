@@ -46,7 +46,8 @@ Here are several symptoms which signal the violation of this principle:
 
 ### Symptom 1: Accidental Duplication
 Say we have an `Employee` class with three methods:
-![Employee Class](images/employee-class.png)
+
+<img src="images/employee-class.png" alt="Employee Class" width="50%" height="50%">
 
 This class is a violation of SRP as the three methods adhere to different actors:
  * `calculatePay()` adheres to requirements specified by the accounting department
@@ -54,7 +55,9 @@ This class is a violation of SRP as the three methods adhere to different actors
  * `save()` adheres to requirements from the DBAs
 
 With such a structure, here's an example bad scenario:
-![Accidental Duplication](images/accidental-duplication.png)
+
+<img src="images/accidental-duplication.png" alt="Accidental Duplication" width="50%" height="50%">
+
 
 `reportHours()` and `calculatePay()` use the same shared function `regularHours()` which mandates the calculation of a user's regular hours.
 
@@ -69,14 +72,17 @@ If a class adheres to a single actor, developers from different teams shouldn't 
 
 ### Solutions
 An example solution to this problem is to separate the functions from the data:
-![SRP Solution](images/srp-solution.png)
+
+<img src="images/srp-solution.png" alt="SRP Solution" width="50%" height="50%">
 
 This way, there is a single data structure class `Employee`, which is used by three different classes, adhering to different actors.
 
 The problem with this approach is that we now have to keep track of instantiating three more classes, instead of focusing on instantiating a single class.
 
 This problem can be alleviated by using the `Facade` pattern:
-![Employee Facade](images/employee-facade.png)
+
+<img src="images/employee-facade.png" alt="Employee Facade" width="50%" height="50%">
+
 
 ## The Open-Closed Principle
 > A software artifact should be open for extension but closed for modification
@@ -98,16 +104,22 @@ A side-note here is that, of course, some code will have to be changed - e.g. th
 This can be achieved by properly separating things that change for different reasons (SRP) and properly organizing dependencies between these components (DIP).
 
 The provided solution is:
-![System conforming to OCP](images/ocp-system.png)
+
+<img src="images/ocp-system.png" alt="System conforming to OCP" width="75%" height="75%">
+
 
 The main insight is that the classes responsible for calculating the data need to be different from the classes displaying it.
 Additionally, the source code dependencies need to be organized in a way that changes to one of these responsibilities doesn't cause changes in the other one.
 
 The full design of the system:
-![Full OCP System Design](images/full-ocp-system-design.png)
+
+<img src="images/full-ocp-system-design.png" alt="Full OCP System Design" width="75%" height="75%">
+
 
 One thing to notice is that all dependencies between components are unidirectional:
-![Simplified system design](images/distilled-ocp-system.png)
+
+<img src="images/distilled-ocp-system.png" alt="Simplified system design" width="50%" height="50%">
+
 
 The higher-level components (e.g. Interactor) know nothing about the lower-level components which implement the higher-level interfaces.
 If we want to protect a component A from changes in component B, then component B should depend on component A, not the other way around.
@@ -122,13 +134,15 @@ The gist of this principle is that if there is an object T, all objects that inh
 
 ### Guiding the use of inheritance
 A good example of a structure conforming to LSP:
-![Good LSP Example](images/good-lsp-example.png)
+
+<img src="images/good-lsp-example.png" alt="Good LSP Example" width="50%" height="50%">
 
 The `Billing` component does not depend in any way on what specific fee calculation is used, although it varies by specific subtype.
 
 ### The Square/Rectangle Problem
 A classical bad example of LSP violation:
-![Square/Rectangle Problem](images/square-rectangle-problem.png)
+
+<img src="images/square-rectangle-problem.png" alt="Square/Rectangle Problem" width="50%" height="50%">
 
 In this example, the `Square` is not a proper subtype of `Rectangle` as its height and width are not independently mutable, unlike the rectangle.
 
@@ -164,13 +178,15 @@ However, a new taxi company is onboarded and they have a different Rest API and 
 
 Hence, you will have to have a special rule for that specific taxi company when routing the dispatch request.
 This can be implemented by an if statement, or if you're an architect worth their salt, you'd create a specific dispatch configuration module which will host these special rules:
-![Dispatch Rules Configuration](images/dispatch-rules.png)
+
+<img src="images/dispatch-rules.png" alt="Dispatch Rules Configuration" width="50%" height="50%">
 
 This violation of LSP has forced us to implement such complex mechanisms to handle the situation where the APIs of the taxi companies do not conform to the same Rest API.
 
 ## The Interface Segregation Principle
 This principle derives its name from the following diagram:
-![ISP Diagram](images/isp-diagram.png)
+
+<img src="images/isp-diagram.png" alt="ISP Diagram" width="50%" height="50%">
 
 The problem with this structure is that `User1` only uses `op1`, `User2` only uses `op2` and `User3` only uses `op3`.
 Yet, they all depend on the rest of the operations as well.
@@ -178,7 +194,8 @@ Yet, they all depend on the rest of the operations as well.
 This is problematic because a change in `op2` and `op3` would force `User1` to recompile & redeploy his code, although he doesn't care about those changes.
 
 If this is segregated into interfaces, this is how the diagram looks like:
-![ISP Good Example](images/isp-good-example.png)
+
+<img src="images/isp-good-example.png" alt="ISP Good Example" width="50%" height="50%">
 
 Note that there is still only one class that implements all three operations, but now, each user only depends on the interface they need.
 Hence, a change in `OPS`, which `User1` doesn't care about won't force `User1` to recompile & redeploy.
@@ -198,7 +215,8 @@ This principle can be generalized as "you shouldn't depend on modules that conta
 This is true in terms of source code dependency as this can force recompilation & redeployment, but it also applies at an architectural level.
 
 Consider the following system:
-![ISP Architectural Violation](images/isp-architectural-violation.png)
+
+<img src="images/isp-architectural-violation.png" alt="ISP Architectural Violation" width="50%" height="50%">
 
 In this example, system S depends on framework F, which uses a particular database D.
 
