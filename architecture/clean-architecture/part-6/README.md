@@ -199,6 +199,7 @@ The first and simplest design approach is to use the traditional horizontal laye
 In it, we separate the code based on what it does from a technical perspective.
 
 Example implementation:
+
 ![Package by layer](images/package-by-layer.png)
 
 In this example, there is one layer for web code, one for business logic and one for the persistence.
@@ -226,11 +227,13 @@ All of them aim to create architectures where the business/domain-focused code i
 The business rules are independent from the frameworks and databases being used.
 
 Here's a high-level view of such an architecture:
+
 ![Ports and adapters](images/ports-and-adapters.png)
 
 The major rule is that the outside depends on the inside. Never the other way around.
 
 Example implementation for our use case:
+
 ![Ports and adapters](images/ports-and-adapters.png)
 
 One caveat here is that the `OrdersRepository` has been renamed to `Orders`. This is an advice from domain-driven design.
@@ -252,6 +255,7 @@ The problem with both approaches is that the feedback loop is too big. The autho
 That's what "package by component" is trying to address. It's a hybrid approach where the business rules and persistence layers are bundled in the same component while keeping the UI separate.
 
 Example:
+
 ![Package by component](images/package-by-component.png)
 
 This is a very similar structure to what you might end up with when using micro-services.
