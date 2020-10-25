@@ -105,7 +105,7 @@
     + [A clean embedded architecture is a testable embedded architecture](#a-clean-embedded-architecture-is-a-testable-embedded-architecture)
       - [Layers](#layers)
       - [The Hardware is a detail](#the-hardware-is-a-detail)
-    + [Don't reveal hardware details to the user of a HAL](#don-t-reveal-hardware-details-to-the-user-of-a-hal)
+    + [Don't reveal hardware details to the user of a HAL](#dont-reveal-hardware-details-to-the-user-of-a-hal)
       - [The processor is a detail](#the-processor-is-a-detail)
       - [The Operating System is a detail](#the-operating-system-is-a-detail)
       - [Programming to interfaces and substitutability](#programming-to-interfaces-and-substitutability)
