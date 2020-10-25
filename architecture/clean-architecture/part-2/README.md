@@ -311,7 +311,6 @@ This, of course, sounds absurd as you'd need infinite processing power & storage
 
 Using such a scheme, there cannot be any concurrent update issues as there are no update/delete operations whatsoever.
 
-
 ## Conclusion
 These are the three major software engineering paradigms ever invented.
 
