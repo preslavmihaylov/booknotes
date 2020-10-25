@@ -1,4 +1,4 @@
-# [Java Concurrency in Practice](https://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601)
+# [Java Concurrency in Practice](https://www.goodreads.com/book/show/127932.Java_Concurrency_in_Practice)
 
 ## Preface
  * [Chapter 01 - Introduction](./chapter-01/)
