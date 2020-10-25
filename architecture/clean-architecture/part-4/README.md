@@ -1,6 +1,5 @@
 # Part 4 - Component Principles
 
-- [Part 4 - Component Principles](#part-4-component-principles)
   * [Components](#components)
     + [A brief history of components](#a-brief-history-of-components)
     + [Relocatability](#relocatability)
