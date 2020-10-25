@@ -1,5 +1,11 @@
 # Part 2 - Starting with the bricks: Programming Paradigms
 
+  * [Paradigm Overview](#paradigm-overview)
+  * [Structured programming](#structured-programming-1)
+  * [Object-Oriented Programming](#object-oriented-programming-1)
+  * [Functional programming](#functional-programming)
+  * [Conclusion](#conclusion)
+
 Since programming was first conceived, there were numerous programming languages created. But there only three programming paradigms created.
 It is unlikely that there will be more paradigms invented in the future.
 
