@@ -6,5 +6,5 @@
  * [Part 4 - Component Principles](./part-4)
  * [Part 5a - Architecture Fundamentals](./part-5a)
  * [Part 5b - Clean Architecture](./part-5b)
- * [Part 6 - Details](./chapter-01/)
+ * [Part 6 - Details](./part-6)
 
