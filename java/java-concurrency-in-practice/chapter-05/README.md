@@ -65,7 +65,7 @@ Note that detecting this is not guaranteed, but it's more of a best-effort guara
 
 The solution here is also to lock the collection while iterating it, but this introduces risks of deadlock. 
 
-An alternative is to clone the collection & iterate the clone. The cloning operation will stil need to be locked.
+An alternative is to clone the collection & iterate the clone. The cloning operation will still need to be locked.
 
 ## Hidden Iterators
 Sometimes, implicit iteration could happen in unobvious ways. Whenever this happen, make sure to deal with it as you would deal with normal iteration:

@@ -15,7 +15,7 @@ However, it makes writing programs a lot harder as now, programming constructs a
 ## Brief history of concurrency
 Initially, computers were designed to execute one program at a time, in order.
 This was often inefficient due to:
- * Resoure Utilization - another program can execute while you're waiting for network I/O
+ * Resource Utilization - another program can execute while you're waiting for network I/O
  * Fairness - Multiple users using the system should have the same share of system resources available to them
  * Convenience - It is often more desirable to have multiple programs, executing small tasks rather than one big program executing all tasks
  
