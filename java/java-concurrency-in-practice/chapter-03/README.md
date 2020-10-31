@@ -84,7 +84,7 @@ However, this is only guaranteed if both reads & writes are synchronized with th
 The `volatile` keyword is a lighter form of synchronization mechanism in java which only guarantees visibility, but doesn't guarantee atomicity.
 Synchronized variables, on the other hand, verify both.
 
-What the `volatile` keyword does is instructs the JVM to avoid storing a given variable in caches so that when another processor reads that variable, it always reads the latest value.  
+What the `volatile` keyword does is to instruct the JVM to avoid storing a given variable in caches so that when another processor reads that variable, it always reads the latest value.  
 Additionally, no special optimizations are done to the variable to avoid abnormal behavior.  
 
 In effect, the `volatile` keyword is signaling to the JVM that a variable will be used by more than one thread.  
