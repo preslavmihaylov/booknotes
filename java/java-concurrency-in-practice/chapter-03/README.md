@@ -84,7 +84,7 @@ However, this is only guaranteed if both reads & writes are synchronized with th
 The `volatile` keyword is a lighter form of synchronization mechanism in java which only guarantees visibility, but doesn't guarantee atomicity.
 Synchronized variables, on the other hand, verify both.
 
-What the `volatile` keyword does it is instructs the JVM to avoid storing a given variable in caches so that when another processor reads that variable, it always reads the latest value.  
+What the `volatile` keyword does is instructs the JVM to avoid storing a given variable in caches so that when another processor reads that variable, it always reads the latest value.  
 Additionally, no special optimizations are done to the variable to avoid abnormal behavior.  
 
 In effect, the `volatile` keyword is signaling to the JVM that a variable will be used by more than one thread.  
@@ -142,7 +142,7 @@ public class ThisEscape {
 } 
 ```
 
-If an object escapes, it matters not if someone actually capitalizes on the occassion as the class is effectively unsafe.  
+If an object escapes, it matters not if someone actually capitalizes on the occasion as the class is effectively unsafe.  
 An analogy is someone stealing your password. He might not use it right away, but your accounts are already exposed.  
 
 ## Safe construction practices
@@ -181,7 +181,7 @@ If an object is used exclusively by a single thread, that code is thread-safe ev
 GUI applications (e.g. Swing framework) use this extensively via event loops.  
 
 Events in a GUI application execute on a single thread & objects from the framework need to be used from the event loop thread.  
-If some object needs to be accesed outside of that thread, Swing has a mechanism (`invokeLater`) to prevent thread-safety violations.  
+If some object needs to be accessed outside of that thread, Swing has a mechanism (`invokeLater`) to prevent thread-safety violations.  
 
 Thread confinement is a mechanism defined by your application's design. The java language doesn't guarantee confinement in any way (just as it doesn't guarantee locking).
 
@@ -195,7 +195,7 @@ Stack confinement means to use local variables when managing objects.
 An object, which is encapsulated in a local variable can be used, even if it isn't thread-safe as long as you don't let its reference escape the scope.  
 
 Local variables are thread-safe as they are confined to the executing thread's stack, rather than the heap memory, which is shared among threads.  
-Local primitive variables are thread-safe as they can't be shared as per the language specifications. They are always confined to the executign thread's stack.  
+Local primitive variables are thread-safe as they can't be shared as per the language specifications. They are always confined to the executing thread's stack.  
 
 ## ThreadLocal
 ThreadLocal allows you to create global variables, which have separate instances per thread.  
@@ -223,7 +223,7 @@ Immutable objects can only be in a single state, which is created in the object'
 All their fields are final & can't be modified.  
 
 Immutable objects make achieving thread-safety easier as there is no need for explicit synchronization.  
-They still need, however, to make changing a immutable object reference visible (e.g. via `volatile`).
+They still need, however, to make changing an immutable object reference visible (e.g. via `volatile`).
 
 An object is immutable when:
  * Its state cannot be modified after construction
@@ -371,6 +371,6 @@ Whenever you acquire a reference to a shared object, you need to know what you a
 
 The most useful synchronization policies:
  * Thread-confined objects is owned exclusively by its own thread & can be safely mutated in it.
- * Shared read-only objects can be accessed concurrrently without additional synchronization. These include immutable and effectively immutable objects
+ * Shared read-only objects can be accessed concurrently without additional synchronization. These include immutable and effectively immutable objects
  * Shared thread-safe objects perform synchronization internally, so clients can use it without additional synchronization (unless a compound non-atomic action is used)
  * Guarded objects can be used concurrently only with a specific lock held. 

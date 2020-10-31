@@ -37,7 +37,7 @@ Synchronization policy - the mechanism of choice for managing thread-safety. E.g
 When designing a class for thread-safety, one must first understand a class's invariants.  
 
 An example is a `NumberRange` class with a lower and upper bound. An invariant of that class is that the lower bound cannot be greater than the upper bound.  
-To ensure thread-safety, compount actions involving updating the bounds need to be made atomic.  
+To ensure thread-safety, compound actions involving updating the bounds need to be made atomic.  
 
 On the other hand, if there is a field whose value doesn't depend on its own state, synchronization can be relaxed to achieve better performance.  
 
