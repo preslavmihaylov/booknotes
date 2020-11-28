@@ -68,7 +68,7 @@ public class UnsafeCountingFactorizer implements Servlet {
 This class is not thread-safe as there is a state variable (count), which is accessed by multiple threads without any synchronization.
 In the example above, it might appear that `++count` is an atomic operation but it isn't as its executing three different commands under the hood.
 
-Several threads accessing that can lead to [this situation](https://github.com/preslavmihaylov/booknotes/blob/master/java/java-concurrency-in-practice/chapter-01/README.md#risks-of-threads).
+Several threads accessing that can lead to [this situation](https://github.com/preslavmihaylov/booknotes/blob/master/java/java-concurrency-in-practice/chapter-01#risks-of-threads).
 
 ## Race conditions
 `UnsafeCountingFactorizer` has several race conditions.
