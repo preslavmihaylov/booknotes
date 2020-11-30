@@ -1,3 +1,4 @@
+[some text](https://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601/ref=as_li_ss_il?ie=UTF8&linkCode=li2&tag=briangoetz-20&linkId=b951303a6cb9b22d67e0d6870ffe6b05&language=en_US){target="_blank"}
 <a href="https://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601/ref=as_li_ss_il?ie=UTF8&linkCode=li2&tag=briangoetz-20&linkId=b951303a6cb9b22d67e0d6870ffe6b05&language=en_US" target="_blank" class="thumbnail">
  <img src="https://jcip.net/images/jcip-cover.jpg" alt="JCiP book cover">
 </a>
