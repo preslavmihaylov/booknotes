@@ -1,4 +1,9 @@
-# [Java Concurrency in Practice](https://www.goodreads.com/book/show/127932.Java_Concurrency_in_Practice)
+<a href="https://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601/ref=as_li_ss_il?ie=UTF8&linkCode=li2&tag=briangoetz-20&linkId=b951303a6cb9b22d67e0d6870ffe6b05&language=en_US" target="_blank" class="thumbnail">
+ <img src="https://jcip.net/images/jcip-cover.jpg" alt="JCiP book cover">
+</a>
+
+# Java Concurrency in Practice
+Book notes taken during my read-through of JCIP. See [my review of the book](https://pmihaylov.com/my-thoughts-on-jcip/)
 
 ## Preface
  * [Chapter 01 - Introduction](./chapter-01/)
