@@ -1,5 +1,27 @@
 # Chapter 03 - Sharing Objects
 
+- [Chapter 03 - Sharing Objects](#chapter-03---sharing-objects)
+- [Visibility](#visibility)
+  * [Stale data](#stale-data)
+  * [Nonatomic 64-bit operations](#nonatomic-64-bit-operations)
+  * [Locking and visibility](#locking-and-visibility)
+  * [Volatile variables](#volatile-variables)
+- [Publication & Escape](#publication---escape)
+  * [Safe construction practices](#safe-construction-practices)
+- [Thread confinement](#thread-confinement)
+  * [Ad-hoc thread confinement](#ad-hoc-thread-confinement)
+  * [Stack confinement](#stack-confinement)
+  * [ThreadLocal](#threadlocal)
+- [Immutability](#immutability)
+  * [Final fields](#final-fields)
+  * [Example: using volatile to publish immutable objects](#example--using-volatile-to-publish-immutable-objects)
+- [Safe publication](#safe-publication)
+  * [Immutable objects and initialization safety](#immutable-objects-and-initialization-safety)
+  * [Safe publication idioms](#safe-publication-idioms)
+  * [Effectively immutable objects](#effectively-immutable-objects)
+  * [Mutable objects](#mutable-objects)
+  * [Sharing objects safely](#sharing-objects-safely)
+
 So far, we've covered how to synchronize shared mutable data. This chapter focuses on techniques for publishing objects.
 
 It will also cover the subtle problem of visibility.  
