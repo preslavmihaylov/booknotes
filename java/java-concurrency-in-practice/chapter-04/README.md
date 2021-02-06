@@ -1,5 +1,22 @@
 # Chapter 04 - Composing Objects
 
+- [Designing a thread-safe class](#designing-a-thread-safe-class)
+  - [Gathering synchronization requirements](#gathering-synchronization-requirements)
+  - [State-dependent operations](#state-dependent-operations)
+  - [State ownership](#state-ownership)
+- [Instance confinement](#instance-confinement)
+  - [The Java monitor pattern](#the-java-monitor-pattern)
+  - [Example: tracking fleet vehicles](#example-tracking-fleet-vehicles)
+- [Delegating thread safety](#delegating-thread-safety)
+  - [Independent state variables](#independent-state-variables)
+  - [When delegation fails](#when-delegation-fails)
+  - [Publishing underlying state variables](#publishing-underlying-state-variables)
+  - [Example: vehicle tracker that publishes its state](#example-vehicle-tracker-that-publishes-its-state)
+- [Adding functionality to existing thread-safe classes](#adding-functionality-to-existing-thread-safe-classes)
+  - [Client-side locking](#client-side-locking)
+  - [Composition](#composition)
+- [Documenting synchronization policies](#documenting-synchronization-policies)
+
 So far, we've covered the fundamentals of what thread-safety problems there are & the low-level mechanisms to deal with them.  
 
 But it is infeasible to analyze every single memory access for thread-safety violations.  
