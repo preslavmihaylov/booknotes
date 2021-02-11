@@ -1,5 +1,25 @@
 # Chapter 05 - Building Blocks
 
+- [Synchronized Collections](#synchronized-collections)
+  - [Problems with synchronized collections](#problems-with-synchronized-collections)
+  - [Iterators and ConcurrentModificationException](#iterators-and-concurrentmodificationexception)
+  - [Hidden Iterators](#hidden-iterators)
+- [Concurrent collections](#concurrent-collections)
+  - [ConcurrentHashMap](#concurrenthashmap)
+  - [Additional atomic Map operations](#additional-atomic-map-operations)
+  - [CopyOnWriteArrayList](#copyonwritearraylist)
+- [Blocking Queues and the producer-consumer pattern](#blocking-queues-and-the-producer-consumer-pattern)
+  - [Example: desktop search](#example-desktop-search)
+  - [Serial thread confinement](#serial-thread-confinement)
+  - [Deques and work stealing](#deques-and-work-stealing)
+- [Blocking and interruptible methods](#blocking-and-interruptible-methods)
+- [Synchronizers](#synchronizers)
+  - [Latches](#latches)
+  - [FutureTask](#futuretask)
+  - [Semaphores](#semaphores)
+  - [Barrier](#barrier)
+- [Building an efficient, scalable result cache](#building-an-efficient-scalable-result-cache)
+
 This chapter covers the most useful concurrenct libraries & collections available for you to use in order to leverage thread-safety delegation.
 
 # Synchronized Collections
