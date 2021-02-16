@@ -42,7 +42,7 @@ Those are the highest-level rules in the application which change the least ofte
 ### Use cases
 Use cases contain the application-specific business rules. They encapsulate all the use cases the application needs to support.
 
-This layer works with Entities and manage all the interactions with them.A
+This layer works with Entities and manage all the interactions with them.
 
 Changes in this layer should not affect use cases and it shouldn't be affected by changes in UI/database/etc.
 
@@ -352,7 +352,7 @@ Firmware == code which tightly depends on hardware.
 In order for an embedded application to be scalable, the firmware and hardware should be detached from the rest of the software.
 
 ### App-titude test
-The reason why so much software & firmware becomes coupled is because developers typically consider their software don on step one of this process:
+The reason why so much software & firmware becomes coupled is because developers typically consider their software done on step one of this process:
  1. Make it work
  2. Make it right
  3. Make it fast

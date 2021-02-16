@@ -19,7 +19,7 @@ Relational tables might offer some convenience when retrieving/storing your data
 The use cases of the system should not know anything about how the data is being stored.
 
 #### Why are database systems so prevalent?
-Because the main way to store data nowadays if via magnetic disks and storing data on magnetic disks is way slower than storing the data in memory.
+Because the main way to store data nowadays on magnetic disks is way slower than storing the data in memory.
 
 Due to this limitation, some kind of data management system is needed in order to have some form of indexing, caching, optimized query schemes.
 There are mainly two kinds of data management systems - file systems and RDBMS.
