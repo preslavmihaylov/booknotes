@@ -1,5 +1,26 @@
 # Chapter 06 - Task Execution
 
+- [Executing tasks in threads](#executing-tasks-in-threads)
+  - [Executing tasks sequentially](#executing-tasks-sequentially)
+  - [Explicitly creating threads for tasks](#explicitly-creating-threads-for-tasks)
+  - [Disadvantages of unbounded thread creation](#disadvantages-of-unbounded-thread-creation)
+- [The Executor framework](#the-executor-framework)
+  - [Example: web server using Executor](#example-web-server-using-executor)
+  - [Execution policies](#execution-policies)
+  - [Thread pools](#thread-pools)
+  - [Executor lifecycle](#executor-lifecycle)
+  - [Delayed and periodic tasks](#delayed-and-periodic-tasks)
+- [Finding exploitable parallelism](#finding-exploitable-parallelism)
+  - [Example: sequential page renderer](#example-sequential-page-renderer)
+  - [Result-bearing tasks: Callable and Future](#result-bearing-tasks-callable-and-future)
+  - [Example: page renderer with Future](#example-page-renderer-with-future)
+  - [Limitations of parallelizing heterogeneous tasks](#limitations-of-parallelizing-heterogeneous-tasks)
+  - [CompletionService: Executor meets BlockingQueue](#completionservice-executor-meets-blockingqueue)
+  - [Example: page renderer with CompletionService](#example-page-renderer-with-completionservice)
+  - [Placing time limits on tasks](#placing-time-limits-on-tasks)
+  - [Example: a travel reservations portal](#example-a-travel-reservations-portal)
+- [Summary](#summary)
+
 Most concurrent applications are structured in task execution - discrete chunks of computations.  
 
 Organizing your program in tasks simplifies program structure and promotes concurrency as a natural structure for parallelizing work.
