@@ -1,5 +1,26 @@
 # Chapter 07 - Cancellation & Shutdown
 
+- [Task cancellation](#task-cancellation)
+  - [Interruption](#interruption)
+  - [Interruption policies](#interruption-policies)
+  - [Responding to interruption](#responding-to-interruption)
+  - [Example: timed run](#example-timed-run)
+  - [Cancellation via Future](#cancellation-via-future)
+  - [Dealing with non-interruptible blocking](#dealing-with-non-interruptible-blocking)
+  - [Encapsulating non-standard interruption with newTaskFor](#encapsulating-non-standard-interruption-with-newtaskfor)
+- [Stopping a thread-based service](#stopping-a-thread-based-service)
+  - [Example: a logging service](#example-a-logging-service)
+  - [ExecutorService shutdownn](#executorservice-shutdownn)
+  - [Poison pills](#poison-pills)
+  - [Example: A one-shot execution service](#example-a-one-shot-execution-service)
+  - [Limitations of shutdownNow](#limitations-of-shutdownnow)
+- [Handling abnormal thread termination](#handling-abnormal-thread-termination)
+  - [Uncaught exception handlers](#uncaught-exception-handlers)
+- [JVM Shutdown](#jvm-shutdown)
+  - [Shutdown hooks](#shutdown-hooks)
+  - [Daemon threads](#daemon-threads)
+  - [Finalizers](#finalizers)
+
 This chapter focuses on how to cancel & interrupt threads & tasks when needed.
 
 Tasks & threads in java are stopped cooperatively - you can't force a task to stop execution, you can just kindly ask it to. It is up to the task to interpret that request & acknowledge it.
