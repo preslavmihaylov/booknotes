@@ -10,7 +10,7 @@
   - [Encapsulating non-standard interruption with newTaskFor](#encapsulating-non-standard-interruption-with-newtaskfor)
 - [Stopping a thread-based service](#stopping-a-thread-based-service)
   - [Example: a logging service](#example-a-logging-service)
-  - [ExecutorService shutdownn](#executorservice-shutdownn)
+  - [ExecutorService shutdown](#executorservice-shutdown)
   - [Poison pills](#poison-pills)
   - [Example: A one-shot execution service](#example-a-one-shot-execution-service)
   - [Limitations of shutdownNow](#limitations-of-shutdownnow)
@@ -27,7 +27,7 @@ Tasks & threads in java are stopped cooperatively - you can't force a task to st
 
 # Task cancellation
 
-An activity is cancellable is external code can move it to completion before it ends.
+An activity is cancellable if external code can move it to completion before it ends.
 
 Why you might want to cancel a task:
  * User-requested (e.g. user clicks the "Cancel" button)
@@ -150,7 +150,7 @@ Tasks should have cancellation policies. Threads should have an interruption pol
 An interruption policy determines how a thread interprets an interruption request.  
 The most sensible interruption policy is some form of service-level cancellation - exit as quickly as possible, clean up if necessary, notify interested entities, etc.
 
-Code that doesn't own the thread should be careful to preserce the interrupted status of the thread so that the owning code can eventually act on it.
+Code that doesn't own the thread should be careful to preserve the interrupted status of the thread so that the owning code can eventually act on it.
 
 An example of a thread you don't own is a task executing in a thread pool. The task doesn't own the thread it is running on, the thread pool does.
 
@@ -242,7 +242,7 @@ public static void timedRun(Runnable r, long timeout, TimeUnit unit) throws Inte
 
 ## Dealing with non-interruptible blocking
 Sometimes, you might be doing some work which is non-interruptible & needs special care:
- * Synchronous socker I/O in java.io - The read and write methods are not responsive to interruption, but closing the underlying socket makes blocked threads throw a `SocketException`
+ * Synchronous socket I/O in java.io - The read and write methods are not responsive to interruption, but closing the underlying socket makes blocked threads throw a `SocketException`
  * Synchronous I/O in java.nio
  * Asynchronous I/O with Selector - If a thread is blocked on Selector.select, you have to close the underlying channel to unblock
  * Lock acquisition - If a thread is blocked waiting for an intrinsic lock, there is nothing for you to do to stop it from acquiring the lock
@@ -334,7 +334,7 @@ public abstract class SocketUsingTask<T> implements CancellableTask<T> {
 # Stopping a thread-based service
 Threads have owners & the owner is the one who created the thread.
 
-In many occassions, that's the thread pool implementation you are using. Since it is the owner, you shouldn't attempt to stop its threads yourself.
+In many occasions, that's the thread pool implementation you are using. Since it is the owner, you shouldn't attempt to stop its threads yourself.
 
 Instead, the service should provide lifecycle methods for managing the threads. The `ExecutorService` has the `shutdown` and `shutdownNow` methods for dealing with that.
 
@@ -431,7 +431,7 @@ public class LogService {
 }
 ```
 
-## ExecutorService shutdownn
+## ExecutorService shutdown
 The executor service has the `shutdown` and `shutdownNow` utilities for graceful & not so graceful shutdown.
 
 Simple programs can get away with using a global executor service, initialized from main.
@@ -695,12 +695,12 @@ The JVM can shutdown in an orderly or an abrupt manner. An orderly shutdown is w
 
 ## Shutdown hooks
 In an orderly shutdown, the JVM starts all registered shutdown hooks. You can use this to make any clean up logic on exit.
-Shutdown hooks can be registed with `Runtime.addShutdownHook`.
+Shutdown hooks can be registered with `Runtime.addShutdownHook`.
 
 The JVM makes no guarantees on the order of execution of shutdown hooks.
 If the shutdown hooks or finalizers don't exit, than the JVM hangs and has to be stopped abruptly.
 
-Shutdown hooks should be thread-safe & exit as quickly as possible. Sine shutdown hooks run in parallel, so they shouldn't depend on services that could be shutdown in another hook.
+Shutdown hooks should be thread-safe & exit as quickly as possible. Since shutdown hooks run in parallel, so they shouldn't depend on services that could be shutdown in another hook.
 To avoid this problem, you could encapsulate your entire shutdown mechanism in a single hook so that everything is executed synchronously in a single thread.
 
 Example usage:

@@ -17,7 +17,7 @@ This is a costly operation & the ratio of useful work to suspension time can be 
 An alternative is using the `volatile` keyword. However, although it is a lighther-weight synchronization mechanism, it doesn't provide the same atomicity guarantees as locks.
 
 There are other drawbacks of locks as well:
- * E.g. when a lock is held by a thread the rest of the threads cannot do anything. This is bad in cases when a thread does a lenghty operation
+ * E.g. when a lock is held by a thread the rest of the threads cannot do anything. This is bad in cases when a thread does a lengthy operation
 
 Hence, it would be beneficial to have some kind of a synchronization mechanism which has the advantages of volatile variables, while preserving the atomicity of compound actions.
 
@@ -41,7 +41,7 @@ In other words, you are specifying "I think the current value of `V` is `A`. If 
 This enables you to optimistically attempt to modify a given memory register & detect an error if it was unsuccessful due to another thread already updating the value.
 In case of a failure, you can (most often) try again, backoff, do nothing, etc.
 
-In rare circumstances, there is a posibility of a livelock.
+In rare circumstances, there is a possibility of a livelock.
 
 Example implementation of `CAS`, which demonstrates the way it works without getting close to the performance or actual implementation:
 ```java
@@ -211,10 +211,10 @@ The conclusion is that under heavy contention, locks perform better than atomics
 Finally, the `ThreadLocal` variant shows that the best performance can be achieved if data is not shared at all.
 
 ## Nonblocking algorithms
-An algorithm is nonblocking when failure of suspension of any thread doesn't cause failure or suspension of another thread.
+An algorithm is nonblocking when failure or suspension of any thread doesn't cause failure or suspension of another thread.
 Lock-based algorithms cause suspension if the thread holding a lock is blocked on I/O.
 
-An algorithm is called lock-free, then some thread can make progress at each step.
+An algorithm is called lock-free, when some thread can make progress at each step.
 
 Good nonblocking algorithms satisfy both conditions. Additionally, CAS-based algorithms are immune to deadlock or priority inversion, but are susceptible to starvation or livelock.
 
@@ -333,7 +333,7 @@ The purpose of this class is to enable one to atomically update a field without 
 
 ### The ABA problem
 In some cases, you're not only interested in whether "There is still an `A` value in the `V` register". Instead, you might be interested in whether someone has changed the value from A -> B -> A again.
-In typical CAS algorithms, you won't detect that as you're comparing the value `A` against itself, although a mutation had occured beforehand.
+In typical CAS algorithms, you won't detect that as you're comparing the value `A` against itself, although a mutation had occurred beforehand.
 
 You would typically care about this only in environments which lack garbage collection. If you use garbage collection, this doesn't matter.
 

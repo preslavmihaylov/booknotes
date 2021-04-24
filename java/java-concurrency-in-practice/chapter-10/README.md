@@ -225,7 +225,7 @@ The reason is that the `setLocation` acquires the `Taxi` lock and `Dispatcher` l
 This should not be the case as these classes are independent & such a constraint breaks encapsulation.
 
 The root cause of the problem was that an alien method was called while holding a lock. An alien method is a method we don't own. 
-That could be a method of another class or a method which can be overriden in a subclass.
+That could be a method of another class or a method which can be overridden in a subclass.
 
 > Calling an alien method with a lock held is difficult to analyze and should be avoided.
 
