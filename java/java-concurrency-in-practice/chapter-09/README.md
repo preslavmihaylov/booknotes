@@ -7,7 +7,7 @@ Swing data structures are not thread-safe either.
 Nearly all GUI toolkits are implemented this way - exploiting thread-confinement.
 
 # Why are GUIs single-threaded?
-All modern GUI frameworks are single-threaded subsystems. They work by having a dedicated event threda, called EDT (Event Dispatch Thread).
+All modern GUI frameworks are single-threaded subsystems. They work by having a dedicated event thread, called EDT (Event Dispatch Thread).
 
 The reason why GUI frameworks are implemented like this is because of all sorts of problems with race conditions & deadlocks if they were implemented in a multi-threaded way.
 
@@ -24,7 +24,7 @@ Tasks in the event queue process sequentially. This makes development easier, bu
 This is why, if you need to run a long-running task, you should process it in a different thread than the event thread & return the result to the event thread once the processing is complete.
 
 ## Thread confinement in Swing
-All swing objects are thread confined to the event thread. Any component should be created, queries & modified in the event thread only.
+All swing objects are thread confined to the event thread. Any component should be created, queried & modified in the event thread only.
 
 There are only a few exceptions with methods which are thread-safe and meant to be used outside of the event dispatch thread:
  * `SwingUtilities.isEventDispatchThread` - checks if the current thread is the event thread

@@ -273,7 +273,7 @@ Final fields are a less-strict form of the `const` keyword in C++.
 They don't let an object reference change after construction, although they don't prevent the object's internal state to change.  
 
 However, they also have special "initialization safety" guarantee by the Java memory model.  
-It is this guarantee that allows immutable objects to be freely accesssed and shared without synchronization.  
+It is this guarantee that allows immutable objects to be freely accessed and shared without synchronization.  
 
 Even if an object is mutable, you should still consider making all fields that can be made final - final.  
 A mostly thread-safe object is still better than a not-at-all thread-safe object.

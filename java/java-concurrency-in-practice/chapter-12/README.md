@@ -397,7 +397,7 @@ When writing performance tests, you should watch out for some common pitfalls wh
 ## Garbage collection
 Garbage collection is unpredictable. You don't know when it will run.
 
-If you have a run which measures N invocations & garbage collection runs on invocation N+1, a small deviance in trials cnt can change the test results drastically.
+If you have a run which measures N invocations & garbage collection runs on invocation N+1, a small deviance in trials count can change the test results drastically.
 
 This can be solved by:
  * Disabling garbage collection while running your test

@@ -20,7 +20,7 @@
   - [Barrier](#barrier)
 - [Building an efficient, scalable result cache](#building-an-efficient-scalable-result-cache)
 
-This chapter covers the most useful concurrenct libraries & collections available for you to use in order to leverage thread-safety delegation.
+This chapter covers the most useful concurrent libraries & collections available for you to use in order to leverage thread-safety delegation.
 
 # Synchronized Collections
 

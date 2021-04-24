@@ -11,7 +11,7 @@ In a multi-threaded one, preconditions that aren't met can change due to the act
 
 Hence, a precondition that fails might be coded to block, rather than fail in such an environment. Otherwise, usage of the class might be clunky & error-prone.
 
-One way to implement such behavior is to go throgh the painful route of using standard means of synchronization.
+One way to implement such behavior is to go through the painful route of using standard means of synchronization.
 
 In that case, the code would generally look like this:
 ```
@@ -109,7 +109,7 @@ They are called so as they queue up threads waiting for a condition to become tr
 
 **In order to use a condition queue on object X, you must hold object X's intrinsic lock.**
 
-When you call `Object.wait`, the lock you're holding is atomically released & reaquired once the thread is woken up.
+When you call `Object.wait`, the lock you're holding is atomically released & reacquired once the thread is woken up.
 
 Example implementation of bounded buffer using condition queues:
 ```java
@@ -269,7 +269,7 @@ Alternatively, you can lock on a private object explicitly. This, however, subve
 Just as explicit locks are a generalization of intrinsic locks, `Condition` is a generalization of intrinsic condition queues.
 
 Intrinsic queues have several drawbacks:
- * Each intrinsic lock can have only one associated condition queue. This means that multople threads might wait on the same condition queue for different condition predicates
+ * Each intrinsic lock can have only one associated condition queue. This means that multiple threads might wait on the same condition queue for different condition predicates
  * The most common pattern for using intrinsic queues involves making the queue publicly available.
 
 If you want to have a concurrent object \w multiple condition predicates or exercise more control over the visibility of a condition queue, the explicit `Condition` object can help.
@@ -387,7 +387,7 @@ public class OneShotLatch {
 
 In the above scenario, `tryAcquireShared` indicates to the AQS what condition means that the threads should block, while `tryReleaseShared` sets the state to the correct value in order to unblock the other threads.
 
-`acquireSharedInterruptibly` is like waiting for the condition to hold in a conditino queue and `releaseShared` invokes `tryReleaseShared` which unblocks the waiting threads.
+`acquireSharedInterruptibly` is like waiting for the condition to hold in a condition queue and `releaseShared` invokes `tryReleaseShared` which unblocks the waiting threads.
 
 `OneShotLatch` could have extended `AQS` rather than delegating to it, but that is not recommended (composition over inheritance). Neither of the standard library classes using AQS extend it directly.
 
@@ -414,7 +414,7 @@ protected boolean tryAcquire(int ignored) {
 }
 ```
 
-## Semaphone and CountDownLatch
+## Semaphore and CountDownLatch
 Example usage of AQS in `Semaphore`:
 ```java
 protected int tryAcquireShared(int acquires) {

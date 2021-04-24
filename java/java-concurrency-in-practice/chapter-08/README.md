@@ -70,7 +70,7 @@ Sizing a threadpool depends on:
  * What are the hardware resources of the deployment system
  * Do tasks perform mostly computation, I/O or some combination?
 
-Consider using multiple thread pools if you have heterogenous tasks as this way, the pools can be adjusted based on the nature of the executing tasks.
+Consider using multiple thread pools if you have heterogeneous tasks as this way, the pools can be adjusted based on the nature of the executing tasks.
 
 For compute-intensive tasks, a rule of thumb is using N+1 threads, where N = processor count.
 
@@ -136,7 +136,7 @@ Additionally, using synchronous hand-off is more efficient than using a normal q
 The `newCachedThreadPool` factory uses synchronous hand-off. With it, tasks can't be rejected as the work queue is unbounded.
 
 In addition to these mechanisms, you could use a `PriorityBlockingQueue` if you'd like certain tasks to have more priority than others.  
-Priority can be defined by natural order or if the tasks implement `Comparable` - via a `Comparator`.
+Priority can be defined by natural order or if the task implements `Comparable` - via a `Comparator`.
 
 Bounding the thread pool or work queue is only suitable when tasks are independent.
 
@@ -364,7 +364,7 @@ public<T> Collection<T> getParallelResults(List<Node<T>> nodes) throws Interrupt
 
 ## Example: a puzzle framework
 An appealing application of this technique is solving puzzles that involve finding a sequence of transformations from some initial state to reach a goal state,  
-such as the familiar “sliding block puzzles”,7 “Hi-Q”, “Instant Insanity”, and other solitaire puzzles
+such as the familiar “sliding block puzzles”, “Hi-Q”, “Instant Insanity”, and other solitaire puzzles
 
 Puzzle definition:
 ```java

@@ -44,7 +44,7 @@ For most web applications, scalability is often more important than performance.
 ## Evaluating performance tradeoffs
 Nearly all engineering decisions are tradeoffs.
 
-Often times, one has to make traceoffs based on limited information. E.g. quicksort is better for large datasets, but bubblesort is best for small ones.
+Often times, one has to make tradeoffs based on limited information. E.g. quicksort is better for large datasets, but bubblesort is best for small ones.
 One has to know in advance the amount of data in order to process it most effectively.
 
 This is what most often leads to premature optimizations - making trade offs with limited requirements.
@@ -98,7 +98,7 @@ public class WorkerThread extends Thread {
 }
 ```
 
-This piece of code is limited by the serialized portion, which is the blokcking take on the blocking queue.
+This piece of code is limited by the serialized portion, which is the blocking take on the blocking queue.
 
 ## Example: serialization hidden in frameworks
 ![Blocking queue comparison](images/blocking-queue-comparison.png)
@@ -198,9 +198,9 @@ public class BetterAttributeStore {
 }
 ```
 
-In can even be further improved by delegating thread-safety to a thread-safe collection entirely (such as `ConcurrentHashMap`).
+It can even be further improved by delegating thread-safety to a thread-safe collection entirely (such as `ConcurrentHashMap`).
 
-A synchronized block needs to be shrank only if a significant computation is performed inside of it.
+A synchronized block needs to be shrunk only if a significant computation is performed inside of it.
 Shrinking a synchronized block too much can lead to safety issues - e.g. not synchronizing compound actions.
 
 ## Reducing lock granularity
@@ -255,19 +255,19 @@ But this will increase the threshold at which performance starts to suffer.
 
 For highly contended locks, this might not improve performance significantly.
 
-## Lock stripping
+## Lock striping
 Lock splitting on a heavily contended lock can lead to two heavily contended locks. This will not improve matters greatly.
 
 This technique can be extended to partitioning a variable-set of independent objects into multiple locks.
 
 For example, `ConcurrentHashMap` uses 16 different locks to synchronize access to different parts of the underlying hash buckets.
 
-This technique is called lock stripping & improves performance greatly on objects susceptible to such partitioning.
+This technique is called lock striping & improves performance greatly on objects susceptible to such partitioning.
 
 However, it makes dealing with synchronization much more complex. 
 For example, when the hashmap needs to expand, it has to acquire all the locks before doing so, which is more complex than acquiring a single object lock.
 
-Example implementation of a hash map using lock stripping:
+Example implementation of a hash map using lock striping:
 ```java
 @ThreadSafe
 public class StripedMap {
@@ -312,7 +312,7 @@ public class StripedMap {
 ```
 
 ## Avoiding hot fields
-Using lock stripping & lock splitting can improve matters when two threads are accessing independent objects.
+Using lock striping & lock splitting can improve matters when two threads are accessing independent objects.
 
 However, if the implementation has some kind of a "hot field", which is used in all synchronized operations, regardless of the objects, this hinders scalability.
 For example, in the hashmap implementation, one has to provide a `size()` method. 
@@ -373,6 +373,6 @@ Many logging libraries are thin wrappers around `println` utilities. This is an 
 An alternative is to have a dedicated logging thread which solely logs incoming requests. All other threads append their messages to a blocking queue & continue their work.
 This is often more performant than the former approach as it involves less context switching.
 
-When multiple threads are trying to write to stdin, they are all blocked on I/O & context switching occurs, waiting for the bounded resource.
+When multiple threads are trying to write to stdout, they are all blocked on I/O & context switching occurs, waiting for the bounded resource.
 By having a dedicated background logging thread, it is only that thread which is blocked on the I/O. All other threads can continue its work.
 

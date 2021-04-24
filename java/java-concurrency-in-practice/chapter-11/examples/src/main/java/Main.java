@@ -9,7 +9,7 @@ public class Main extends Thread {
     public static void main(String[] args) throws InterruptedException, BrokenBarrierException {
         measureLockScopeExample(new Examples.BigLockScopeExample(), 16);
         measureLockScopeExample(new Examples.SmallLockScopeExample(), 16);
-        measureLockScopeExample(new Examples.LockStrippingExample(), 16);
+        measureLockScopeExample(new Examples.LockStripingExample(), 16);
     }
 
     public static void measureLockScopeExample(Examples.LockScopeExample example, int threadsCnt)

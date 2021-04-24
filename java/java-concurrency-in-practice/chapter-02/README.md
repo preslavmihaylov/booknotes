@@ -220,7 +220,7 @@ The problem with `SlowCountingFactorizer` is that the synchronization was excess
 
 This can make users quite frustrated, especially when the servlet is under high load.
 
-Instead, strive for making the synchronized blocks are small as possible, but not too small.  
+Instead, strive for making the synchronized blocks as small as possible, but not too small.  
 
 An example of a too small synchronized block would be not synchronizing compound actions together.  
 An example of a too big synchronized block is synchronizing the whole method and/or unnecessarily synchronizing long-running I/O.

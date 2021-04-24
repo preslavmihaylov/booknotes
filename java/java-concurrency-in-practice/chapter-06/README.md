@@ -76,8 +76,8 @@ This approach is fine for small to medium traffic. As long as the incoming reque
 ## Disadvantages of unbounded thread creation
 For production use, creating threads unboundedly has some drawbacks:
  * Thread lifecycle overhead - creating & managing threads has some overhead, it is not free. If the threads are too many, the multi-threaded application might become slower than the single-threaded one.
- * Resouce consumption - active threads consume system resources, especially memory.
- * Stability - there is a limit on how many threads one can create. This variaes by platform, but once you hit it, you would get an `OutOfMemoryException`.
+ * Resource consumption - active threads consume system resources, especially memory.
+ * Stability - there is a limit on how many threads one can create. This varies by platform, but once you hit it, you would get an `OutOfMemoryException`.
 
 Up to a certain point, creating threads improve your application's throughput, but beyond it, more threads start getting in the way.
 
