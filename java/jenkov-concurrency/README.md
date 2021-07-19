@@ -82,3 +82,20 @@ Example with multithreading:
     hand request to worker thread
   }
 ```
+
+## Multithreading Costs
+To use multithreading in an application, the benefits gained should outweigh the costs.
+
+Here are some of the costs of multithreading.
+### More complex design
+Some parts might be simpler by using multithreading, others though, might be more complex.
+
+E.g. code involving shared data which needs to be synchronized.
+
+### Context Switching Overhead
+When a CPU needs to switch from executing one thread to another, there is some overhead incurred due to having to save the state of the thread in memory.
+
+When you switch between threads too often, the time taken to switch threads might be more than the actual processing time.
+
+### Increased Resource Consumption
+A thread needs some resources in order to run. Hence, creating too much threads can consume a lot of memory/OS resources.
