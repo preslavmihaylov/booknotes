@@ -99,3 +99,74 @@ When you switch between threads too often, the time taken to switch threads migh
 
 ### Increased Resource Consumption
 A thread needs some resources in order to run. Hence, creating too much threads can consume a lot of memory/OS resources.
+
+## Concurrency Models
+Concurrency model == mechanism by which threads collaborate.
+
+### Shared State vs Separate State
+An important aspect of concurrency models is whether the state is shared or not.
+
+Shared state -> can lead to race conditions and deadlocks.
+![shared state](images/shared-state.png)
+
+Separate state -> threads use their own state which is shared via immutable objects or copies
+![separate state](images/separate-state.png)
+
+### Parallel Workers
+![parallel workers](images/parallel-workers.png)
+
+This is the most commonly used concurrency model in java application (implemented via the Executors framework).
+
+Advantages - easy to understand & parallelize further
+Disadvantages:
+ * Uses shared state & it had all its disadvantages
+ * Stateless workers - using shared state means that you need to re-read it every time you need it to avoid using a stale copy. This can be slow at times
+ * Job ordering is nondeterministic - you can't guarantee the order of execution for the jobs
+
+### Assembly Line (aka event-driven)
+![assembly line](images/assembly-line.png)
+
+These systems are usually designed to use non-blocking IO and the non-blocking IO is the boundary between the workers.
+![assembly line io](images/assembly-line-io.png)
+
+Example implementation - in NodeJS with promises. Other implementations - Akka, Vert.x
+
+Advantages:
+ * No shared state - no need to worry about thread-safety
+ * Stateful workers - since data is confined to workers, they can be stateful, ie keep their own data in-memory at all times
+ * Better hardware conformity (aka mechanical sympathy) - single-threaded code plays nicer with hardware as you can use more optimized data structures and algorithms. You can also cache data.
+ * Job ordering is possible - you can even log all events in a system & recreate the system's state from the logs later
+
+Disadvantages:
+ * May lead to complicated code
+   * implementing callback hell
+   * execution flow spread across several classes
+
+### Actors vs. channels
+Both use the "assembly line" concurrency model.
+
+In the actor model, each worker is called an actor and they can send messages to one another.
+![actor model](images/actor-model.png)
+
+In the channels model, each worker subscribes to messages on a channel which other workers can send messages to.
+![channels model](images/channels-model.png)
+
+In the author's (and my) opinion, the channels model is more flexible as workers are decoupled from one another by leveraging channels.
+
+### Functional Parallelism
+Another popular concurrency model is functional parallelism.
+
+Its idea is that a program execution can be broken down to the composition of individual functions 
+which communicate by copying inputs/outputs (or using immutable objects) among them but never sharing them.
+
+Function calls can be parallelized on multiple CPUs.
+
+The caveat with this approach is knowing which functional calls to parallelize.
+Some might be too small to be worth the hassle.
+
+Example implementation is the java stream API.
+
+### Which concurrency model is best?
+If your tasks are naturally parallel & independent, the parallel workers concurrency model might be well suited for the job.
+If the tasks need to share some state, the assembly line concurrency model fits better.
+
