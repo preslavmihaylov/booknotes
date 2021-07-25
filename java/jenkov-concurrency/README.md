@@ -170,3 +170,24 @@ Example implementation is the java stream API.
 If your tasks are naturally parallel & independent, the parallel workers concurrency model might be well suited for the job.
 If the tasks need to share some state, the assembly line concurrency model fits better.
 
+## Same-Threading
+Concurrency model where a single-threaded system scales to N single-threaded systems.
+
+### Why Single-threaded systems?
+They are much simpler to deal with than multi-threaded systems due to the lack of shared state. Additionally, they can use non-thread safe data structures which utilize the CPU much more efficiently.
+
+The downside is that a single-threaded system cannot fully utilize the CPU cores available on a machine:
+![Single-threaded system](images/single-threaded-system.png)
+
+### Same-threading == single-threading scaled out
+![Same Threading](images/same-threading.png)
+
+Multi-threaded system == a lot of threads which share state.
+Same-threaded system == a lot of threads not sharing any state.
+![Multi-threading vs. same-threading](images/multi-vs-same-threading.png)
+
+### Thread Communication
+If two threads in a same-threaded system need to communicate, they can achieve it by sending messages.
+Messages are arbitrary byte sequences where the receiving thread get a copy of the original message.
+
+The communication can take place via queues, pipes, unix sockets, TCP sockets, etc.
