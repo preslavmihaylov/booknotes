@@ -191,3 +191,24 @@ If two threads in a same-threaded system need to communicate, they can achieve i
 Messages are arbitrary byte sequences where the receiving thread get a copy of the original message.
 
 The communication can take place via queues, pipes, unix sockets, TCP sockets, etc.
+
+## Concurrency vs. Parallelism
+Concurrency != Parallelism although they look very similar at first glance.
+
+Concurrent execution == program is making progress on more than one task simultaneously. Doesn't necessarily need parallel execution:
+![Concurrency](images/concurrency].png)
+
+Parallel execution == Program is making progress on more than one task in parallel.
+![Parallel execution](images/parallel-execution.png)
+
+Parallel concurrent execution == N tasks on M CPUs where N > M.
+![Parallel Concurrent Execution](images/parallel-concurrent-execution.png)
+
+Parallelism == big task is split into subtasks which are executed concurrently and/or in parallel:
+![Parallelism](images/parallelism.png)
+
+### Concurrency/Parallelism combos
+ * Concurrent, not parallel - e.g. working on task #1 while task #2 is waiting for file IO
+ * Parallel, not concurrent - e.g. program works on only one task which is split in subtasks & they are executed in parallel
+ * Not concurrent, not parallel - e.g. traditional CLI applications
+ * Concurrent, Parallel - e.g. web server handling multiple requests in parallel and some of them are multiplexed on the same CPU while waiting for database operation to complete.
