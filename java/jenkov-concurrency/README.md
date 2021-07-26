@@ -211,4 +211,45 @@ Parallelism == big task is split into subtasks which are executed concurrently a
  * Concurrent, not parallel - e.g. working on task #1 while task #2 is waiting for file IO
  * Parallel, not concurrent - e.g. program works on only one task which is split in subtasks & they are executed in parallel
  * Not concurrent, not parallel - e.g. traditional CLI applications
- * Concurrent, Parallel - e.g. web server handling multiple requests in parallel and some of them are multiplexed on the same CPU while waiting for database operation to complete.
+ * Concurrent, Parallel - e.g. web server handling multiple requests in parallel and some of them are multiplexed on the same CPU while waiting for database operation to complete.Q
+
+## Single-threaded concurrency
+Making progress on more than one task on a single thread.
+
+### Still new ground
+Popular libraries, technologies still use this concurrency model. Netty, Vert.x, Undertow and NodeJS use this model.
+
+The model is centered around an event loop - a thread running in a loop, waiting for events in the system. When an event is invoked, your code, subscribed to the event gets executed.
+
+### Classic multi-threaded concurrency
+Typically assign one task per thread, but there are nuances, e.g. thread pools.
+
+Advantages:
+ * Relatively easy to distribute the work load across multiple threads
+
+Disadvantages:
+ * Hard to maintain & less performant when shared data gets involved.
+
+### Single-threaded concurrency
+You implement your task switching.
+
+Benefits:
+ * No thread visibility or race condition problems
+ * control over task switching - you can decide how big of a chunk to work on before task switching
+ * control over task prioritization
+
+In the author's opinion, there are few benefits of this concurrency model over the classic multi-threaded approach. Javascript uses this model because it is a single-threaded language & it's the only option we've got.
+
+### Challenges
+ * Implementation required - you need to learn how to implement this model & actually implement it
+ * Blocking operations have to be avoid or completed in background threads
+ * Only uses a single CPU
+
+### Single-threaded implementation - via thread loop
+an infinite for loop is waiting for tasks to complete & completes them if any are present.
+This thread can also be paused for several milliseconds if no work is estimated to come to avoid wasting CPU time in a tight loop.
+![thread loop](images/thread-loop.png)
+
+Agent - a component which does some work & is invoked by the thread loop.
+Thread loops invoke agents:
+![Thread loop with agent](images/thread-loop-agent.png)
