@@ -547,3 +547,28 @@ public class Calculator{
 ```
 
 In the above case, the object is immutable & thread-safe but its reference is not and needs to be synchronized.
+
+## Java Memory Model
+The JMM specifies how the Java VM works with the main memory.
+
+Internal JMM:
+![Java Memory Model](images/java-memory-model.png)
+
+How the JMM maps to the hardware memory model:
+![JMM to Hardware MM mapping](images/jmm-to-hardware-mapping.png)
+
+When objects are stored in various different memory locations in a computer, certain problems may occur.
+
+### Visibility
+If two threads are sharing an object, without proper synchronization updates to the object by one thread might not be visible to another.
+
+Typical explanation - the change from one thread is not flushed to main memory for it to be observed by another, running on a different CPU:
+![Visibility problem](images/visibility-problem.png)
+
+One way to solve this is to use the `volatile` keyword.
+
+### Race conditions
+If two threads are sharing an object and both of them are updating it, a race condition can occur:
+![Race Condition](images/race-condition.png)
+
+One way to solve this is to use the `synchronized` keyword.
