@@ -253,3 +253,80 @@ This thread can also be paused for several milliseconds if no work is estimated 
 Agent - a component which does some work & is invoked by the thread loop.
 Thread loops invoke agents:
 ![Thread loop with agent](images/thread-loop-agent.png)
+
+## Creating and starting Java threads
+Thread == like a virtual CPU which executes your code
+
+### Creating threads
+```java
+new Thread().start();
+```
+
+This example doesn't provide the thread any code to execute, therefore it will stop after it's started.
+
+Ways to provide code for threads to execute:
+ * Subclassing:
+```java
+  public class MyThread extends Thread {
+
+    public void run(){
+       System.out.println("MyThread running");
+    }
+  }
+```
+
+ * Via Runnable:
+```java
+  new Thread(() -> { System.out.println("Lambda Runnable running"); }).start();
+```
+
+Common pitfall, avoid invoking `run()` over `start()`. That method executes the runnable in the current thread, rather than the new one.
+
+Specifying the name of the thread:
+```java
+Thread thread = new Thread("New Thread") {
+  public void run(){
+    System.out.println("run by: " + getName());
+  }
+};
+
+
+thread.start();
+System.out.println(thread.getName());
+```
+
+Getting the current thread object:
+```java
+Thread thread = Thread.currentThread();
+```
+
+To stop a thread, the implementation should allow it. Example:
+```java
+public class MyRunnable implements Runnable {
+
+    private boolean doStop = false;
+
+    public synchronized void doStop() {
+        this.doStop = true;
+    }
+
+    private synchronized boolean keepRunning() {
+        return this.doStop == false;
+    }
+
+    @Override
+    public void run() {
+        while(keepRunning()) {
+            // keep doing what this thread should do.
+            System.out.println("Running");
+
+            try {
+                Thread.sleep(3L * 1000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+}
+```
