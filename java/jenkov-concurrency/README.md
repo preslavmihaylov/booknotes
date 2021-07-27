@@ -330,3 +330,87 @@ public class MyRunnable implements Runnable {
     }
 }
 ```
+
+## Race Conditions & Critical Sections
+A race condition can occur in a critical section where the result of execution depends on the sequence of concurrently executing operations.
+
+### Types of race conditions
+ * Read-modify-write - read a value, modify it and write it back.
+```java
+  public class Counter {
+
+     protected long count = 0;
+
+     public void add(long value){
+         this.count = this.count + value;
+     }
+  }
+```
+
+This can produce wrong results if executed by multiple threads simultaneously.
+
+ * Check-then-act check a condition and act on it
+```java
+public class CheckThenActExample {
+
+    public void checkThenAct(Map<String, String> sharedMap) {
+        if(sharedMap.containsKey("key")){
+            String val = sharedMap.remove("key");
+            if(val == null) {
+                System.out.println("Value for 'key' was null");
+            }
+        } else {
+            sharedMap.put("key", "value");
+        }
+    }
+}
+```
+
+In this situation, it is possible that multiple threads try to remove the same value, but only one of them will get a value back.
+
+### Preventing race conditions
+To prevent race conditions, you must ensure that critical sections are executed as an atomic instruction.
+
+This can be achieved, typically, by using the `synchronized` keyword in Java.
+
+You might also want to improve critical section throughput.
+This can be achieved by splitting a big critical section into smaller ones.
+
+Example:
+```java
+public class TwoSums {
+    
+    private int sum1 = 0;
+    private int sum2 = 0;
+    
+    public void add(int val1, int val2){
+        synchronized(this){
+            this.sum1 += val1;   
+            this.sum2 += val2;
+        }
+    }
+}
+```
+
+This can be written (correctly) like so:
+```java
+public class TwoSums {
+    
+    private int sum1 = 0;
+    private int sum2 = 0;
+
+    private Integer sum1Lock = new Integer(1);
+    private Integer sum2Lock = new Integer(2);
+
+    public void add(int val1, int val2){
+        synchronized(this.sum1Lock){
+            this.sum1 += val1;   
+        }
+        synchronized(this.sum2Lock){
+            this.sum2 += val2;
+        }
+    }
+}
+```
+
+Note that this is a contrived example just to illustrate the concept. Critical sections for such small instructions are unnecessary.
