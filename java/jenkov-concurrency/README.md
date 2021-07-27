@@ -572,3 +572,145 @@ If two threads are sharing an object and both of them are updating it, a race co
 ![Race Condition](images/race-condition.png)
 
 One way to solve this is to use the `synchronized` keyword.
+
+## Java Happens Before guarantee
+Happens before guarantees - a set of rules governing how the JMM is allowed to reorder instructions for performance gains.
+
+### Instruction reordering
+Modern CPUs can execute non-dependent instructions in parallel. Example:
+```
+a = b + c
+
+d = e + f
+```
+
+Instruction reordering is allowed by the JMM as long as it doesn't change the semantics of the program.
+However, when these instructions happen across multiple threads, the JMM doesn't guarantee the order of the instructions which can lead to problems.
+
+The rootcause is that the dependent instructions are not visible to the second thread.
+
+One way to guarantee visibility is to use the `volatile` keyword. It provides a guarantee that operations on the variable will be visible by all threads accessing it.
+
+The reason is that the JMM provides a `happens-before` guarantee for volatile variables - ie, `writes to volatile variables happens-before subsequent reads`.
+This imposes a restriction on the JMM to not do any wise things to reorder instructions.
+
+As a side-effect, this can also lead to "synchronization piggybacking" where you can achieve synchronization on non-synchronized variables by piggybacking on the `happens-before` guarantee.
+
+Example:
+```
+this.nonVolatileVarA = 34;
+this.nonVolatileVarB = new String("Text");
+this.volatileVarC    = 300;
+```
+
+In this example, all three variables are visible to other threads, despite the fact that only the third one is declared `volatile`.
+
+There are similar read/write guarantees for the `synchronized` keyword I won't go through because it is not so important.
+
+The TLDR is that `happens-before` guarantees are the assembly of java concurrency and you shouldn't rely too heavily on it.
+
+## Java Synchronized block
+When you use the `synchronized` keyword, you are locking a section of your code to be executed by only one thread at a time. The rest will have to wait for the first one to finish.
+
+Example synchronized instance method:
+```java
+public class MyCounter {
+
+  private int count = 0;
+
+  public synchronized void add(int value){
+      this.count += value;
+  }
+}
+```
+
+This method is synchronized on the instance of the object, not the class itself. In example, different instances can execute that method in parallel.
+
+Additionally, this also means that only one synchronized method on a single instance can be executed at a time. Example:
+```java
+public class MyCounter {
+
+  private int count = 0;
+
+  public synchronized void add(int value){
+      this.count += value;
+  }
+  public synchronized void subtract(int value){
+      this.count -= value;
+  }
+}
+```
+
+In this case, only one thread can be executing either `add` or `subtract` at a time.
+
+Static methods can be synchronized as well, but they are synchronized on the class itself, rather than the instance:
+```java
+public static MyStaticCounter{
+
+  private static int count = 0;
+
+  public static synchronized void add(int value){
+      count += value;
+  }
+}
+```
+
+You can also synchronize specific blocks of a method as well:
+```java
+  public void add(int value){
+
+    synchronized(this){
+       this.count += value;   
+    }
+  }
+```
+
+The passed parameter to `synchronized` is the object being locked on. In this case, it is the class instance.
+
+These two methods are equivalent in terms of synchronization:
+```java
+  public class MyClass {
+  
+    public synchronized void log1(String msg1, String msg2){
+       log.writeln(msg1);
+       log.writeln(msg2);
+    }
+
+  
+    public void log2(String msg1, String msg2){
+       synchronized(this){
+          log.writeln(msg1);
+          log.writeln(msg2);
+       }
+    }
+  }
+```
+
+In most cases, it makes sense to synchronize on `this`. As a rule of thumb, don't synchronize on any primitive objects.
+
+### Limitations
+The `synchronzed` keyword allows only one thread to read or write at a time. There are alternatives for other use cases.
+
+E.g. for multiple reading threads and one writing thread, use Read/Write locks.
+E.g. for multiple writing threads, use a Semaphore.
+
+Also note that there is some performance overhead when using `synchronized` due to lock contention.
+
+As a caveat, the synchronized keyword allows reentrance. In example, you can invoke several `synchronized` blocks at the same time as long as they are synchronized on the same object.
+Example:
+```java
+public class MyClass {
+    
+  List<String> elements = new ArrayList<String>();
+    
+  public void count() {
+    if(elements.size() == 0) {
+        return 0;
+    }
+    synchronized(this) {
+       elements.remove();
+       return 1 + count();  
+    }
+  }
+}
+```
