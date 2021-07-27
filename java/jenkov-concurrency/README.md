@@ -414,3 +414,136 @@ public class TwoSums {
 ```
 
 Note that this is a contrived example just to illustrate the concept. Critical sections for such small instructions are unnecessary.
+
+## Thread Safety & Shared Resources
+Code that is safe to call by multiple threads is thread-safe.
+Code is thread safe -> no race conditions.
+
+Local variables are thread-safe as they are stored inside the thread's own memory.
+
+Thread-safe method example:
+```java
+public void someMethod(){
+
+  long threadSafeInt = 0;
+
+  threadSafeInt++;
+}
+```
+
+Object member variables are not thread-safe by default if multiple threads share the same object instance.
+
+Example:
+```java
+NotThreadSafe sharedInstance = new NotThreadSafe();
+
+new Thread(new MyRunnable(sharedInstance)).start();
+new Thread(new MyRunnable(sharedInstance)).start();
+
+public class MyRunnable implements Runnable{
+  NotThreadSafe instance = null;
+
+  public MyRunnable(NotThreadSafe instance){
+    this.instance = instance;
+  }
+
+  public void run(){
+    this.instance.add("some text");
+  }
+}
+```
+
+If the instance is not shared, though, this code is thread-safe:
+```java
+new Thread(new MyRunnable(new NotThreadSafe())).start();
+new Thread(new MyRunnable(new NotThreadSafe())).start();
+```
+
+### Thread Control Escape Rule
+```
+If a resource is created, used and disposed within
+the control of the same thread,
+and never escapes the control of this thread,
+the use of that resource is thread safe.
+```
+
+A resource can be anything - object, database, file, etc.
+
+If the objects you're using are thread-safe but the underlying resource (e.g. database) is accessed concurrently, this might not be thread-safe.
+Example:
+```
+check if record X exists
+if not, insert record X
+```
+
+Example going wrong:
+```
+Thread 1 checks if record X exists. Result = no
+Thread 2 checks if record X exists. Result = no
+Thread 1 inserts record X
+Thread 2 inserts record X
+```
+
+## Thread Safety & Immutability
+Race conditions occur only if multiple threads are accessing the same resource and writing to it.
+If they only read it, it is thread-safe.
+
+If we make the shared objects immutable, they are thread-safe. Example:
+```java
+public class ImmutableValue{
+
+  private int value = 0;
+
+  public ImmutableValue(int value){
+    this.value = value;
+  }
+
+  public int getValue(){
+    return this.value;
+  }
+}
+```
+
+To execute values on the immutable object, a new object is to be returned:
+```java
+public class ImmutableValue{
+
+  private int value = 0;
+
+  public ImmutableValue(int value){
+    this.value = value;
+  }
+
+  public int getValue(){
+    return this.value;
+  }
+
+  
+  public ImmutableValue add(int valueToAdd){
+    return new ImmutableValue(this.value + valueToAdd);
+  }
+}
+```
+
+The reference, though, is not thread-safe.
+
+Example:
+```java
+public class Calculator{
+  private ImmutableValue currentValue = null;
+
+  public ImmutableValue getValue(){
+    return currentValue;
+  }
+
+  public void setValue(ImmutableValue newValue){
+    this.currentValue = newValue;
+  }
+
+  public void add(int newValue){
+    this.currentValue = this.currentValue.add(newValue);
+  }
+}
+```
+
+In the above case, the object is immutable & thread-safe but its reference is not and needs to be synchronized.
