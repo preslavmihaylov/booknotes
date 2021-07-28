@@ -768,3 +768,90 @@ This is actually often not the case due to a performance optimization the CPU do
 In a nutshell - instead of flushing the values all the way to main memory, they can be flushed to L1/L2 cache & then that value can be copied on the rest of the caches as well to guarantee that all CPUs will see them.
 This way, you guarantee visibility while also sustaining performance gains from leveraging caches.
 ![CPU Cache Coherence](images/cpu-cache-coherence.png)
+
+## False sharing in Java
+False sharing == when a thread modifies a variable, its cache line is invalidated which can lead to invalidating other unrelated variables, which happen to be stored on the same cache line.
+
+When CPU reads a value from a cache, it doesn't just read a single byte. It reads a whole cache line as otherwise, that would be inefficient.
+
+This can lead to a performance degradation where two threads write to independent variables and yet, pay performance costs as if they're modifying the same variable.
+
+Example:
+```java
+public class Counter {
+
+    public volatile long count1 = 0;
+    public volatile long count2 = 0;
+
+}
+
+public class FalseSharingExample {
+
+    public static void main(String[] args) {
+
+        Counter counter1 = new Counter();
+        Counter counter2 = counter1;
+
+        long iterations = 1_000_000_000;
+
+        Thread thread1 = new Thread(() -> {
+            long startTime = System.currentTimeMillis();
+            for(long i=0; i<iterations; i++) {
+                counter1.count1++;
+            }
+            long endTime = System.currentTimeMillis();
+            System.out.println("total time: " + (endTime - startTime));
+        });
+        Thread thread2 = new Thread(() -> {
+            long startTime = System.currentTimeMillis();
+            for(long i=0; i<iterations; i++) {
+                counter2.count2++;
+            }
+            long endTime = System.currentTimeMillis();
+            System.out.println("total time: " + (endTime - startTime));
+        });
+
+        thread1.start();
+        thread2.start();
+    }
+}
+```
+
+This code takes 36s to run on author's laptop.
+If instead, separate counters are used, it takes 9s to run.
+
+A huge performance overhead due to false sharing.
+
+One way to solve this issue is to use separate objects which don't have false sharing.
+Alternatively, one can use the `@Contended` keyword to let java know that it should pad empty bytes at the end of a field to prevent false sharing:
+```java
+public class Counter1 {
+
+    @jdk.internal.vm.annotation.Contended
+    public volatile long count1 = 0;
+    public volatile long count2 = 0;
+}
+```
+
+You can also group fields to be close together in RAM using the annotation:
+```java
+public class Counter1 {
+
+    @jdk.internal.vm.annotation.Contended("group1")
+    public volatile long count1 = 0;
+
+    @jdk.internal.vm.annotation.Contended("group1");
+    public volatile long count2 = 0;
+
+    @jdk.internal.vm.annotation.Contended("group2");
+    public volatile long count3 = 0;
+
+}
+```
+
+The amount of bytes to pad with depends on the underlying hardware. For 64-bit systems, 64 bits of padding is sufficient. For 128-bit ones, it is not.
+
+By default, java uses 128 bits of padding. You can customize that via this flag:
+```
+-XX:ContendedPaddingWidth=64
+```
