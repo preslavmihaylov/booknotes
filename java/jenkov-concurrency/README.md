@@ -714,3 +714,57 @@ public class MyClass {
   }
 }
 ```
+
+## Java volatile keyword
+volatile -> mark a variable as being stored in main memory.
+
+### Variable visibility problems
+Without any synchronization or the use of volatile, you are not guaranteed that writes to a variable will be observed by other threads.
+
+One reason might be that threads are writing the value in their own CPU caches only & not persisting the value in main memory, so other threads can't see the change.
+![Visibility problem](images/visibility-problem-2.png)
+
+Declaring a variable `volatile` guarantees that all threads will observe previous writes to the variable at all times.
+However, it does not guard you against race conditions.
+
+### Full volatile visibility guarantee
+```
+If Thread A writes to a volatile variable and Thread B subsequently reads the same volatile variable, then all variables visible to Thread A before writing the volatile variable, will also be visible to Thread B after it has read the volatile variable.
+If Thread A reads a volatile variable, then all variables visible to Thread A when reading the volatile variable will also be re-read from main memory.
+```
+
+Other than what was already explained, this definition also provides some other guarantees. Example:
+```java
+public class MyClass {
+    private int years;
+    private int months
+    private volatile int days;
+
+    public int totalDays() {
+        int total = this.days;
+        total += months * 30;
+        total += years * 365;
+        return total;
+    }
+
+    public void update(int years, int months, int days){
+        this.years  = years;
+        this.months = months;
+        this.days   = days;
+    }
+}
+```
+
+In this example, only days is volatile and yet, all other variables are effectively volatile as well as they piggyback on the `days`' variable synchronization.
+
+### volatile is not always enough
+volatile prevents visibility issues but doesn't save you from race conditions. In case of race conditions, synchronization via `synchronized` or other means is still necessary.
+
+## CPU Cache Coherence
+Throughout this tutorial, it was mentioned that certain synchronization primitives (e.g. `volatile`) force some variables to be flushed to main memory in order for them to be visible to other threads.
+
+This is actually often not the case due to a performance optimization the CPU does - Cache coherence.
+
+In a nutshell - instead of flushing the values all the way to main memory, they can be flushed to L1/L2 cache & then that value can be copied on the rest of the caches as well to guarantee that all CPUs will see them.
+This way, you guarantee visibility while also sustaining performance gains from leveraging caches.
+![CPU Cache Coherence](images/cpu-cache-coherence.png)
