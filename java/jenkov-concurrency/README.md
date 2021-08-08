@@ -1233,3 +1233,232 @@ try{
   lock.unlock();
 }
 ```
+
+## Read-write locks in java
+A read-write lock allows you to only lock the resource on writes, rather than locking both reads and writes.
+
+Note that using a single lock on writes & not doing synchronization on reads is incorrect as there would be thread visibility problems.
+The full article offers a thorough `ReadWriteLock` implementation which is irrelevant IMO, as one doesn't usually go on implementing locks themselves.
+
+Similar to normal locks, the `try-finally` lock pattern needs to be used here as well for the same reasons as last time:
+```java
+lock.lockWrite();
+try{
+  //do critical section code, which may throw exception
+} finally {
+  lock.unlockWrite();
+}
+```
+
+## Reentrance Lockout
+This is a similar issue to deadlock & nested monitor lockout which leads to infinite block.
+
+It happens when you reenter a critical section using a non-reentrant lock.
+
+Example reentrance:
+```java
+public class Reentrant{
+
+  public synchronized outer(){
+    inner();
+  }
+
+  public synchronized inner(){
+    //do something
+  }
+}
+```
+
+This example is valid & has no issues as the `synchronized` block is reentrant. However, if you had used a non-reentrant lock instead, it would have lead to an issue.
+
+## Semaphores
+A thread synchronization primitive that can be used to either send signals across threads or to guard critical sections similar to locks.
+
+### Using semaphores for signaling
+```java
+// In some method...
+Semaphore semaphore = new Semaphore();
+
+SendingThread sender = new SendingThread(semaphore);
+
+ReceivingThread receiver = new ReceivingThread(semaphore);
+
+receiver.start();
+sender.start();
+
+public class SendingThread {
+  Semaphore semaphore = null;
+
+  public SendingThread(Semaphore semaphore){
+    this.semaphore = semaphore;
+  }
+
+  public void run(){
+    while(true){
+      //do something, then signal
+      this.semaphore.take();
+
+    }
+  }
+}
+
+public class ReceivingThread {
+  Semaphore semaphore = null;
+
+  public ReceivingThread(Semaphore semaphore){
+    this.semaphore = semaphore;
+  }
+
+  public void run(){
+    while(true){
+      this.semaphore.release();
+      //receive signal, then do something...
+    }
+  }
+}
+```
+
+### Other details
+Counting semaphore == one which counts the number of signals sent/received.
+Bounded semaphore == counting semaphore which also sets a bound to the number of signals sent/received. Very similar to channels in Go and bounded queue in Java, but without transferring any data.
+
+## Blocking queues
+A thread-safe queue which blocks if you attempt to take an element from it and it is empty and if you attempt to push an element to it and it's full. This is called a channel in Go.
+![Blocking queue](images/blocking-queue.png)
+
+## The Producer-Consumer Pattern
+A concurrency design pattern which allows multiple threads to enqueue work and multiple threads to dequeue work.
+
+This design pattern detaches the number of threads on either side of the operation from the algorithm, enabling one to scale this as they please.
+
+Use-cases:
+ * Reduce foreground thread latency
+ * Load-balance work across threads
+ * Implement backpressure
+
+Backpressure - when producers put in more work than can be done. In that case, a backpressure implementation will cause the producers to block & not accept any more work until the previous jobs are completed.
+
+Example foreground thread latency:
+![Foreground thread latency](images/foreground-thread-latency.png)
+Programming Concurrency on the JVM: Mastering Synchronization, STM, and Actors
+
+## Thread pools
+A pool of threads that can be reused rather than destroyed after first use.
+
+The reason for this is that creating a new thread has some performance overhead which can be avoided.
+Additionally, using a thread pool enables you to specify how many threads are active at a time.
+
+Thread pools visualized:
+![Thread pool](images/thread-pool.png)
+
+The standard way to leverage a thread pool in java is to use the executor framework. In the article, an implementation of one is offered but one would rarely need to implement a thread pool themselves in practice.
+
+## Compare and swap
+A technique used when designing concurrent algorithms. 
+What CAS does is to compare the value of a variable with an expected value and if the values are equal, it atomically swaps them for a new value.
+An alternative to standard locking which is more complicated to implement but more performant.
+
+Locking is oftentimes not optimal due to wasted time waiting before a thread is woken up to retry acquiring a lock:
+![Locking visualization](images/locking-example.png)
+
+On the other hand, CAS is similar to busy waiting for a lock to be released in that is makes the checks more frequently & hence, less time is wasted:
+![cas example](images/CAS-example.png)
+
+The downside is that more CPU time is wasted while waiting to execute an operation but in practice, if critical sections are minimal, this is rarely the case.
+
+All atomic classes in java use CAS.
+
+## Anatomy of a synchronizer
+This article is very similar to the [Building custom synchronizers](https://github.com/preslavmihaylov/booknotes/tree/master/java/java-concurrency-in-practice/chapter-14) chapter in JCIP so you better use that as a reference instead.
+
+## Non-blocking Algorithms
+Algorithms which allow threads to access shared state without blocking the threads involved.
+
+A blocking concurrency algorithm is an algorithm which either:
+ * Performs the action requested by the thread - OR
+ * Blocks the thread until the action can be performed safely
+
+![Blocking algorithm](images/blocking-algo.png)
+
+A non-blocking concurrency algorithm is an algorithm which either:
+ * Performs the action requested by the thread - OR
+ * Notifies the requesting thread that the action could not be performed
+
+![Nonblocking algorithm](images/nonblocking-algo.png)
+
+Example non-blocking counter:
+```java
+import java.util.concurrent.atomic.AtomicLong;
+
+public class AtomicCounter {
+    private AtomicLong count = new AtomicLong(0);
+
+    public void inc() {
+        boolean updated = false;
+        while(!updated){
+            long prevCount = this.count.get();
+            updated = this.count.compareAndSet(prevCount, prevCount + 1);
+        }
+    }
+
+    public long count() {
+        return this.count.get();
+    }
+}
+```
+
+This type of locking is also referred to as optimistic locking.
+
+Benefits of non-blocking algorithms:
+ * Choice to either block or do something else once refused to acquire a lock
+ * Better performance
+ * No deadlocks
+
+The rest of the article goes into details of how non-blocking algorithms can be implemented for more complicated data structures which is something one would rarely do themselves.
+Instead, use non-blocking data structure implementations which are available in the standard library or as OS libraries.
+
+## Amdahl's Law
+Used to calculate how much a computation can be sped up by running part of it in parallel.
+
+A program can be split into two parts - one which can't be parallelized and one which can.
+T - total execution time when program is executed sequentially.
+B - Non-parallelizable part
+T-B - parallelizable part
+N - parallelization factor (ie, how many CPUs are used to parallelize the execution)
+
+Amdahl's law:
+```
+T(N) = B + ( T(1) - B ) / N
+```
+
+Example:
+
+given a program with 40% non-parallelizable part & 60% parallelizable part with parallelization:
+N = 2:
+```
+T(2) = 0.4 + ( 1 - 0.4 ) / 2
+     = 0.4 + 0.6 / 2
+     = 0.4 + 0.3
+     = 0.7
+```
+
+N = 5:
+```
+T(5) = 0.4 + ( 1 - 0.4 ) / 5
+     = 0.4 + 0.6 / 5
+     = 0.4 + 0.12
+     = 0.52
+```
+
+In a nutshell, parallelizing the program with 5 CPUs results in 2x faster execution.
+
+### The law illustrated
+![Amdahl's law 1](images/amdahl-law-1.png)
+
+If parallelization is 2:
+![Amdahl's law 2](images/amdahl-law-2.png)
+
+If parallelization is 3:
+![Amdahl's law 3](images/amdahl-law-3.png)
+
+The takeaway is that throwing hardware at a program can only optimize it to a certain degree. After a given point, you'd need to optimize your non-parallelizable part of the program.
