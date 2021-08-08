@@ -855,3 +855,381 @@ By default, java uses 128 bits of padding. You can customize that via this flag:
 ```
 -XX:ContendedPaddingWidth=64
 ```
+
+## Java ThreadLocal
+ThreadLocal in java enables you to create variables that are confined to the thread they've been created in.
+That way, these variables are thread-safe although they appear to be shared.
+
+However, this also means that each thread will see its own version of the variable - if e.g. two threads increment a thread-local counter once, they will both see 1 as a result.
+
+Example:
+```java
+private ThreadLocal<String> myThreadLocal = new ThreadLocal<String>();
+
+myThreadLocal.set("Hello ThreadLocal");
+String threadLocalValue = myThreadLocal.get();
+```
+
+A thread local can have an initial value:
+```java
+private ThreadLocal myThreadLocal = new ThreadLocal<String>() {
+    @Override protected String initialValue() {
+        return String.valueOf(System.currentTimeMillis());
+    }
+};
+
+// OR
+ThreadLocal threadLocal = ThreadLocal.withInitial(
+        () -> { return String.valueOf(System.currentTimeMillis()); } );
+```
+
+## Thread Signaling
+Purpose is for threads to communicate with one another. e.g. a thread should only execute something if another one has completed its execution.
+
+One option is signaling via a shared object:
+```java
+public class MySignal{
+
+  protected boolean hasDataToProcess = false;
+
+  public synchronized boolean hasDataToProcess(){
+    return this.hasDataToProcess;
+  }
+
+  public synchronized void setHasDataToProcess(boolean hasData){
+    this.hasDataToProcess = hasData;  
+  }
+}
+```
+
+In the waiting thread, there has to be a busy wait in place for this pattern to work.
+```java
+protected MySignal sharedSignal = ...
+
+...
+
+while(!sharedSignal.hasDataToProcess()){
+  //do nothing... busy waiting
+}
+```
+
+An alternative is to use java's wait, notify and notifyAll methods which all objects share.
+What these do is that they allow a thread to `wait()` on an object until another thread `notify()`es on the same object.
+`notifyAll()` on the other hand, wakes up all threads which are waiting rather than a single one.
+
+Note that both operations need to be executed while synchronizing on the monitor object. Contrary to most other methods, if `wait()` is invoked in a `synchronized` block, the lock is released until a new `wait()` or `notify()` is triggered.
+
+If any of these signaling methods are invoked outside of a synchronized block, an exception is thrown.
+
+Example:
+```java
+public class MonitorObject{}
+
+public class MyWaitNotify{
+  MonitorObject myMonitorObject = new MonitorObject();
+
+  public void doWait(){
+    synchronized(myMonitorObject){
+      try{
+        myMonitorObject.wait();
+      } catch(InterruptedException e){...}
+    }
+  }
+
+  public void doNotify(){
+    synchronized(myMonitorObject){
+      myMonitorObject.notify();
+    }
+  }
+}
+```
+
+### Missed signals
+If a thread invokes `notify` without any threads `wait`ing on that object, the method will return successfully.
+However, if a subsequent thread `wait`s, the signal will not be received and that thread will be blocked forever.
+
+To prevent this, you have to track whether a notify signal was received:
+```java
+public class MyWaitNotify2{
+  MonitorObject myMonitorObject = new MonitorObject();
+  boolean wasSignalled = false;
+
+  public void doWait(){
+    synchronized(myMonitorObject){
+      if(!wasSignalled){
+        try{
+          myMonitorObject.wait();
+         } catch(InterruptedException e){...}
+      }
+      //clear signal and continue running.
+      wasSignalled = false;
+    }
+  }
+
+  public void doNotify(){
+    synchronized(myMonitorObject){
+      wasSignalled = true;
+      myMonitorObject.notify();
+    }
+  }
+}
+```
+
+### Spurious wakeups
+For some reason, a thread which is `wait`int might get randomly woken up without receiving a `notify` signal in the first place.
+
+This is why, the common pattern to deal with `wait()` is to do it in a while loop & track if the notify signal was received:
+```java
+public class MyWaitNotify3{
+  MonitorObject myMonitorObject = new MonitorObject();
+  boolean wasSignalled = false;
+
+  public void doWait(){
+    synchronized(myMonitorObject){
+      while(!wasSignalled){
+        try{
+          myMonitorObject.wait();
+         } catch(InterruptedException e){...}
+      }
+      //clear signal and continue running.
+      wasSignalled = false;
+    }
+  }
+
+  public void doNotify(){
+    synchronized(myMonitorObject){
+      wasSignalled = true;
+      myMonitorObject.notify();
+    }
+  }
+}
+```
+
+### Gotcha - don't call signaling methods on constants or global objects
+If you use a constant string as the monitor object, the JVM is likely to reference all constant strings in your application to the same object.
+Hence, your signaling methods will be shared across all the objects in your application which use them.
+
+## Deadlock
+Deadlock occurs when multiple threads need the same locks but obtain them in different order.
+
+Conceptual example:
+```
+Thread 1  locks A, waits for B
+Thread 2  locks B, waits for A
+```
+
+Example:
+```java
+public class TreeNode {
+ 
+  TreeNode parent   = null;  
+  List     children = new ArrayList();
+
+  public synchronized void addChild(TreeNode child){
+    if(!this.children.contains(child)) {
+      this.children.add(child);
+      child.setParentOnly(this);
+    }
+  }
+  
+  public synchronized void addChildOnly(TreeNode child){
+    if(!this.children.contains(child){
+      this.children.add(child);
+    }
+  }
+  
+  public synchronized void setParent(TreeNode parent){
+    this.parent = parent;
+    parent.addChildOnly(this);
+  }
+
+  public synchronized void setParentOnly(TreeNode parent){
+    this.parent = parent;
+  }
+}
+```
+
+In this case, if the child invokes `setParent` at the same time as the parent invokes `addChild` a deadlock will occur.
+```
+Thread 1: parent.addChild(child); //locks parent
+          --> child.setParentOnly(parent);
+
+Thread 2: child.setParent(parent); //locks child
+          --> parent.addChildOnly()
+```
+
+Deadlocks can also occur in database transactions. Example:
+```
+Transaction 1, request 1, locks record 1 for update
+Transaction 2, request 1, locks record 2 for update
+Transaction 1, request 2, tries to lock record 2 for update.
+Transaction 2, request 2, tries to lock record 1 for update.
+```
+
+## Deadlock Prevention
+It is possible to prevent deadlocks using some techniques.
+
+### Lock ordering
+If you always acquire your locks in the same order, it is not possible to get a deadlock.
+
+This is very effective but works well only if you know all the locks you need ahead of time.
+
+### Lock timeout
+Another technique is to timeout if you don't acquire one of your locks in a given amount of time.
+Once you timeout, you wait a random number of milliseconds before trying again.
+
+The random delay is to prevent livelocks - issue where multiple threads timeout at the same time & retry at the same time resulting in a timeout again.
+
+Example lock timeout:
+```
+Thread 1 locks A
+Thread 2 locks B
+
+Thread 1 attempts to lock B but is blocked
+Thread 2 attempts to lock A but is blocked
+
+Thread 1's lock attempt on B times out
+Thread 1 backs up and releases A as well
+Thread 1 waits randomly (e.g. 257 millis) before retrying.
+
+Thread 2's lock attempt on A times out
+Thread 2 backs up and releases B as well
+Thread 2 waits randomly (e.g. 43 millis) before retrying.
+```
+
+### Deadlock detection
+a more heavyweight deadlock prevention mechanism used when lock ordering is not possible and lock timeout is not feasible.
+
+Everytime a thread acquires lock that is recorded in a data structure.
+When a thread is denied acquiring a lock, it can traverse the lock graph to detect if there are any deadlocks.
+
+Once a deadlock is detected, some or all of the threads back up & retry acquiring the locks again similar to the lock timeout mechanism.
+
+## Starvation and fairness
+If a thread is not granted CPU time because others grab it all, this situation is called "starvation". The solution is called "fairness" - allowing all threads an opportunity to utilise the CPU.
+
+### Causes of starvation in Java
+* Threads with high priority swallow all CPU time from threads with lower priority.
+* Threads are blocked indefinitely on a lock because others are allowed to enter before them
+* A thread `wait`ing on an object waits indefinitely because other threads are awakened before it all the time
+
+There are some techniques to implement fairness but this is a very advanced use-case which is rarely needed in practice. For the details, check out the article.
+
+## Nested monitor lockout
+```
+Thread 1 synchronizes on A
+Thread 1 synchronizes on B (while synchronized on A)
+Thread 1 decides to wait for a signal from another thread before continuing
+Thread 1 calls B.wait() thereby releasing the lock on B, but not A.
+
+Thread 2 needs to lock both A and B (in that sequence)
+        to send Thread 1 the signal.
+Thread 2 cannot lock A, since Thread 1 still holds the lock on A.
+Thread 2 remain blocked indefinately waiting for Thread1
+        to release the lock on A
+
+Thread 1 remain blocked indefinately waiting for the signal from
+        Thread 2, thereby
+        never releasing the lock on A, that must be released to make
+        it possible for Thread 2 to send the signal to Thread 1, etc.
+```
+
+Practical example:
+```java
+//lock implementation with nested monitor lockout problem
+
+public class Lock{
+  protected MonitorObject monitorObject = new MonitorObject();
+  protected boolean isLocked = false;
+
+  public void lock() throws InterruptedException{
+    synchronized(this){
+      while(isLocked){
+        synchronized(this.monitorObject){
+            this.monitorObject.wait();
+        }
+      }
+      isLocked = true;
+    }
+  }
+
+  public void unlock(){
+    synchronized(this){
+      this.isLocked = false;
+      synchronized(this.monitorObject){
+        this.monitorObject.notify();
+      }
+    }
+  }
+}
+```
+
+### Nested monitor lockout vs. Deadlock
+```
+In deadlock, two threads are waiting for each other to release locks.
+
+In nested monitor lockout, Thread 1 is holding a lock A, and waits
+for a signal from Thread 2. Thread 2 needs the lock A to send the
+signal to Thread 1.
+```
+
+## Slipped conditions
+In the time between when a thread has checked a condition and when it has acted upon it, that condition has changed.
+
+Example:
+```java
+if (!list.contains(a)) {
+  list.add(a);
+}
+```
+
+Between `contains` and `add` the condition might have changed which means that two threads can add `a` to the list multiple times.
+
+## Locks in java
+A lock in java is analogous to using `synchronized` blocks but provides more advanced capabilities.
+
+Example:
+```java
+public class Counter{
+
+  private Lock lock = new Lock();
+  private int count = 0;
+
+  public int inc(){
+    lock.lock();
+    int newCount = ++count;
+    lock.unlock();
+    return newCount;
+  }
+}
+```
+
+Locks can be reentrant. A reentrant lock is one where if it is acquired multiple times by the same thread, it does not block.
+
+Synchronized blocks are reentrant:
+```java
+public class Reentrant{
+
+  public synchronized outer(){
+    inner();
+  }
+
+  public synchronized inner(){
+    //do something
+  }
+}
+```
+
+This will not result in an error.
+
+The equivalent lock in java is a `ReentrantLock`.
+
+Note that when using lock, it is important that the critical section is guarded by a `try-finally` to prevent not unlocking the lock:
+```java
+lock.lock();
+try{
+  //do critical section code, which may throw exception
+} finally {
+  lock.unlock();
+}
+```
