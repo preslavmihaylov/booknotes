@@ -6,4 +6,4 @@ Notes for books related to java programming
  * [Java Concurrency in Practice](./java-concurrency-in-practice)
 
 ## Tutorials
- * [Jenkon Concurrency Tutorial](./jenkov-concurrency)
+ * [Jenkov Concurrency Tutorial](./jenkov-concurrency)
