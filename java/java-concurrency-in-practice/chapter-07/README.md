@@ -150,7 +150,7 @@ Tasks should have cancellation policies. Threads should have an interruption pol
 An interruption policy determines how a thread interprets an interruption request.  
 The most sensible interruption policy is some form of service-level cancellation - exit as quickly as possible, clean up if necessary, notify interested entities, etc.
 
-Code that doesn't own the thread should be careful to preserce the interrupted status of the thread so that the owning code can eventually act on it.
+Code that doesn't own the thread should be careful to preserve the interrupted status of the thread so that the owning code can eventually act on it.
 
 An example of a thread you don't own is a task executing in a thread pool. The task doesn't own the thread it is running on, the thread pool does.
 
