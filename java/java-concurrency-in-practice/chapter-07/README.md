@@ -27,7 +27,7 @@ Tasks & threads in java are stopped cooperatively - you can't force a task to st
 
 # Task cancellation
 
-An activity is cancellable is external code can move it to completion before it ends.
+An activity is cancellable if external code can move it to completion before it ends.
 
 Why you might want to cancel a task:
  * User-requested (e.g. user clicks the "Cancel" button)
