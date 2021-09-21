@@ -1,6 +1,15 @@
 # Chapter 4: Scalability and Thread Safety
 This chapter will explore how to work with Java 5's threading API by building a disk utility program which calculates the total size of files in a directory.
 
+  - [Managing Threads with ExecutorService](#managing-threads-with-executorservice)
+  - [Coordinating threads](#coordinating-threads)
+    - [Coordination using CountDownLatch](#coordination-using-countdownlatch)
+  - [Exchanging Data](#exchanging-data)
+  - [Java 7 Fork-Join API](#java-7-fork-join-api)
+  - [Scalable Collections](#scalable-collections)
+  - [Lock vs. Synchronized](#lock-vs-synchronized)
+  - [Recap](#recap)
+
 ## Managing Threads with ExecutorService
 Starting instances of `Thread` is generally a bad practice as one can't reuse them.
 
