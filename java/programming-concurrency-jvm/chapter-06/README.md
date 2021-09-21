@@ -361,10 +361,7 @@ public class EnergySource {
     }.execute();
   }
 }
-```
 
-and the main class & method:
-```java
 public class UseEnergySource {
   private static final EnergySource energySource = EnergySource.create();
     
@@ -397,7 +394,10 @@ public class UseEnergySource {
 }
 ```
 
-In Scala, it takes a lot less effort to create transactions:
+In Scala, it takes a lot less effort to create transactions.
+
+<details><summary>Scala example</summary>
+
 ```scala
 atomic {
   //code to run in a transaction....
@@ -481,12 +481,7 @@ object UseEnergySource {
 }
 ```
 
-Result:
-```
-Energy level at start: 100
-Energy level at end: 30
-Usage: 70
-```
+</details>
 
 ## Creating Nested Transactions
 Nested transactions get synchronized as if they are part of the outer transaction executing them.
@@ -627,9 +622,8 @@ public void transfer(
 }
 ```
 
-Here's the Scala version.
+<details><summary>Scala example</summary>
 
-Account example:
 ```scala
 class Account(val initialBalance : Int) {
   val balance = Ref(initialBalance)
@@ -656,10 +650,7 @@ class Account(val initialBalance : Int) {
     }
   }
 }
-```
 
-AccountService:
-```scala
 object AccountService {
   def transfer(from : Account, to : Account, amount : Int) = {
     atomic {
@@ -703,43 +694,12 @@ object AccountService {
 }
 ```
 
-The result is the same as in the java example.
+</details>
 
 ## Configuring Akka Transactions
 Configurations of transactions can be changed programmatically or via an `akka.conf` file.
 
 Example configuring read-only transaction:
-```java
-public class CoffeePot {
-  private static final Ref<Integer> cups = new Ref<Integer>(24);
-  
-  public static int readWriteCups(final boolean write) { 
-    final TransactionFactory factory = 
-      new TransactionFactoryBuilder().setReadonly(true).build();
-      
-    return new Atomic<Integer>(factory) {
-      public Integer atomically() { 
-        if(write) cups.swap(20);
-        return cups.get(); 
-      }
-    }.execute();
-  }
-  
-  public static void main(final String[] args) {
-    System.out.println("Read only");
-    readWriteCups(false);
-
-    System.out.println("Attempt to write");
-    try {
-      readWriteCups(true);      
-    } catch(Exception ex) {
-      System.out.println("Failed " + ex);
-    }
-  }
-}
-```
-
-The Main method:
 ```java
 public class CoffeePot {
   private static final Ref<Integer> cups = new Ref<Integer>(24);
@@ -779,7 +739,8 @@ Can't open for write transactional object 'akka.stm.Ref@1272670619'
 because transaction 'DefaultTransaction' is readonly'
 ```
 
-Scala version:
+<details><summary>Scala example</summary>
+
 ```scala
 object CoffeePot {
   val cups = Ref(24)
@@ -806,6 +767,8 @@ object CoffeePot {
   }
 }
 ```
+
+</details>
 
 ## Blocking Transactions - Sensible Wait
 If our transaction depends on some external variable changing, we can configure blocking which adds some sensible wait before attempting the transaction again.
@@ -876,7 +839,8 @@ Failed: Transaction DefaultTransaction has timed with a
 total timeout of 6000000000 ns
 ```
 
-Scala version:
+<details><summary>Scala example</summary>
+
 ```scala
 object CoffeePot {
   val start = System.nanoTime()
@@ -916,6 +880,8 @@ object CoffeePot {
   }
 }
 ```
+
+</details>
 
 ## Commit and Rollback Events
 We can add side-effect code on commit and rollback events.
@@ -979,7 +945,8 @@ Transaction aborted...hold the phone
 Operation not allowed
 ```
 
-Scala version:
+<details><summary>Scala example</summary>
+
 ```scala
 class Counter {
   private val value = Ref(1)
@@ -1014,6 +981,8 @@ object UseCounter {
   }
 }
 ```
+
+</details>
 
 ## Collections and Transactions
 One issue with STM is performance degradation. These concerns can be handled using persistent data structures.
@@ -1085,7 +1054,8 @@ Score for Bernie is 12
 Score for Sally is 15
 ```
 
-Scala version:
+<details><summary>Scala example</summary>
+
 ```scala
 class Scores {
   private val scoreValues = new TransactionalMap[String, Int]()
@@ -1130,6 +1100,8 @@ object UseScores {
   }
 }
 ```
+
+</details>
 
 ## Dealing with the Write Skew Anomaly
 To deal with write skew anomaly, in Akka, one has to configure it.
