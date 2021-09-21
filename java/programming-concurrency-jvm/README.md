@@ -1,5 +1,5 @@
 <a href="https://www.amazon.com/Programming-Concurrency-JVM-Mastering-Synchronization/dp/193435676X" target="_blank" class="thumbnail">
- <img src="./images/pcj-book-cover.jpeg" alt="PCJ book cover">
+ <img src="./images/pcj-book-cover.jpeg" alt="PCJ book cover" width="400px">
 </a>
 
 # Programming Concurrency on the JVM
