@@ -13,7 +13,6 @@ It's simple to use and gives predictable results.
   - [Software Transactional Memory](#software-transactional-memory)
   - [Transactions in STM](#transactions-in-stm)
   - [Concurrency using STM](#concurrency-using-stm)
-    - [Handling Write Skew Anomaly](#handling-write-skew-anomaly)
   - [Concurrency using Akka/Multiverse STM](#concurrency-using-akkamultiverse-stm)
   - [Creating Transactions](#creating-transactions)
   - [Creating Nested Transactions](#creating-nested-transactions)
