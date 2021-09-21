@@ -1,8 +1,13 @@
 # Chapter 1: The Power and Perils of Concurrency
 Programming Concurrency is hard but worthwhile.
 
-  - [The Power of Concurrency](#the-power-of-concurrency)
-  - [The Perils of Concurrency](#the-perils-of-concurrency)
+- [The Power of Concurrency](#the-power-of-concurrency)
+  - [Making Apps More Responsive](#making-apps-more-responsive)
+  - [Making Apps Faster](#making-apps-faster)
+  - [Reaping the Benefits of Concurrency](#reaping-the-benefits-of-concurrency)
+- [The Perils of Concurrency](#the-perils-of-concurrency)
+  - [Know your visibility: Understand the Memory Barrier](#know-your-visibility-understand-the-memory-barrier)
+  - [Avoid Shared Mutability](#avoid-shared-mutability)
 
 ## The Power of Concurrency
 Two reasons to use concurrency:
