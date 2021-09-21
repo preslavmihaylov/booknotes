@@ -1,6 +1,16 @@
 # Chapter 2: Division of Labor
 Single-threaded program running on multiple cores is not expected to run faster. You have to properly divide it and run tasks concurrently.
 
+  - [From sequential to concurrent](#from-sequential-to-concurrent)
+    - [Determine number of threads](#determine-number-of-threads)
+    - [Determine the number of parts](#determine-the-number-of-parts)
+  - [Concurrency in IO-Intensive Apps](#concurrency-in-io-intensive-apps)
+  - [Speedup for the IO-intensive App](#speedup-for-the-io-intensive-app)
+  - [Concurrency in computationally intensive apps](#concurrency-in-computationally-intensive-apps)
+    - [Concurrent computation](#concurrent-computation)
+  - [Speedup of the computationally intensive app](#speedup-of-the-computationally-intensive-app)
+  - [Strategies for effective concurrency](#strategies-for-effective-concurrency)
+
 ## From sequential to concurrent
 Moving from sequential execution to concurrent involves several steps:
 
