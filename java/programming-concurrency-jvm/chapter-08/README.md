@@ -3,6 +3,20 @@ Another approach for effective concurrency is event-based message passing where 
 
 For actors, we'll still use Akka which supports that + STM.
 
+  - [Isolating Mutability Using Actors](#isolating-mutability-using-actors)
+  - [Actor Qualities](#actor-qualities)
+  - [Creating Actors](#creating-actors)
+  - [Sending and Receiving Messages](#sending-and-receiving-messages)
+  - [Working with Multiple Actors](#working-with-multiple-actors)
+  - [Coordinating Actors](#coordinating-actors)
+  - [Using Typed Actors](#using-typed-actors)
+  - [Typed Actors and Murmurs](#typed-actors-and-murmurs)
+  - [Mixing Actors and STM](#mixing-actors-and-stm)
+  - [Using Transactors](#using-transactors)
+  - [Coordinating Typed Actors](#coordinating-typed-actors)
+  - [Remote Actors](#remote-actors)
+  - [Recap](#recap)
+
 ## Isolating Mutability Using Actors
 Java favors shared mutability, while functional languages favor shared immutability.
 Both are extremes which are problematic.
