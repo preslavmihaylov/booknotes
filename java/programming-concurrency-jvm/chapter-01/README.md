@@ -1,6 +1,9 @@
 # Chapter 1: The Power and Perils of Concurrency
 Programming Concurrency is hard but worthwhile.
 
+  - [The Power of Concurrency](#the-power-of-concurrency)
+  - [The Perils of Concurrency](#the-perils-of-concurrency)
+
 ## The Power of Concurrency
 Two reasons to use concurrency:
  * Make the application more responsive -> improve user experience
