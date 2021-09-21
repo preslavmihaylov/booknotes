@@ -1,6 +1,15 @@
 # Chapter 5: Taming Shared Mutability
 The goal of this chapter is to cover how to deal with legacy code which uses shared mutability.
 
+  - [Shared Mutability != public](#shared-mutability--public)
+  - [Spotting Concurrency Issues](#spotting-concurrency-issues)
+  - [Preserve Invariant](#preserve-invariant)
+  - [Mind your resources](#mind-your-resources)
+  - [Ensure Visibility](#ensure-visibility)
+  - [Enhance Concurrency](#enhance-concurrency)
+  - [Ensure Atomicity](#ensure-atomicity)
+  - [Recap](#recap)
+
 ## Shared Mutability != public
 Just because all your fields are private doesn't mean they're not shared and mutable.
 
