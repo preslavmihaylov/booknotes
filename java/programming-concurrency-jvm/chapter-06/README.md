@@ -7,6 +7,24 @@ This model is very suitable fore frequent reads and infrequent writes types of p
 
 It's simple to use and gives predictable results.
 
+  - [Synchronization Damns Concurrency](#synchronization-damns-concurrency)
+  - [The Deficiency of the Object Model](#the-deficiency-of-the-object-model)
+  - [Separation of Identity and State](#separation-of-identity-and-state)
+  - [Software Transactional Memory](#software-transactional-memory)
+  - [Transactions in STM](#transactions-in-stm)
+  - [Concurrency using STM](#concurrency-using-stm)
+    - [Handling Write Skew Anomaly](#handling-write-skew-anomaly)
+  - [Concurrency using Akka/Multiverse STM](#concurrency-using-akkamultiverse-stm)
+  - [Creating Transactions](#creating-transactions)
+  - [Creating Nested Transactions](#creating-nested-transactions)
+  - [Configuring Akka Transactions](#configuring-akka-transactions)
+  - [Blocking Transactions - Sensible Wait](#blocking-transactions---sensible-wait)
+  - [Commit and Rollback Events](#commit-and-rollback-events)
+  - [Collections and Transactions](#collections-and-transactions)
+  - [Dealing with the Write Skew Anomaly](#dealing-with-the-write-skew-anomaly)
+  - [Limitations of STM](#limitations-of-stm)
+  - [Recap](#recap)
+
 ## Synchronization Damns Concurrency
 Synchronizing shared memory leads to thread-safety at the expense of reduced concurrency.
 
