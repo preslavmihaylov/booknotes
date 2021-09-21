@@ -1,6 +1,17 @@
 # Chapter 3: Design Approaches
 We can't avoid manipulating state. However, we can manipulate state not by mutating it, but by transforming it.
 
+  - [Dealing with state](#dealing-with-state)
+  - [Exploring Design Options](#exploring-design-options)
+  - [Shared mutable design](#shared-mutable-design)
+  - [Isolated mutable design](#isolated-mutable-design)
+  - [Purely immutable design](#purely-immutable-design)
+  - [Persistent/Immutable data structures](#persistentimmutable-data-structures)
+    - [Immutable Lists](#immutable-lists)
+    - [Persistent Tries](#persistent-tries)
+  - [Seleting a design approach](#seleting-a-design-approach)
+  - [Recap](#recap)
+
 ## Dealing with state
 No ways to escape from dealing with state, but there are different ways to do it:
  * Shared mutability - memory is shared across threads and access to it is synchronized
