@@ -1,6 +1,11 @@
 # Chapter 10: Zen of Programming Concurrency
 Concurrency is not about the methods we call but about the approaches we take and the libraries we opt to use.
 
+  - [Exercise Your Options](#exercise-your-options)
+  - [Concurrency: Programmer's Guide](#concurrency-programmers-guide)
+  - [Concurrency: Architect's Guide](#concurrency-architects-guide)
+  - [Choose Wisely](#choose-wisely)
+
 ## Exercise Your Options
 Among the most impactful decisions when dealing with concurrency is how to deal with state:
  * Shared mutability
