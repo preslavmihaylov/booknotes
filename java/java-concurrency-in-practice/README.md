@@ -29,5 +29,5 @@ Book notes taken during my read-through of JCIP. See [my review of the book](htt
  * [Chapter 13 - Explicit Locks](./chapter-13)
  * [Chapter 14 - Building Custom Synchronizers](./chapter-14)
  * [Chapter 15 - Atomic Variables and Nonblocking Synchronization](./chapter-15)
- * [Chapter 16 - The Java Memmory Model](./chapter-16)
+ * [Chapter 16 - The Java Memory Model](./chapter-16)
 
