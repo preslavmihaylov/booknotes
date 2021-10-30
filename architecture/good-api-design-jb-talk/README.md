@@ -1,6 +1,10 @@
 # How To Design A Good API and Why it Matters
 A talk given by Joshua Bloch at a Google Tech Talk - 24 Jan, 2007
 
+[Original Talk](https://www.youtube.com/watch?v=aAb7hSCtvGw&ab_channel=GoogleTechTalks)  
+[Slides](http://www.cs.bc.edu/~muller/teaching/cs102/s06/lib/pdf/api-design)
+
+## Table of Contents
 - [Why It Matters](#why-it-matters)
   - [Why is API Design important?](#why-is-api-design-important)
   - [Why is API Design important to you?](#why-is-api-design-important-to-you)
