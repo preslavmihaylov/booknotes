@@ -1,7 +1,14 @@
 # How To Design A Good API and Why it Matters
 A talk given by Joshua Bloch at a Google Tech Talk - 24 Jan, 2007
 
-## Introduction
+- [Why it Matters](#why-it-matters)
+- [The Process of API Design](#the-process-of-api-design)
+- [General Principles](#general-principles)
+- [Class Design](#class-design)
+- [Method Design](#method-design)
+- [Exception Design](#exception-design)
+
+## Why it Matters
 ### Why is API Design important?
 APIs are among a company's greatest assets:
  * Successful APIs capture customers
@@ -246,7 +253,3 @@ Use checked exceptions when the client needs to take a recovery action. Use unch
 
 ### Include Failure-Capture Information in Exceptions
 Allows diagnosis and recovery. Do this for checked exceptions. For unchecked ones, a message is sufficient.
-
-## Notable remarks
- * If an API uses existing interfaces, it keeps the conceptual weight small
-> If you know how to use an ExecutorService, you already know how to use a RetryingExecutorService
