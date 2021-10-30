@@ -1,14 +1,45 @@
 # How To Design A Good API and Why it Matters
 A talk given by Joshua Bloch at a Google Tech Talk - 24 Jan, 2007
 
-- [Why it Matters](#why-it-matters)
+- [Why It Matters](#why-it-matters)
+  - [Why is API Design important?](#why-is-api-design-important)
+  - [Why is API Design important to you?](#why-is-api-design-important-to-you)
+  - [The Characteristics of a good API](#the-characteristics-of-a-good-api)
 - [The Process of API Design](#the-process-of-api-design)
+  - [Gather requirements](#gather-requirements)
+  - [Short Specification](#short-specification)
+  - [Write to Your API Early and Often](#write-to-your-api-early-and-often)
+  - [Writing to SPI is Even More Important](#writing-to-spi-is-even-more-important)
+  - [Maintain Realistic Expectations](#maintain-realistic-expectations)
 - [General Principles](#general-principles)
+  - [API Should Do One Thing and Do It Well](#api-should-do-one-thing-and-do-it-well)
+  - [API Should Be As Small As Possible But No Smaller](#api-should-be-as-small-as-possible-but-no-smaller)
+  - [Implementation Should Not Impact API](#implementation-should-not-impact-api)
+  - [Minimize Accessibility of Everything](#minimize-accessibility-of-everything)
+  - [Names Matter](#names-matter)
+  - [Documentation matters](#documentation-matters)
+  - [Consider Performance Consequences of API Design Decisions](#consider-performance-consequences-of-api-design-decisions)
+  - [API Must Coexist Peacefully with Platform](#api-must-coexist-peacefully-with-platform)
 - [Class Design](#class-design)
+  - [Minimize Mutability](#minimize-mutability)
+  - [Subclass Only When It Makes Sense](#subclass-only-when-it-makes-sense)
+  - [Design and Document for Inheritance or Else Prohibit it](#design-and-document-for-inheritance-or-else-prohibit-it)
 - [Method Design](#method-design)
+  - [Don't Make The Client Do Anything The Module Could Do](#dont-make-the-client-do-anything-the-module-could-do)
+  - [Don't Violate The Principle of Least Astonishment](#dont-violate-the-principle-of-least-astonishment)
+  - [Fail Fast - Report Errors as Soon as Possible](#fail-fast---report-errors-as-soon-as-possible)
+  - [Provide Programmatic Access to All Data Available in String Form](#provide-programmatic-access-to-all-data-available-in-string-form)
+  - [Overload With Care](#overload-with-care)
+  - [Use Appropriate Parameter and Return Types](#use-appropriate-parameter-and-return-types)
+  - [Use Consistent Parameter Ordering Across Methods](#use-consistent-parameter-ordering-across-methods)
+  - [Avoid Long Parameter Lists](#avoid-long-parameter-lists)
+  - [Avoid Return Values that Demand Exceptional Processing](#avoid-return-values-that-demand-exceptional-processing)
 - [Exception Design](#exception-design)
+  - [Throw Exceptions to Indicate Exceptional Conditions](#throw-exceptions-to-indicate-exceptional-conditions)
+  - [Favor Unchecked Exceptions](#favor-unchecked-exceptions)
+  - [Include Failure-Capture Information in Exceptions](#include-failure-capture-information-in-exceptions)
 
-## Why it Matters
+## Why It Matters
 ### Why is API Design important?
 APIs are among a company's greatest assets:
  * Successful APIs capture customers
