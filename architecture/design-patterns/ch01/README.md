@@ -122,3 +122,146 @@ Common wisdom is to "program against an interface, not an implementation". I.e. 
 However, you need to specify concrete implementations which implement the interfaces at some point in your program and certain design patterns help you encapsulate that process (abstract factory, factory method, etc).
 
 ### Putting Reuse Mechanisms to Work
+Most people understand the primitives of OO programming - classes, interfaces, objects, etc.
+
+The challenge is how to apply those primitives to build flexible, reusable software.
+
+#### Inheritance versus Composition
+Most common techniques for reusing functionality in OO systems - class inheritance & object composition.
+
+Class inheritance is also referred to as "white-box reuse" - the internals of the inherited class are visible to the subclass.
+Object Composition is referred to as "black-box reuse" - only the public API of the composed class is visible.
+
+Inheritance is defined statically at compile-time and is easy to use. When you override an inherited operation, you're potentially overriding non-inherited operations as well.
+This makes it easier to have high impact on implementation with low cost.
+
+The disadvantages of inheritance:
+ * You can't change the inherited class at runtime. With composition, you can change the composed object at runtime.
+ * The subclass' implementation is heavily coupled with the base class' implementation. "Inheritance breaks encapsulation"
+   * Any change in the base class will force all subclasses to change
+ * If the current implementation doesn't fit a new domain, you want to use the class for, you'll have to rewrite the base class or change it altogether
+   * This hinders a subclass' reusability
+   * One cure for this is to only inherit abstract classes which have little to no implementation
+
+Advantages of composition:
+ * Objects are required to respect each others' interfaces, hence, encapsulation is not broken
+ * Any object can be replaced by another at runtime as long as it has the same type (or interface)
+
+> Favor object composition over class inheritance
+
+#### Delegation
+Two objects are involved in handling a request - a receiving object delegates operations to its delegate.
+
+Example:
+![Delegate Example](images/delegate-example.png)
+
+The object composition can be changed at runtime - if eg the Window becomes circular, it can change its delegate to be `Circle`.
+
+The main issue with delegation is that dynamic code is harder to understand than static code.
+Delegation is a good design choice only if it simplifies more than it complicates.
+
+#### Inheritance versus Parameterized Types (Generics)
+Generics lets you specify types without specifying the concrete other types it uses.
+
+E.g. defining a list which can take any type for its element - `List<T>`.
+
+Object Composition lets you change composed behavior at runtime.  
+Inheritance lets you provide default implementations for operations and let subclasses override them.  
+Generics let you change the types that a class uses.
+
+Inheritance and Generics can't change at runtime.
+
+#### Designing for Change
+The key to writing reusable software lies in anticipating new requirements and changes to existing ones.
+That way, you can write your software in a way that it evolves gracefully.
+
+Design patterns help make some aspect of your system susceptible to change.
+
+Common causes of redesign along with design patterns that address them:
+ * Creating an object by specifying a concrete type explicitly (ie `new MyClass()`)
+   * This commits you to a specific implementation instead of a particular interface. 
+   * Design Patterns - Abstract Factory, Factory Method, Prototype
+ * Depending on specific operations
+   * This commits you to one way of satisfying a request
+   * Design Patterns - Chain of Responsibility, Command
+ * Dependence on hardware and software platform
+   * This commits you to a particular hardware/software platform, making it hard to port your software to a different platform 
+   * Design Patterns - Abstract Factory, Bridge
+ * Dependency on object representation/implementation
+   * Code which knows details of how an object is stored or implemented might have to change when the internal representation changes
+   * Design Patterns - Abstract Factory, Bridge, Memento, Proxy
+ * Algorithmic dependencies
+   * Objects that depend on algorithms will have to change once the algorithm changes
+   * Design Patterns - Builder, Iterator, Strategy, Template Method, Visitor
+ * Tight Coupling
+   * Classes which are tightly coupled are hard to reuse in isolation 
+   * Also, tightly coupled systems lead to the necessity to understand the whole system to change a part of it
+   * Design Patterns - Abstract Factory, Bridge, Chain of Responsibility, Command, Facade, Mediator, Observer
+ * Extending functionality by subclassing
+   * Subclassing requires one to understand the parent class in great detail
+   * It can also lead to an explosion of classes even for small extensions
+   * Composition provides a flexible alternative at the cost of more complicated design
+   * Many design patterns use both techniques
+   * Design Patterns - Bridge, Chain of Responsibility, Composite, Decorator, Observer, Strategy
+ * Inability to alter classes conveniently
+   * Sometimes you have to modify a class, which you're not allowed to modify
+   * E.g. you don't have the source code
+   * E.g. changing it will require changing a whole subsystem
+   * Instead, you can hide the legacy interface behind a new interface which fits your use-case
+   * Design Patterns - Adapter, Decorator, Visitor
+
+These examples are different kinds of flexibility you can achieve via design patterns. Which of these features you need depends on the software you're building.
+
+### Role of design patterns in different kinds of software
+#### Application Programs
+Internal reuse, maintainability and extension are high priorities.
+
+These ensure you don't have as much overhead when extending the application leading to faster feature velocity.
+
+Design patterns can help you:
+ * have less dependencies which lead to a more extendable system
+ * remove platform dependencies
+ * separate a system into layers
+
+#### Toolkits
+Toolkits provide some general-purpose functionality in the form of libraries.
+
+Writing toolkits is harder than application programs and loose coupling is all the more important.
+
+Avoiding assumptions and unnecessary dependencies is crucial to make your toolkit reusable across many programs.
+
+#### Frameworks
+Frameworks provide a reusable design for a specific class of software.
+
+Benefits:
+ * Different applications have similar structure
+ * Hard design decisions are already made for you
+
+Frameworks are hardest to write because its architecture is the main value proposition for its usage.
+
+Differences between design patterns and frameworks:
+ * Design patterns are abstract, frameworks are concrete - frameworks can be directly used in code. Patterns need to be translated to the specific program being written.
+ * Design patterns are smaller architectural elements than frameworks.
+ * Frameworks are domain-specific, design patterns are not.
+
+## How to Select a Design Pattern
+There are many design patterns in this book's catalog. How to choose the design pattern which is right for your problem?
+ * Consider which design problems are solved by which patterns
+ * Scan the "Intent" sections
+ * Study how patterns are related to each other
+ * Study patterns of a similar type - creational, structural, behavioral
+ * Examine the [cause of redesign](#designing-for-change)
+ * Consider what you might want to be able to change in the future
+
+## How to Use a Design Pattern
+ * Read the pattern once for an overview
+ * Go back and study the "Structure", "Participants" and "Collaborations" sections
+ * Check out the "Sample Code" sections
+ * Choose names for your participants which are specific for your application
+   * But still consider indicating which pattern you're implementing in your class names - e.g. `SelectionSortStrategy` 
+
+![When to use design patterns](images/when-to-use-design-patterns.png)
+
+Design patterns should not be used without purpose. 
+The cost of using them is more complex programs.
+Only use design patterns if their value outweighs the cost in your specific context.
