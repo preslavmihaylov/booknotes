@@ -1,5 +1,6 @@
 # Creational Patterns
 
+* [Introduction](./00.introduction)
 * [Abstract Factory](./01.abstract-factory)
 * [Builder](./02.builder)
 * [Factory Method](./03.factory-method)
