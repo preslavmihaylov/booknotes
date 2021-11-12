@@ -73,7 +73,7 @@ public class MazeGame {
         Maze aMaze = factory.makeMaze();
         Room r1 = factory.makeRoom(1);
         Room r2 = factory.makeRoom(2);
-        Door theDoor = fatory.makeDoor(r1, r2);
+        Door theDoor = factory.makeDoor(r1, r2);
 
         aMaze.addRoom(r1);
         aMaze.addRoom(r2);
