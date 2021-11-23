@@ -73,7 +73,64 @@ This, however, requires using a class adapter, which demands using multiple inhe
 ![Two-way adapter example](images/two-way-adapter.png)
 
 ## Implementation
-TODO
+Some issues to keep in mind:
+ 1) When implementing class adapters in C++, the Adapter should inherit publicly from `Target` and privately from `Adaptee`
+ 2) Pluggable adapters
+
+This can be implemented:
+ * Using abstract operations
+![Pluggable adapters example](images/pluggable-adapters-1.png)
+
+ * Using delegate objects - `TreeDisplay` uses a separate objects to which it forwards requests. This object can be substituted to change the adaptation strategy
+![Pluggable adapters with Delegate](images/pluggable-adapters-delegate.png)
 
 ## Sample Code
-TODO
+Example `Shape` interface which our app uses and an incompatible third-party `TextView` widget:
+```java
+public interface Shape {
+  BoundingBox getBoundingBox();
+  Manipulator createManipulator();
+}
+
+public class TextView {
+  Point getOrigin() { return null; }
+  int getWidth() { return 0; }
+  int getHeight() { return 0; }
+  boolean isEmpty() { return false; }
+}
+```
+
+`BoundingBox` - a tuple of two points, indicating the rectangle around the shape.
+`Manipulator` - object which knows how to animate the widget.
+
+Example object adapter:
+```java
+public class TextShape implements Shape {
+  private final TextView textView;
+
+  public TextShape(TextView tv) {
+    this.textView = tv;
+  }
+
+  @Override
+  public BoundingBox getBoundingBox() {
+    Point origin = textView.getOrigin();
+    int width = textView.getWidth();
+    int height = textView.getHeight();
+
+    return new BoundingBox(origin, new Point(origin.x + width, origin.y + height));
+  }
+
+  @Override
+  public Manipulator createManipulator() {
+    return new TextManipulator(this);
+  }
+}
+```
+
+The only difference for the class adapter is that the class is declared as `class TextShape extends TextView implements Shape` and uses `this.getWidth` instead of `textView.getWidth` & etc.
+
+## Related Patterns
+Bridge's structure is similar to the Adapter, but has a different intent - separate an interface from its implementation so that they can vary independently.
+Decorator enhances an object without changing its interface. Thus, it is more transparent to the application than an Adapter.
+Proxy defines a substitute for another object without changing its interface.
