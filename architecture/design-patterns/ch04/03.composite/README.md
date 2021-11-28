@@ -83,7 +83,130 @@ Changes to the structure would require you to partially or fully invalidate the 
 The choice depends on efficiency and requirements. Anything is acceptable - linked lists, arrays, hash tables, sorted maps, etc.
 
 ## Sample Code
-TODO
+The `Component` and `CompositeComponent` classes:
+```java
+public abstract class Equipment {
+  abstract int power();
+  abstract int netPrice();
+  abstract int discountPrice();
+}
+
+public class CompositeEquipment extends Equipment {
+  private List<Equipment> children  = new ArrayList<>();
+
+  @Override
+  int power() {
+    return children.stream()
+          .map(Equipment::power)
+          .reduce(0, Integer::sum);
+  }
+
+    @Override
+  int netPrice() {
+    return children.stream()
+          .map(Equipment::netPrice)
+          .reduce(0, Integer::sum);
+  }
+
+  @Override
+  int discountPrice() {
+    return children.stream()
+          .map(Equipment::discountPrice)
+          .reduce(0, Integer::sum);
+  }
+
+  public void add(Equipment e) {
+    children.add(e);
+  }
+
+  public void remove(Equipment e) {
+    children.remove(e);
+  }
+}
+```
+
+The implementations:
+```java
+public class FloppyDisk extends Equipment {
+  @Override
+  int power() {
+    return 5;
+  }
+
+  @Override
+  int netPrice() {
+    return 10;
+  }
+
+  @Override
+  int discountPrice() {
+    return 2;
+  }
+}
+
+public class Card extends Equipment {
+  @Override
+  int power() {
+    return 7;
+  }
+
+  @Override
+  int netPrice() {
+    return 20;
+  }
+
+  @Override
+  int discountPrice() {
+    return 3;
+  }
+}
+
+public class Chassis extends CompositeEquipment {
+  @Override
+  int power() {
+    return 1 + super.power();
+  }
+
+  @Override
+  int netPrice() {
+    return 13 + super.netPrice();
+  }
+
+  @Override
+  int discountPrice() {
+    return 1 + super.discountPrice();
+  }
+}
+
+public class Bus extends CompositeEquipment {
+  @Override
+  int power() {
+    return 12 + super.power();
+  }
+
+  @Override
+  int netPrice() {
+    return 9 + super.netPrice();
+  }
+
+  @Override
+  int discountPrice() {
+    return 1 + super.discountPrice();
+  }
+}
+```
+
+Example usage:
+```java
+Chassis chassis = new Chassis();
+Bus bus = new Bus();
+chassis.add(bus);
+
+bus.add(new Card());
+chassis.add(new FloppyDisk());
+
+System.out.println("Total price is: " + chassis.netPrice()); // Total price is: 52
+```
 
 ## Related Patterns
  * Often, the `parent` operation is used to implement the Chain of Responsibility pattern.
