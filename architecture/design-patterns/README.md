@@ -6,4 +6,3 @@ These notes are a work in progress...
  * [Creational Patterns](./ch03)
  * [Structural Patterns](./ch04)
  * [Behavioral Patterns](./ch05)
- * [Conclusion](./ch06)
