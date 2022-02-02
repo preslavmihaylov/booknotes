@@ -84,12 +84,12 @@ If you have a system that can't be changed but works correctly, further requirem
 ### Eisenhower's Matrix
 ![Image](images/eisenhowers-matrix.png)
 
-The behavior of the system is in quadrants 2 (Important, Urgent) and 3 (Unimportant, Urgent). The architecture is in quadrant 1 (Important, Not urgent).
+The architecture of the system is in quadrants 1 (Important, Urgent) and 2 (Important, not urgent). The behavior are in quadrant 1 (Important, urgent) and 3 (Urgent and Not important).
 
-What business developers often make as a mistake is to promote problems in quadrant 3 (Unimportant, Urgent) to quadrant 2 (Important, Urgent).
-This way, the important bits of quadrant 1 (Important, Not urgent) never get the proper attention.
+What business developers often make as a mistake is to promote problems in quadrant 3 (Unimportant, Urgent) to quadrant 1 (Important, Urgent).
+This way, the important bits of quadrant 1 (Important, Urgent) never get the proper attention.
 
-It is the software developer's job to stress the importance of architecture to the business & prioritize quadrant 1 (Important, Not urgent) over quadrant 3 (Unimportant, Urgent).
+It is the software developer's job to stress the importance of architecture to the business & prioritize quadrant 1 (Important, Urgent) over quadrant 3 (Unimportant, Urgent).
 
 ### Fight for the architecture
 Fulfilling your duty of emphasizing the importance of architecture to the business is part of your responsibilities as a software developer.
