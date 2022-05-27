@@ -1,5 +1,27 @@
 # Communication
 
+- [Introduction](#introduction)
+- [Reliable links](#reliable-links)
+  - [Reliability](#reliability)
+  - [Connection lifecycle](#connection-lifecycle)
+  - [Flow Control](#flow-control)
+  - [Congestion control](#congestion-control)
+  - [Custom Protocols](#custom-protocols)
+- [Secure links](#secure-links)
+  - [Encryption](#encryption)
+  - [Authentication](#authentication)
+  - [Integrity](#integrity)
+  - [Handshake](#handshake)
+- [Discovery](#discovery)
+- [APIs](#apis)
+  - [HTTP](#http)
+  - [Resources](#resources)
+  - [Request methods](#request-methods)
+  - [Response status codes](#response-status-codes)
+  - [OpenAPI](#openapi)
+  - [Evolution](#evolution)
+  - [Idempotency](#idempotency)
+
 ## Introduction
 In order for processes to communicate, they need to agree on a set of rules which determine how data is transmitted and processed. Network protocols define these rules.
 

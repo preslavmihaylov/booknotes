@@ -1,5 +1,13 @@
 # Introduction
 
+- [Preface](#preface)
+- [Communication](#communication)
+- [Coordination](#coordination)
+- [Scalability](#scalability)
+- [Resiliency](#resiliency)
+- [Maintainability](#maintainability)
+- [Anatomy of a distributed system](#anatomy-of-a-distributed-system)
+
 ## Preface
 Most materials on distributed systems are either too theoretical or too practical. This book aims at the middle.
 If you're already an expert, this book is not for you. It focuses on breadth rather than depth.
