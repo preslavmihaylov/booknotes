@@ -185,4 +185,231 @@ A smart mitigation is to let resolvers serve stale entries vs. returning an erro
 The property of a system to continue to function even when a dependency is down is referred to as "static stability".
 
 ## APIs
+When a client makes a call to a server via their hostname + port, that calls goes through an adapter which maps the request to interface calls within the server, invoking its business logic.
 
+Communication can be direct or indirect:
+ * Direct - both processes are up and running & communicate in real-time.
+ * Indirect - communication is achieved via a broker. One process might be down & receive the message at a later time, asynchronously.
+
+This chapter focuses on direct communication. Indirect comms is covered later in the book.
+In particular, the chapter focuses on the request-response communication style.
+
+In this style, clients send messages to the server & the server responds back, similar to function calls in a codebase, but across process & network boundaries.
+
+The data format is language agnostic. The format specifies the (de)serialization speed, whether it's human readable & how hard it is to evolve over time.
+
+Popular data formats:
+ * JSON - textual, human-readable format at the expense of larger data packets & parsing overhead.
+ * Protocol buffers - binary, efficient format, which has smaller payloads than JSON, but is not human-readable
+
+When a client sends a request to the server, it can either block & wait for response or run the request in a thread & invoke a callback when the response is received.
+The former approach is synchronous, latter is asynchronous. For most use-cases, favor asynchronous communication to avoid blocking the UI.
+
+Common IPC technologies for request-response interactions:
+ * HTTP - slower but more adopted
+ * gRPC - faster, but not supported by all browsers
+
+Typically, server to server communication is implemented via gRPC, client to server is via HTTP.
+
+A popular set of design principles for designing elegant HTTP APIs is REST.
+
+These principles include:
+ * requests are stateless - each request contains all the necessary information required to process it.
+ * responses are implicitly or explicitly labeled as cacheable, allowing clients to cache them for subsequent requests.
+
+### HTTP
+HTTP is a request-response protocol for client to server communication.
+![http-request-response-example](images/http-request-response-example.png)
+
+In HTTP 1.1, a message is text-based \w three parts - start line, headers, optional body:
+ * Start line - In requests, indicates what the request is for, in responses, indicates if request were successful or not
+ * Headers - key-value pairs with metadata about the message
+ * Body - container for data
+
+HTTP is a stateless protocol, hence, all client info needs to be specified within the requests. 
+Servers treat requests as independent, unless there is extra data, indicating what client they're associated with.
+
+HTTP uses TCP for the reliability guarantees and TLS for the security ones. When using TLS, it is referred to as HTTPS.
+
+HTTP 1.1 keeps a connection to a server open between requests to avoid the TCP overhead of re-opening connections.
+However, it has a limitation that subsequent requests need to wait before the server sends a response back. 
+
+This is troublesome when eg loading a dozen of images on a page - something which can easily be done in parallel.
+
+Browsers typically work around this by making multiple connections to the server for fetching independent resources.
+The price for this workaround is using more memory & sockets.
+
+HTTP 2 was designed to address the limitations of HTTP 1.1 - it uses a binary protocol vs. a textual one. 
+This allows multiplexing multiple concurrent request-response transactions on the same connection.
+
+In early 2020, half of the most visited websites used HTTP 2.
+
+HTTP 3 is the latest iteration, which is based on UDP and implements its own reliability mechanisms to address some of TCP's shortcomings.
+For example, losing a packet with HTTP 2 blocks all subsequent packages, including ones on unrelated streams, due to how TCP works. 
+
+With HTTP 3, a package loss only blocks the affected stream, not all of them.
+
+Examples in the book use HTTP 1.1 due to its human-readability.
+
+### Resources
+Example server application we're building - product catalog management for an e-commerce site.
+Customers can browse the catalog, administrators can create, update or delete products.
+
+We'll build this via an HTTP API. HTTP APIs host resources, which can be physical (eg image) or abstract (eg product) entities on which we can execute create/read/update/delete (CRUD) operations.
+
+A URL identifies a resource by describing its location on the server, eg `https://www.example.com/products?sort=price` :
+ * `http` is the protocol
+ * `www.example.com` is the hostname
+ * `products` is the name of the resource
+ * `?sort=price` is the query string, which contains additional parameters about how to fetch the results.
+
+A URL can also model relationships between resources, eg:
+ * `/products/42` - the product with ID 42
+ * `/products/42/reviews` - the reviews of product with ID 42
+
+We also need to deal with how the resource data is serialized. 
+That is specified by the client via the `Content-type` header, most popular one being `application/json`.
+
+Example JSON-serialized product:
+```json
+{
+   "id": 42,
+   "category": "Laptop",
+   "price": 999
+}
+```
+
+### Request methods
+URLs designate what resource you're targeting. HTTP methods define what operation you're performing on the resource.
+
+Most commonly used operations \w example `product` entity:
+ * `POST /products` - Create a new product
+ * `GET /products`  - List all products. Usually includes query parameters to apply filters on the result set.
+ * `GET /products/42` - Get a particular product
+ * `PUT /products/42` - Update a product
+ * `DELETE /products/42` - Delete a product
+
+Request methods are categorized based on whether they are safe and idempotent:
+ * Safe - don't have visible side-effects, hence, can safely be cached.
+ * Idempotent - can be executed multiple times and the end result should be the same as if it was executed once. This property is crucial for APIs (covered later).
+
+Table of methods & safe/idempotent properties:
+ * POST - not safe & not idempotent
+ * GET - safe & idempotent
+ * PUT - not safe & idempotent
+ * DELETE - not safe & idempotent
+
+### Response status codes
+Responses contain a status code, which indicates whether the request is successful or not:
+ * 200-299 - indicate success, eg 200 OK
+ * 300-399 - used for redirection, eg 301 Moved Permanently indicates the resource is moved to a different URL. The new URL is specified in the `Location` header.
+ * 400-499 - client errors
+   * 400 Bad Request - when eg input format is wrong
+   * 401 Unauthorized - when eg password on login is wrong)
+   * 403 Forbidden - when eg you don't have access to resource
+   * 404 Not Found - when eg the specified resource doesn't exist
+ * 500-599 - server errors, when eg the database is down & you can't process the request. These requests can typically be retried.
+   * 500 Internal Server Error - server encountered unexpected error, due to which request can't be handled
+   * 502 Bad Gateway - server, while acting as proxy, received a downstream server error
+   * 503 Service Unavailable - server is unavailable due to eg a temporary heavy load on it.
+
+### OpenAPI
+The server's API can be defined via an Interface Definition Language (IDL) - a language-agnostic format, which specifies what the API contains.
+
+This can be used for generating the server's adapter & the client's library for interacting with the server.
+
+The OpenAPI specification evolved from the Swagger project and is the most popular IDL for RESTful APIs.
+It can formally describe an API via YAML format including available endpoints, supported request methods, status codes, schema of the entities.
+
+Example OpenAPI definition:
+```yaml
+openapi: 3.0.0
+info:
+   version: "1.0.0"
+   title: Catalog Service API
+
+paths:
+   /products:
+      get:
+         summary: List products
+         parameters:
+            - in: query
+              name: sort
+              required: false
+              schema:
+                 type: string
+         responses:
+            "200":
+               description: list of products in catalog
+               content:
+                  application/json:
+                     schema:
+                        type: array
+                        items:
+                           $ref: "#/components/schemas/ProductItem"
+            "400":
+               description: bad input
+
+components:
+   schemas:
+      ProductItem:
+         type: object
+         required:
+            - id
+            - name
+            - category
+         properties:
+            id:
+               type: number
+            name:
+               type: string
+            category:
+               type: string
+```
+
+This can be then used to generate an API's documentation, boilerplate adapters and client SDKs.
+
+### Evolution
+An API starts out as a well-designed interface but it would eventually need to change due to change in requirements.
+
+The last thing we need is to change the API & introduce a breaking change. 
+This means that existing client software will stop working properly with the API after the change.
+Hence, we'll need to modify every single client of the API. Some of them, we might not have access to.
+
+Two types of breaking changes:
+ * at the endpoint level - eg changing `/products` to `/new-products` or making an optional query parameter required.
+ * at the schema level - eg changing the type of the `category` property from `string` to `int`
+
+To tackle this, REST APIs should be versioned (eg `/v1/products`). As a general rule of thumb, though, REST APIs should evolve in a backwards compatible manner.
+
+Backwards compatible APIs are usually not elegant, but they're practical.
+
+### Idempotency
+If an API request times out without knowing the result, a sensible way to tackle this on the client side is to retry the request (one or more times).
+
+Idempotent HTTP requests are susceptible to this technique as executing multiple identical requests yields the same result as executing it once.
+
+Non-idempotent requests, on the other hand, can't be retried so easily, because they can result in a bad state such as eg creating the same product twice.
+
+To mitigate this, some effort can be done on the server-side to eg make POST requests idempotent. 
+
+A technique to achieve this is to associate a request with an idempotency key. A key used to detect if this request has already been executed.
+This can be achieved by eg having an `Idempotency-Key` header (similar to Stripe's API), which is a UUID, generated by the client.
+
+When a server received such a key, it first checks if there is such a key in the DB. If not, execute the request. If there is one, return the already executed response.
+
+These keys can be cleaned up from the database after a while. In other words, they can have a TTL.
+
+One consideration when executing this is to make the act of 1) storing the idempotency key and 2) executing the request an atomic operation.
+Otherwise, the server can crash right after storing the idempotency key. Hence, after restart, server thinks that product is already created, but it is not.
+
+This is easy to achieve if we're using an ACID database, which has transaction guarantees. It is a lot more challenging if we need to also change the state of an external system during the transaction.
+
+An interesting edge-case:
+ * Client A attempts to create a resource, request fails but resource is created
+ * Client B deletes the resource
+ * Client A attempts to create the resource again
+
+What should the response be? - [less surprising behavior](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/) is to return success.
+
+In summary, idempotent APIs enable more robust clients, since they can always retry failures without worrying about consequences.
