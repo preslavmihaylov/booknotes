@@ -123,3 +123,50 @@ Using physical clocks for timestamp is good enough for some records such as logs
 However, when you need to derive the order of events across different processes, you'll need vector clocks.
 
 ## Leader Election
+There are use-cases where 1 among N processes needs to gain exclusive rights to accessing a shared resource or to assign work to others.
+
+To achieve this, one needs to implement a leader-election algorithm - to elect a single process to be a leader among a group of equally valid candidates.
+
+There are two properties this algorithm needs to sustain:
+ * Safety - there will always be one leader elected at a time.
+ * Liveness - the process will work correctly even in the presence of failures.
+
+This chapter explores a particular leader-election algorithm - Raft, and how it guarantees these properties.
+
+### Raft leader election
+Every process is a state machine with one of three states:
+ * follower state - process recognizes another process as a leader
+ * candidate state - process starts a new election, proposing itself as a leader
+ * leader state - process is the leader
+
+Time is divided into election terms, numbered with consecutive integers (logical timestamp).
+A term begins with a new election - one or more candidates attempt to become the leader.
+
+When system starts up, processes begin their journey as followers. 
+As a follower, the process expects a periodic heartbeat from the leader.
+If one does not arrive, a timeout begins ticking after which the process starts a new election & transitions into the candidate state.
+
+In the candidate state, the process sends a request to all other notes, asking them to vote for them as the new leader.
+
+State transition happens when:
+ * Candidate wins the election - majority of processes vote for process, hence it wins the election.
+ * Another process wins - when a leader heartbeat is received \w election term index `greater than or equal` to current one.
+ * No one wins election - due to split vote. Then, after a random timeout (to avoid consecutive split votes), a new election starts.
+![raft-state-machine](images/raft-state-machine.png)
+
+### Practical considerations
+There are also other leader election algorithms but Raft is simple & widely used.
+
+In practice, you would rarely implement leader election from scratch, unless you're aiming to avoid external dependencies.
+
+Instead, you can use any fault-tolerant key-value store \w support for TTL and linearizable CAS (compare-and-swap) operations.
+This means, in a nutshell, that operations are atomic & there is no possibility for race conditions.
+
+However, there is a possibility for race conditions after you acquire the lease.
+
+It is possible that there is some network issue during which you lose the lease but you still think you're the leader.
+This has [lead to big outages in the past](https://ravendb.net/articles/avoid-rolling-your-own-leader-election-algorithm)
+
+As a rule of thumb, leaders should do as little work as possible & we should be prepared to occasionally have more than one leaders.
+
+## Replication
