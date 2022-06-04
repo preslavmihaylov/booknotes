@@ -361,3 +361,212 @@ But can we go further? Can we achieve replication without the need for consensus
 That's the next chapter's topic.
 
 ## Coordination avoidance
+There are two main ingredients to state-machine replication:
+ * A broadcast protocol which guarantees every replica eventually receives all updates in the same order
+ * A deterministic update function for each replica
+
+Implementing fault-tolerant total order requires consensus. It is also a scalability bottleneck as it requires one process to handle updates at a time.
+
+We'll explore a form of replication which doesn't require total order but still has useful guarantees.
+
+### Broadcast protocols
+Network communication over wide area networks like the internet offer unicast protocols only (eg TCP).
+
+To broadcast a message to a group of receivers, a multicast protocol is needed. Hence, we need to implement a multicast protocol over a unicast one.
+
+The challenge is supporting multiple senders and receivers that can crash at any point.
+
+**Best-effort broadcast** guarantees that a message will be deliver to all non-faulty receivers in a group.
+One way to implement it is by sending a message to all senders one by one over reliable links.
+If, however, the sender fails midway, the receiver will never get the message.
+![best-effort-broadcast](images/best-effort-broadcast.png)
+
+**Reliable broadcast** guarantees that the message is eventually delivered to all non-faulty processes even if the sender crashes before the message is fully delivered.
+One way to implement it is to make every sender that receives a message retransmit it to the rest of the group. 
+This is known as eager reliable broadcast and is costly as it takes sending the message N^2 times.
+![eager-reliable-broadcast](images/eager-reliable-broadcast.png)
+
+**Gossip broadcast** optimizes this by sending the message to a subset of nodes.
+This approach is probabilistic. It doesn't guarantee all nodes get the message, but you can minimize the probability of non-reception by tuning the config params.
+This approach is particularly useful when there are large number of nodes as deterministic protocols can't scale to such amounts.
+![gossip-broadcast](images/gossip-broadcast.png)
+
+Reliable broadcast protocols guarantee messages are delivered to non-faulty processes, but they don't make ordering guarantees.
+**Total order broadcast** guarantees both reception & order of messages, but it requires consensus, which is a scalability bottleneck.
+
+### Conflict-free replicated data types
+If we implement replication without guaranteeing total order, we don't need to serialize all writes through a single node.
+
+However, since replicas can receive messages in different order, their states can diverge.
+Hence, for this to work, divergence can only be temporary & the replica states need to converge back to the same state.
+
+This is the main mechanism behind eventual consistency:
+* Eventual delivery guarantee - every update applied to a replica is eventually applied to all replicas
+* Convergence guarantee - replicas that have applied the same updates eventually reach the same state
+
+Using a broadcast protocol that doesn't guarantee message order can lead to divergence.
+You'll have to reconcile conflicting writes via consensus that all replicas need to agree to.
+![divergence](images/divergence.png)
+
+This approach has better availability and performance than total order broadcast.
+Consensus is only required to reconcile conflicts & can be moved off the critical path.
+
+However, there is a way to resolve conflicts without using consensus at all - eg the write with the latest timestamp wins.
+If we do this, conflicts will be resolved by design & there is no need for consensus.
+
+This replication strategy offers stronger guarantees than eventual consistency:
+ * Eventual delivery - same as before
+ * Strong convergence - replicas that have executed the same updates **have** the same state
+
+This is referred to as **strong eventual consistency**.
+
+There are certain conditions to guarantee that replicas strongly converge.
+
+Consider a replicated data store which supports query and update operations and behaves in the following way:
+ * When a query is received, a replica immediately replies with its local state
+ * When an update is received, it is first applied to local state and then broadcast to all replicas
+ * When a broadcast message is received, the received state is merged with its own
+
+If two replicas converge, one way to resolve the conflicts is to have an arbiter (consensus) which determines who wins.
+
+Alternatively, convergence can be achieved without an arbiter if these two conditions are met:
+ * The object's possible states form a [semilattice](https://www.youtube.com/watch?v=LCFf2DBTVmo&ab_channel=NesoAcademy) (set whose elements can be [partially ordered](https://eli.thegreenplace.net/2018/partial-and-total-orders/))
+ * The merge operation returns the least upper bound between two object states. Hence, it needs to be idempotent, commutative and associative.
+
+**Note**: The next couple of lines are personal explanation which might not be 100% correct according to mathy folks, but suffices for my own understanding.
+
+What this means is that if you visualize a graph of an object's ordered states, if you take two of them (c and d), you might not immediately determine which one is greater, but there is eventually some state which is "greater" than both of the non-comparable states (e).
+![semilattice](images/semilattice.png)
+
+Put into practice, if you have two replicas, whose states have diverged (c and d), eventually, they will converge back to the same value (e).
+
+The second part of the requirement mandates that the operation for merging two states needs to be:
+ * Idempotent: x + x = x
+ * Commutative: (x + y) + z = x + (y + z)
+ * Associative: x + y = y + x
+
+This is because you're not guaranteed that you'll always get to merge two states in the same order (associative & commutative) and you might get a merge request for the same states twice (idempotent).
+
+A data type which has this property is referred to as a **convergent replicated data type** which is part of the family of **conflict-free replicated data types (CRDT)**.
+
+Example - integers can be (partially) ordered and the merge operation is taking the maximum of two ints (least upper bound).
+
+Replicas will always converge to the global maximum even if requests are delivered out of order and/or multiple times.
+With this scheme, replicas can also use an unreliable broadcast protocol as long as they periodically broadcast their states & merge them. (anti-entropy mechanism).
+
+Some data types which converge when replicated - registers, counters, sets, dictionaries, graphs.
+
+Example - registers are a memory cell, containing a byte array. 
+They can be made convergent by defining partial order and merge operation.
+
+Two common implementations are last-writer-wins registers (LWW) and multi-value registers (MV).
+
+LWW registers associate a timestamp with every update, making them order-able.
+The timestamp can be a Lamport timestamp to preserve happened-before relationships with a replica identifier to break ties.
+
+A lamport clock is sufficient because it guarantees happens-before relationships between dependent events & the updates we have are dependent.
+![lww-register](images/lww-register.png)
+
+The issue with LWW registers is that when there are concurrent updates, one of them randomly wins.
+
+An alternative is to store both states in the register & let applications determine which update to take.
+That's what a MV register does. It uses a vector clock and the merge operation returns the union of all concurrent updates.
+![mv-register](images/mv-register.png)
+
+CRDTs can be composed - eg, you can have a dictionary of LWW or MV registers.
+Dynamo-style data stores leverage this.
+
+### Dynamo-style data stores
+Dynamo is the most popular eventually consistent and highly available key-value store.
+
+Others are inspired by it - Cassandra & Riak KV.
+
+How it works:
+ * Every replica accepts read and write requests
+ * When a client wants to write, it sends the write request to all N replicas, but waits for acknowledgement from only W replicas (write quorum).
+ * Reads work similarly to writes - sent to all replicas (N), sufficient to get acknowledgement by a subset of them (R quorum).
+
+To resolve conflicts, entries behave like LWW or MV registers, depending on the implementation you choose.
+
+W and R are configurable based on your needs:
+ * Stronger consistency - When `W + R > N`, at least one read will always return the latest version.*
+  * This is not guaranteed on its own. Writes sent to N replicas might not make it to all of them. To make this work, writes need to be bundled in an atomic transaction.
+ * Max performance \w consistency cost - `W + R < N`.
+
+You can fine-tune read/write performance while preserving strong consistency:
+ * When R is small, reads are fast at the expense of slower writes and vice versa, assuming you preserve `W + R > N`.
+![w-r-greater-than-n](images/w-r-greater-than-n.png)
+
+This mechanism doesn't guarantee that all replicas will converge on its own. If a replica never receives a write request, it will never converge.
+
+To solve this issue, there are two possible anti-entropy mechanisms you can use:
+ * Read repair - if a client detects that a replica doesn't have the latest version of a key, it sends a write request to that replica.
+ * Replica synchronization - Replicas periodically exchange state information to notify each other of their latest states. To minimize amount of data transmitted, replicas exchange merkle tree hashes instead of the key-value pairs directly.
+
+### The CALM theorem
+When does an application need coordination (ie consensus) and when can it use an eventually consistent data store?
+
+The CALM theorem states that a program can be consistent and not use coordination if it is monotonic.
+
+An application is monotonic if new inputs further refine the output vs. taking it back to a previous state.
+ * Example monotonic program - a counter, which supports increment(n) operations, eg inc(1), inc(2) = 3 == inc(2), inc(1) = 3
+ * Example non-monotonic program - arbitrary variable assignment, eg set(5), set(3) = 3 != set(3), set(5) = 5
+   * Bear in mind, though, that if you transform your vanilla register to eg a LWW or MV register, you can make it monotonic. 
+
+A monotonic program can be consistent, available and partition tolerant all at once.
+
+However, consistent in the context of CALM is different from consistent in the context of CAP.
+
+CAP refers to consistency in terms of reads and writes. CALM refers to consistency in terms of program output.
+
+It is possible to build applications which are consistent at the application-level but inconsistent on the storage level.
+
+### Causal consistency
+Eventual consistency can be used to write consistent, highly available and partition-tolerant applications as long as they're monotonic.
+
+For many applications, though, eventual consistency guarantees are insufficient.
+Eventual consistency doesn't guarantee that an operation which happened-before another is observed in the same order.
+
+Eg uploading an image and referencing it in a gallery. In an eventually consistent system, you might get an empty image placeholder for some time.
+
+Strong consistency helps as it guarantees that if operation B happens, operation A is guaranteed to be observed.
+
+There is an alternative which is not strongly consistent but good enough to guarantee happens-before relationships - causal consistency.
+Causal consistency imposes a partial order on operations, while strong consistency imposes global order.
+
+**Causal consistency is the strongest consistency model which enables building highly available and partition tolerant systems.**
+
+The essence of this model is that you as a client only care about happens-before relationships of the operations concerning you, rather than all operations within the system.
+
+Example:
+ * Client A writes a value (operation A)
+ * Client B reads the same value (operation B)
+ * Client B writes another value (operation C)
+ * Client C writes an unrelated value (operation D)
+
+With a causally consistent system, the system guarantees that operation C happens-before A, hence any client which queries the system must receive operations A and C in this order.
+
+However, it doesn't guarantee the order of operation D in relation to the other operations. Hence, some clients might read operation A and D in this order, others in reverse order.
+
+COPS is a causally-consistent key-value store.
+ * clients can make read/write requests to any replica.
+ * When a client receives a read request, it keeps track of the returned value's version in a local key-version dictionary to keep track of dependencies
+ * Writes are accompanied by copies of the locally-stored key-version dictionary. 
+ * Replica assigns a version to the write and sends back the new version to the client
+ * The write is propagated to the other replicas
+ * When a replica receives a write request, it doesn't commit it immediately. 
+ * It first checks if all the write's dependencies are committed locally. Write is only committed when all dependencies are resolved.
+![cops-example](images/cops-example.png)
+
+One caveat is that there is a possibility of data loss if a replica commits a write locally but fails before broadcasting it to the rest of the nodes.
+
+This is considered acceptable in COPS case to avoid paying the price of waiting for long-distance requests before acknowledging a write.
+
+### Practical considerations
+In summary, replication implies that we have to choose between consistency and availability.
+
+In other words, we must minimize coordination to build a scalable system.
+
+This limitation is present in any large-scale system and there are data stores which allow you to control it - eg Cosmos DB enables developers to choose among 5 consistency models, ranging from eventual consistency to strong consistency, where weaker consistency models have higher throughput.
+
+## Transactions
