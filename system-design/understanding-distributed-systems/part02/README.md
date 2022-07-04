@@ -711,3 +711,67 @@ One of the most successful implementations is Google's Spanner:
 Another system inspired by Spanner is CockroachDB which works in a similar way, but uses hybrid-logical clocks to avoid having to provision highly costly atomic clocks.
 
 ## Asynchronous transactions
+2PC is synchronous & blocking. It is usually combined with 2PL to provide isolation.
+
+If any of the participants is not available, the transaction can't make progress.
+
+The underlying assumption of 2PC is that transactions are short-lived and participants are highly available.
+We can control availability, but some transactions are inherently slow.
+
+In addition to that, if the transaction spans several organizations, they might be unwilling to grant you the power to block their systems.
+
+Solution from real world - fund transfer:
+ * Asynchronous & atomic
+ * Check is sent from one bank to another and it can't be lost or deposited more than once.
+ * While check is in transfer, bank accounts are in an inconsistent state (lack of isolation).
+
+Checks are an example of persistent messages - in other words, they are processed **exactly once**.
+
+### Outbox Pattern
+Common issue - persist data in multiple data stores, eg Database + Elasticsearch.
+
+The problem is the lack of consistency between the non-related services.
+
+Solution - using the outbox pattern:
+ * When saving the data in DB, save it to the designated table + a special "outbox" table.
+ * A process periodically starts which queries the outbox table & sends pending messages to the second data store.
+ * A message channel such as Kafka can be used to achieve idempotency & guaranteed delivery.
+
+### Sagas
+Problem - we're a travel booking service which coordinates booking travels + hotels via separate third-party services.
+
+Bookings must happen atomically & both the travel & hotel booking services can fail.
+
+Booking a trip requires several steps to complete, some of which are required on failure.
+
+The saga pattern provides a solution:
+ * A distributed transaction is composed of several local transactions, each of which has a compensating transaction which reverses it.
+ * The saga guarantees that either all transactions succeed or in case of failure, the compensating transactions reverse the partial result.
+
+A saga can be implemented via an orchestrator, who manages execution of local transactions across the involved processes.
+
+In our example, the travel booking saga can be implemented as follows:
+ * T1 is executed - flight is booked via third-party service.
+ * T2 is executed - hotel is booked via third-party service.
+ * If there are any failures, execute compensating transactions C2 and C1:
+   * C1 - cancel flight via third-party service API.
+   * C2 - cancel hotel booking via third-party service API.
+
+The orchestrator can communicate via message channels (ie Kafka) to tolerate temporary failures. The requests need to be idempotent to tolerate temporary failures.
+It also has to checkpoint a transaction's intermediary state to persistent storage in case the orchestrator crashes.
+![travel-booking-saga](images/travel-booking-saga.png)
+
+In practice, one doesn't need to implement workflow engines from scratch. One can leverage workflow engines such as Temporal which already do this for you.
+
+### Isolation
+A sacrifice we endured when we used distributed transactions is the lack of isolation - distributed transactions operate on the same data & there is no isolation between them.
+
+One way to work around this is to use "semantic locks" - the data used by a transaction is marked as "dirty" and is unavailable for use by other transactions.
+
+Other transactions reliant on the dirty data can either fail & rollback or wait until the flag is cleared.
+
+## Summary
+Takeaways:
+ * Failures are unavoidable - systems would be so much simpler if they needn't be fault tolerant.
+ * Coordination is expensive - keep it off the critical path when possible.
+
