@@ -223,3 +223,117 @@ Finally, the front-end layer is a stateless reverse proxy which authenticates re
 Side note - AS was strongly consisten from the get-go, while AWS S3 started offering strong consistency in 2021.
 
 ## Network load balancing
+So far we've scaled by offloading files into a dedicated file storage service + leveraging CDN for caching & its enhanced networking.
+
+However, we still have a single application server.
+To avoid this, we can instantiate multiple application servers hidden behind a load balancer, which routes requests to them, balancing the load on each.
+
+This is possible because the application server is stateless. State is encapsulated within the database & file store.
+Scaling out a stateful application is a lot harder as it requires replication & coordination.
+
+General rule - push state to dedicated services, which are stable & highly efficient.
+
+The load balancer will also track our application's health and stop routing requests to faulty servers. This leads to increased availability.
+
+Availability == probability of a valid request succeeding.
+
+How is theoretical availability calculated? - 1 - (product of the servers' failure rate).
+
+Eg. two servers with 99% availability == 1 - (0.01 * 0.01) == 99.99%.
+
+Caveats:
+ * There is some delay between a server crashing and a load balancer detecting it.
+ * Formula assumes failure rates are independent, but often times they're not.
+ * Removing a server from the pool increases the load on other servers, risking their failure rates increasing.
+
+**Load balancing**
+
+Example algorithms:
+ * Round robin
+ * Consistent hashing
+ * Taking into account server's load - this requires load balancers to periodically poll the server for its load
+   * This can lead to surprising behavior - server reports 0 load, it gets hammered with requests and gets overloaded.
+
+In practice, round robin achieves better results than load distribution. 
+However, [an alternative algorithm](https://brooker.co.za/blog/2012/01/17/two-random.html) which randomizes requests across the least loaded servers achieves better results.
+
+**Service discovery**
+This is the process load balancers use to discover the pool of servers under your application identifier.
+
+Approaches:
+ * (naive) maintain a static configuration file mapping application to list of IPs. This is painful to maintain. 
+ * Use Zookeeper or etcd to maintain the latest configuration
+
+Adding/removing servers dynamically is a key functionality for implementing autoscaling, which is supported in most cloud providers.
+
+**Health checks**
+Load balancers use health checks to detect faulty servers and remove them from the pool.
+
+Types of health check:
+ * Passive - healh check is piggybacked on top of existing requests. Timeout or status 503 means the server is down and it is removed.
+ * Active - servers expose a dedicated `/health` endpoint and the load balancer actively polls it.
+   * This can work by just returning OK or doing a more sophisticated check of the server's resources (eg DB connection, CPU load, etc). 
+   * **Important note** - a bug in the `/health` endpoint can bring the whole application down. Some smart load balancers can detect this anomaly & disregard the health check.
+
+Health checks can be used to implement rolling updates - updating an application to a new version without downtime:
+ * During the update, a number of servers report as unavailable. 
+ * In-flight requests are completed (drained) before servers are restarted with the new version.
+
+This can also be used to restart eg a degraded server due to (for example) a memory leak:
+ * A background thread (watchdog) monitors a metric (eg memory) and if it goes beyond a threshold, server forcefully crashes.
+ * The watchdog implementation is critical - it should be well tested because a bug can degrade the entire application.
+
+### DNS Load balancing
+A simple way to implement a load balancer is via DNS.
+
+We add the servers' public IPs as DNS records and clients can pick one:
+![dns-load-balancing](images/dns-load-balancing.png)
+
+The main problem is the lack of fault tolerance - if one of the servers goes down, The DNS server will continue routing requests to it. 
+Even if an operator manages to reconfigure the DNS records, it takes time for the changes to get propagated due to DNS caching.
+
+The one use-case where DNS load balancing is used is to route traffic across multiple data centers.
+
+### Network load balancing
+A more flexible approach is implementing a load balancer, operating at the TCP layer of the network stack.
+ * Network load balancers have one or more physical network cards mapped to virtual IPs (VIPs). A VIP is associated with a pool of servers.
+ * Clients only see the VIP, exposed by the load balancer.
+ * The load balancer routes client requests to a server from the pool and it detects faulty servers using passive health checks.
+ * The load balancer maintains a separate TCP connection to the downstream server. This is called TCP termination.
+ * Direct server return is an optimization where responses bypass the L4 load balancer & go to the client directly.
+ * Network load balancers are announced to a data center's router, which can load balance requests to the network load balancers.
+![network-load-balancer](images/network-load-balancer.png)
+
+Managed solutions for network load balancing:
+ * AWS Network Load Balancer
+ * Azure Load Balancer
+
+Load balancing at the TCP layer is very fast, but it doesn't support features involving higher-level protocols such as TLS termination.
+
+### Application layer load balancing
+Application layer load balancers (aka L7 load balancers) are HTTP reverse proxies which distribute requests over a pool of servers.
+
+There are two TCP connections at play - between client and load balancer and between load balancer and origin server.
+
+Features L7 load balancers support:
+ * Multiplexing multiple HTTP connections over the same TCP connection
+ * Rate limiting HTTP requests
+ * Terminate TLS connections
+ * Sticky sessions - routing requests belonging to the same session onto the same server (eg by reading a cookie)
+
+Drawbacks:
+ * Much lower throughput than L4 load balancers.
+ * If a load balancer goes down, the application behind it goes down as well.
+
+One way to off-load requests from an application load balancer is to use the sidecar proxy pattern. This can be applied to clients internal to the organization.
+Applications have a L7 load balancer instance running on the same machine. All application requests are routed through it.
+
+This is also referred to as a service mesh.
+
+Popular sidecar proxy load balancers - NGINX, HAProxy, Envoy.
+
+Main advantage - delegates load balancing to the client, avoiding a single point of failure.
+
+Main disadvantage - there needs to be a control plane which manages all the side cars.
+
+### Data storage
