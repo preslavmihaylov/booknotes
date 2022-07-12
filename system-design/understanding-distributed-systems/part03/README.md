@@ -336,4 +336,116 @@ Main advantage - delegates load balancing to the client, avoiding a single point
 
 Main disadvantage - there needs to be a control plane which manages all the side cars.
 
-### Data storage
+## Data storage
+The next scaling target is the database. Currently, it's hosted on a single server.
+
+### Replication
+We can increase the read capacity of the database by using leader-follower replication:
+![leader-follower-replication](images/leader-follower-replication.png)
+
+Clients send writes to the leader. The leader persists those in its write-ahead log. 
+Replicas connect to the leader & stream log entries from it to update their state.
+They can disconnect and reconnect at any time as they maintain the log sequence number they've reached, from which they continue the stream.
+
+This helps with:
+ * Increasing read capacity
+ * Increasing database availability
+ * Expensive analytics queries can be isolated to a follower in order to not impact the rest of the clients
+
+Replication can be configured as:
+ * fully synchronous - leader broadcasts writes to followers & immediately returns a response to the client
+   * Minimum latency, but not fault tolerant. Leader can crash after acknowledgment, but before broadcast. 
+ * fully asynchrnous - leader waits for acknowledgment from followers before acknowledging to the client
+  * Highly consistent but not performant. A single slow replica slows down all the writes. 
+ * hybrid of the two - some of the followers receive writes synchronously, others receive it asynchronously
+  * This is the default behavior for PostgreSQL
+  * If a leader crashes, we can fail over to the synchrnous follower without incurring any data loss.
+
+Replication increases read capacity, but it still requires the database to fit on a single machine.
+
+### Partitioning
+Enables us to scale a database for both reads and writes.
+
+Traditional relational databases don't support partitioning out of the box, so we can implement in in the application layer.
+
+In practice, this is quite challenging:
+ * We need to decide how to split data to be evenly distributed among partitions.
+ * We need to handle rebalancing when a partition becomes too hot or too big.
+ * To support atomic transactions, we need to add support for two-phase commit (2PC).
+ * Queries spanning multiple partitions need to be split into sub-queries (ie aggregations, joins).
+
+Fundamental problem of relational databases is that they were designed under the assumption that they can fit on a single machine.
+Due to that, hard-to-scale features such as ACID and joins were supported.
+
+In addition to that, relational databases were designed when disk space was costly, so normalizing the data was encouraged to reduce disk footprint.
+This came at a significant cost later to unnormalize the data via joins.
+
+Times have changed - storage is cheap, but CPU time isn't.
+
+Since the 2000s, large tech companies have started to invest in data storage solutions, designed with high availability and scalability in mind.
+
+### NoSQL
+Some of the early designs were inefficient compared to traditional SQL databases, but the Dynamo and Bigtable papers were foundational for the later growth of these technologies.
+
+Modern NoSQL database systems such as HBase and Cassandra are based on them.
+
+Initially, NoSQL databases didn't support SQL, but nowadays, they support SQL-like syntax.
+
+Traditional SQL systems support strong consistency models, while NoSQL databases relax consistency guarantees (ie eventual/causal consistency) in favor of high availability.
+NoSQL systems usually don't support joins and rely on the data being stored unnormalized.
+
+Main NoSQL flavors store data as key-value pairs or as document store. The main difference is that the document store enables indexing on internal structure.
+A strict schema is not applied in both cases.
+
+Since NoSQL databases are natively created with partitioning in mind, there is limited (if any) support for transactions.
+However, due to data being stored in unnormalized form, there is less need for transactions or joins.
+
+A very bad practice is try to store a relational model in a NoSQL database. This will result in the worst of both worlds.
+If used correctly, NoSQL can handle most of the use-cases a relational database can handle, but with scalability from day one.
+
+The main prerequisite for using NoSQL database is to know the access patterns beforehand and model the database with those in mind since NoSQL databases are hard to alter later.
+
+For example, let's take a look at DynamoDB:
+ * A table consists of items. Each table has a partition key and optionally a sort key (aka clustering key).
+ * The partition key dictates how data is partitioned and distributed among nodes. 
+ * The clustering key dictates how the data is sorted within partitions - this enables efficient range queries.
+ * DynamoDB maintains three replicas per partition which are synchronized using state machine replication.
+ * Writes are routed to the leader. Acknowledgment is sent once 2 out of 3 replicas have received the update.
+ * Reads can be eventually consistent (if you query any replica) or strongly consistent (if you query the leader).
+
+DynamoDB's API supports:
+ * CRUD on single items.
+ * Querying multiple items with the same partition key and filtering based on the clustering key.
+ * Scanning the entire table.
+
+Joins aren't supported by design. We should model our data to not need joins in the first place.
+
+Example - modeling a table of orders:
+ * We should model the table with access patterns in mind. Let's say the most common operation is grabbing orders of a customer, sorted by order creation time.
+ * Hence, we can use the customer ID as the partition key and the order creation time as the clustering key.
+![dynamodb-table-example-1](images/dynamodb-table-example-1.png)
+
+SQL databases require that you store a given entity type within a single table. NoSQL enables you to store multiple entity types within the same table.
+
+Eg if we want to also include a customer's full name in an order, we can add a new entry against the same partition key within the same table:
+![dynamodb-table-example-2](images/dynamodb-table-example-2.png)
+
+A single query can grab both entities within this table, associated to a given customer, because they're stored against the same partition key. 
+
+More complex access patterns can be modeled via secondary indexes, which is supported by DynamoDB:
+ * Local secondary indexes allow for more sort keys within the same table.
+ * Global secondary indexes enable different partition and sort keys, with the caveat that index updates are asynchronous and eventually consistent.
+
+Main Drawback of NoSQL databases - much more thought must be put upfront to design the database with the access patterns in mind. 
+Relational databases are much more flexible, enabling you to change your access patterns at runtime.
+
+To learn more about NoSQL databases, the author recommends [The DynamoDB Book](https://www.dynamodbbook.com/), even if you plan to use a different NoSQL database.
+
+The latest trend is to combine the scalability of NoSQL databases with the ACID guarantees of relational databases. This trend is referred to as NewSQL.
+
+NoSQL databases favor availability over consistency in the event of network partitions. NewSQL prefer consistency.
+The argument is that with the right design, the reduction of availability due to preferring strong consistency is barely noticeable.
+
+CochroachDB and Spanner are well-known NewSQL databases.
+
+## Caching
