@@ -449,3 +449,87 @@ The argument is that with the right design, the reduction of availability due to
 CochroachDB and Spanner are well-known NewSQL databases.
 
 ## Caching
+Whenever a significant portion of requests is for a few frequently accessed objects, then that workflow is suitable for caching.
+
+Caches improves the app's performance and reduces the load on the data store:
+ * It's a high-speed storage layer that buffers responses from the origin data store.
+ * It provides best-effort guarantees since it isn't the source of truth. Its state can always be rebuilt from the origin.
+
+In order for a cache to be cost-effective, the proportion of requests which hit the cache vs. hitting the origin should be high (hit ratio).
+
+The hit ratio depends on:
+ * The total number of cacheable objects - the fewer, the better
+ * The probability of accessing the same object more than once - the higher, the better
+ * The size of the cache - the larger, the better
+
+The higher in the call stack a cache is, the more objects it can capture. 
+
+Be wary, though, that caching is an optimization, which doesn't make a scalable architecture. 
+Your original data store should be able to withstand all the requests without a cache in front of it.
+It's acceptable for the requests to become slower, but it's not acceptable for your entire data store to crash.
+
+### Policies
+Whenever there's a cache miss, the missing object has to be requested from the origin.
+
+There are two ways (policies) to handle this:
+ * Side Cache - The application requests the object from the origin and stores it in the cache. The cache is treated as a key-value store.
+ * Inline Cache - The cache communicates with the origin directly requesting the missing object on behalf of the application. The app only accesses the cache.
+
+Whenever the cache has limited capacity, entries must be evicted from it. 
+The eviction policy defines that. The most common eviction policy is LRU - least-recently used elements are evicted first.
+
+The expiration policy defines how long are objects stored in the cache before they're refreshed from the origin (TTL).
+
+The higher the TTL, the higher the hit ratio, but also the higher the chance of serving stale objects.
+Eviction need not occur immediately. It can be deferred to the next time an object is accessed.
+This might be preferable so that if the origin data store is down, your application continues returning data albeit stale.
+
+Cache invalidation - automatically expiring objects when they change, is hard to implement in practice. That's why TTL is used as a workaround.
+
+### Local cache
+Simplest way to implement a cache is to use a library (eg Guava in Java or [RocksDB](https://github.com/facebook/rocksdb/)), which implements an in-memory cache.
+This way, the cache is embedded within the application.
+![local-cache](images/local-cache.png)
+
+Different replicas have different caches, hence, objects are duplicated & memory is wasted.
+These kinds of caches also cannot be partitioned or replicated - if every client has 1GB of cache, then the total capacity of the cache is 1GB.
+
+Consistency issues will also arise - separate clients can see different versions of an object.
+
+More application replicas mean more caches, which result in more downstream traffic towards the origin data store.
+This issue is particularly prevalent when the application restarts, caches are empty and the origin is hit with a lot of concurrent requests.
+Same thing can happen if an object instantly becomes popular and becomes requested a lot.
+
+This is referred to as "thundering herd". You can reduce its impact by client-side rate limiting.
+
+### External cache
+External service, dedicated to caching objects, usually in-memory for performance purposes.
+
+Because it's shared, it resolves some of the issues with local caches. at the expense of greater complexity and cost.
+
+Popular external caches - Redis and Memcached.
+
+External caches can increase their throughput and size via replication and partitioning - Redis does this, for example.
+Data can automatically partition data & also replicate partitions using leader-follower election.
+
+Since cache is shared among clients, they consistently see the same version of an object - be it stale or not.
+Replication, however, can lead to consistency issues.
+
+The number of requests towards the origin doesn't grow with the growth in application instances.
+![external-cache](images/external-cache.png)
+
+External caches move the load from the origin data store towards itself. Hence, it will need to be scaled out eventually.
+
+When that happens, as little data should be moved around as possible to avoid having the hit ratio drop significantly. 
+Consistent hashing can help here.
+
+Other drawbacks of external caches:
+ * Maintenance cost - in contrast to local caches, external ones are separate services which need to be setup & maintained.
+ * Higher latency than local caches due to the additional network calls.
+
+If the external cache is down, how can clients mitigate that?
+One option is to bypass it & access the origin directly, but that can lead to cascading failures due to the origin not being able to handle the load.
+
+Optionally, applications can maintain an in-process cache as a backup in case the external cache crashes.
+
+## Microservices
