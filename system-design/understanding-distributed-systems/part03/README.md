@@ -475,6 +475,17 @@ There are two ways (policies) to handle this:
  * Side Cache - The application requests the object from the origin and stores it in the cache. The cache is treated as a key-value store.
  * Inline Cache - The cache communicates with the origin directly requesting the missing object on behalf of the application. The app only accesses the cache.
 
+Side cache (write-through-aside) example:
+![write-aside](images/write-aside.png)
+
+Inline cache (aka Write-through) example:
+![write-through-cache](images/write-through-cache.png)
+
+Something which wasn't mentioned in the book is a write-back cache. It acts as a write-through cache, but asynchronously updates the data store.
+This one is way more complex to implement:
+![write-back-cache](images/write-back-cache.png)
+
+
 Whenever the cache has limited capacity, entries must be evicted from it. 
 The eviction policy defines that. The most common eviction policy is LRU - least-recently used elements are evicted first.
 
