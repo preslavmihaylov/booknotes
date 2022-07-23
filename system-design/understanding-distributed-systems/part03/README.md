@@ -30,7 +30,7 @@ Other approaches to scaling:
 
 The following sections explore different techniques to scale.
 
-## HTTP Caching
+# HTTP Caching
 Cruder handles static & dynamic resources:
  * Static resources don't change often - HTML, CSS, JS files
  * Dynamic resources can change - eg a user's profile JSON
@@ -80,14 +80,14 @@ Other use-cases for reverse proxies:
 NG-INX and HAProxy are popular implementations which are commonly used.
 However, caching static resources is commoditized by managed services such as Content delivery networks (CDNs) so we can just leverage those.
 
-## Content delivery networks
+# Content delivery networks
 CDN - overlay network of geographically distributed caches (reverse proxies), designed to workaround the network protocol.
 
 When you use CDN, clients hit URLs that resolve to the CDN's servers. If a requested resource is stored in there, it is given to clients. If not, the CDN transparently fetches it from the origin server.
 
 Well-known CDNs - Amazon CloudFront and Akamai.
 
-### Overlay network
+## Overlay network
 The main benefit of CDNs is not caching. It's main benefit is the underlying network architecture.
 
 The internet's routing protocol - BGP, is not designed with performance in mind. 
@@ -108,7 +108,7 @@ In addition to that, TCP optimizations are leveraged - eg pooling TCP connection
 Apart from caching, CDNs can be leveraged for transporting dynamic resources from client to server for its network transport efficiency.
 This way, the CDN effectively becomes the application's frontend, shielding servers from DDoS attacks.
 
-### Caching
+## Caching
 CDNs have multiple caching layers. The top one is at edge servers, deployed across different geographical regions.
 
 Infrequently accessed content might not be available in edge servers, hence, it needs to be fetched from the origin using the overlay network for efficiency.
@@ -120,7 +120,7 @@ To mitigate this, there are intermediary caching layers, deployed in fewer geogr
 
 Finally, CDNs are partitioned - there is no single server which holds all the data as that's infeasible. It is dispersed across multiple servers and there's an internal mechanism which routes requests to the appropriate server, which contains the target resource.
 
-## Partitioning
+# Partitioning
 When an application's data grows, at some point it won't fit in a single server. 
 That's when partitioning can come in handy - splitting data (shards) across different servers.
 
@@ -145,7 +145,7 @@ Caches are ripe for partitioning as they:
 In terms of implementation, data is distributed using two main mechanisms - hash and range partitioning.
 An important prerequisite for partitioning is for the number of possible keys be very large. Eg a boolean key is not appropriate for partitioning.
 
-### Range partitioning
+## Range partitioning
 With this mechanism, data is split in lexicographically sorted partitions:
 ![range-partitioning](images/range-partitioning.png)
 
@@ -166,7 +166,7 @@ Solutions:
     * If data grows, partition is split into two sub-partitions. 
     * If data shrinks, sub-partitions are removed & data is merged.
 
-### Hash partitioning
+## Hash partitioning
 Use a hash function which deterministically maps a key to a seemingly random number, which is assigned to a partition.
 Hash functions usually distribute keys uniformly.
 ![hash-partitioning](images/hash-partitioning.png)
@@ -185,7 +185,7 @@ Adding a new partition only rebalances the keys which are now assigned to it in 
 
 Main drawback of hash partitioning - sorted order is lost. This can be mitigated by sorting data within a partition based on a secondary key.
 
-## File storage
+# File storage
 Using CDNs enables our files to be quickly accessible by clients. However, our server will run out of disk space as the number of files we need to store increases.
 
 To work around this limit, we can use a managed file store such as AWS S3 or Azure Blob Storage.
@@ -193,7 +193,7 @@ To work around this limit, we can use a managed file store such as AWS S3 or Azu
 Managed file stores scalable, highly available & offer strong durability guarantees.
 In addition to that, managed file stores enable anyone with access to its URL to point to it, meaning we can point our CDNs to the file store directly.
 
-### Blob storage architecture
+## Blob storage architecture
 This section explores how distributed blob stores work under the hood by exploring the architecture of Azure Storage.
 
 Side note - AS works with files, tables and queues, but discussion is only focused on the file (blob) store.
@@ -222,7 +222,7 @@ Finally, the front-end layer is a stateless reverse proxy which authenticates re
 
 Side note - AS was strongly consisten from the get-go, while AWS S3 started offering strong consistency in 2021.
 
-## Network load balancing
+# Network load balancing
 So far we've scaled by offloading files into a dedicated file storage service + leveraging CDN for caching & its enhanced networking.
 
 However, we still have a single application server.
@@ -283,7 +283,7 @@ This can also be used to restart eg a degraded server due to (for example) a mem
  * A background thread (watchdog) monitors a metric (eg memory) and if it goes beyond a threshold, server forcefully crashes.
  * The watchdog implementation is critical - it should be well tested because a bug can degrade the entire application.
 
-### DNS Load balancing
+## DNS Load balancing
 A simple way to implement a load balancer is via DNS.
 
 We add the servers' public IPs as DNS records and clients can pick one:
@@ -294,7 +294,7 @@ Even if an operator manages to reconfigure the DNS records, it takes time for th
 
 The one use-case where DNS load balancing is used is to route traffic across multiple data centers.
 
-### Network load balancing
+## Network load balancing
 A more flexible approach is implementing a load balancer, operating at the TCP layer of the network stack.
  * Network load balancers have one or more physical network cards mapped to virtual IPs (VIPs). A VIP is associated with a pool of servers.
  * Clients only see the VIP, exposed by the load balancer.
@@ -310,7 +310,7 @@ Managed solutions for network load balancing:
 
 Load balancing at the TCP layer is very fast, but it doesn't support features involving higher-level protocols such as TLS termination.
 
-### Application layer load balancing
+## Application layer load balancing
 Application layer load balancers (aka L7 load balancers) are HTTP reverse proxies which distribute requests over a pool of servers.
 
 There are two TCP connections at play - between client and load balancer and between load balancer and origin server.
@@ -336,10 +336,10 @@ Main advantage - delegates load balancing to the client, avoiding a single point
 
 Main disadvantage - there needs to be a control plane which manages all the side cars.
 
-## Data storage
+# Data storage
 The next scaling target is the database. Currently, it's hosted on a single server.
 
-### Replication
+## Replication
 We can increase the read capacity of the database by using leader-follower replication:
 ![leader-follower-replication](images/leader-follower-replication.png)
 
@@ -363,7 +363,7 @@ Replication can be configured as:
 
 Replication increases read capacity, but it still requires the database to fit on a single machine.
 
-### Partitioning
+## Partitioning
 Enables us to scale a database for both reads and writes.
 
 Traditional relational databases don't support partitioning out of the box, so we can implement in in the application layer.
@@ -384,7 +384,7 @@ Times have changed - storage is cheap, but CPU time isn't.
 
 Since the 2000s, large tech companies have started to invest in data storage solutions, designed with high availability and scalability in mind.
 
-### NoSQL
+## NoSQL
 Some of the early designs were inefficient compared to traditional SQL databases, but the Dynamo and Bigtable papers were foundational for the later growth of these technologies.
 
 Modern NoSQL database systems such as HBase and Cassandra are based on them.
@@ -448,7 +448,7 @@ The argument is that with the right design, the reduction of availability due to
 
 CochroachDB and Spanner are well-known NewSQL databases.
 
-## Caching
+# Caching
 Whenever a significant portion of requests is for a few frequently accessed objects, then that workflow is suitable for caching.
 
 Caches improves the app's performance and reduces the load on the data store:
@@ -468,7 +468,7 @@ Be wary, though, that caching is an optimization, which doesn't make a scalable 
 Your original data store should be able to withstand all the requests without a cache in front of it.
 It's acceptable for the requests to become slower, but it's not acceptable for your entire data store to crash.
 
-### Policies
+## Policies
 Whenever there's a cache miss, the missing object has to be requested from the origin.
 
 There are two ways (policies) to handle this:
@@ -497,7 +497,7 @@ This might be preferable so that if the origin data store is down, your applicat
 
 Cache invalidation - automatically expiring objects when they change, is hard to implement in practice. That's why TTL is used as a workaround.
 
-### Local cache
+## Local cache
 Simplest way to implement a cache is to use a library (eg Guava in Java or [RocksDB](https://github.com/facebook/rocksdb/)), which implements an in-memory cache.
 This way, the cache is embedded within the application.
 ![local-cache](images/local-cache.png)
@@ -513,7 +513,7 @@ Same thing can happen if an object instantly becomes popular and becomes request
 
 This is referred to as "thundering herd". You can reduce its impact by client-side rate limiting.
 
-### External cache
+## External cache
 External service, dedicated to caching objects, usually in-memory for performance purposes.
 
 Because it's shared, it resolves some of the issues with local caches. at the expense of greater complexity and cost.
@@ -543,4 +543,160 @@ One option is to bypass it & access the origin directly, but that can lead to ca
 
 Optionally, applications can maintain an in-process cache as a backup in case the external cache crashes.
 
-## Microservices
+# Microservices
+A monolithic application consists of a single code base \w multiple independent components in it:
+![monolithic-app](images/monolithic-app.png)
+
+Downsides of a monolithic system:
+ * Components will become increasingly coupled over time & devs will step on each others toes quite frequently.
+ * The code base at some point will become too large for anyone to fully understand it - adding new features or fixing bugs becomes more time-consuming than it used to.
+ * A change in a component leads to the entire application being rebuilt & redeployed.
+ * A bug in one component can impact multiple unrelated components - eg memory leak.
+ * Reverting a deployment affects the velocity of all developers, not just the one who introduced a bug.
+
+To mitigate this, one could functionally decompose the large code base into a set of independently deployable services, communicating via APIs:
+![microservices](images/microservices.png)
+
+The decomposition creates a boundary between components which is hard to violate, unlike boundaries within a code base.
+
+Outcome of using microservices:
+ * Each service is owned and operated by a small team - less communication is necessary across teams.
+ * Smaller teams communicate more effectively than larger ones, since communication overhead grows quadratically as team size increases.
+ * The surface area of an application is smaller, making it more digestible to engineers.
+ * Teams are free to adopt the tech stack & hardware they prefer.
+
+Good practices:
+ * An API should have a small surface area, but encapsulate a significant amount of functionality.
+ * Services shouldn't be too "micro" as that adds additional operational load & complexity.
+
+## Caveats
+Splitting your application into multiple services has benefits but it also has a lot of downsides. It is only worth paying the price if you'll be able to amortize it across many development teams.
+
+1. Tech Stack
+
+Nothing forbids teams from using a different tech stack than everyone else. Doing so, makes it difficult for developers to move across teams.
+
+In addition to that, you'll have to support libraries in multiple languages for your internal tools.
+
+It's reasonable to enforce a certain degree of standardization. One way of doing this is to provide a great developer experience for some technologies, but not others.
+
+### Communication
+
+Remote calls are expensive & non-deterministic. Making them within the same process removes a lot of the complexity of distributed systems.
+
+### Coupling
+
+Microservices ought to be loosely coupled. Changes in one service shouldn't propagate to multiple other services. 
+Otherwise, you end up with a distributed monolith, which has the downsides of both approaches.
+
+Examples of tight coupling:
+ * Fragile APIs require clients to be updated on every change.
+ * Shared libraries which have to be updated in lockstep across multiple services.
+ * Using static IP addresses to reference external services.
+
+### Resource provisioning
+
+It should be easy to provision new services with dedicated hardware, data stores, etc.
+
+You shouldn't make every team do things in their own (slightly different) way.
+
+### Testing
+
+Testing microservices is harder than testing monoliths because subtle issues can arise from cross-service integrations.
+
+To have high confidence, you'll have to develop sophisticated integration testing mechanisms.
+
+### Operations
+
+Ease of deployment is critical so that teams don't deploy their services differently.
+
+In addition to that, debugging microservices is quite challenging locally so you'll need a sophisticated observability platform.
+
+### Eventual Consistency
+
+The data model no longer resides in a single data store. 
+
+Hence, atomic updates across a distributed system is more challenging.
+Additionally, guaranteeing strong consistency has a high cost which is often not worth paying so we fallback to eventual consistency.
+
+### Conclusion
+
+It is usually best to start with a monolith & decompose it once there's a good enough reason to do so.
+
+Once you start experiencing growing pains, you can start to decompose the monolith, one microservice at a time.
+
+## API Gateway
+When using microservices, letting clients make requests to services can be costly.
+
+For example, mobile devices might have a hard time performing an expensive operation which involves interacting with multiple APIs as every API call consumes battery life.
+
+In addition to that, clients need to be aware of implementation details such as a service's name.
+This makes it hard to modify the application architecture as it requires changing the clients as well.
+
+Once you have a public API out, you have to be prepared to maintain it for a very long time.
+
+As a solution, we can hide the internal APIs behind a facade called the API gateway.
+![api-gateway](images/api-gateway.png)
+
+Here are some of the core responsibilities.
+
+### Routing
+You can map public endpoints to internal ones. 
+
+If there is a 1:1 mapping, the internal endpoint can change, but the public one can stay the same.
+
+### Composition
+We might encounter use-cases where we have to stitch data together from multiple sources.
+
+The API gateway can offer a higher-level API that composes a response from the data of multiple services.
+
+This relieves the client from knowing internal service details & reduces the number of calls it has to perform to get the data it needs.
+
+Be wary that the availability of an API decreases as the number of composed internal services increases.
+
+### Translation
+The API Gateway can transform from one IPC mechanism to another - eg gRPC to REST.
+Additionally, it can expose different APIs to different clients. Eg a desktop-facing API can include more data than a mobile-facing one.
+
+Graph-based APIs are a popular mechanism to allow the client to decide for itself how much data to fetch - GraphQL is a popular implementation.
+
+This reduces development time as there is no need to introduce different APIs for different use-cases.
+
+### Cross-cutting concerns
+Cross-cutting functionality can be off-loaded from specific services - eg caching static resources or rate-limiting 
+
+The most critical cross-cutting concerns are authentication and authorization (authN/authZ).
+
+A common way to implement those is via sessions - objects passed through by client in subsequent requests.
+These store a cryptographically secure session object, which the server can read and eg extract a user id.
+
+Authentication is best left to the API gateway to enable multiple authentication mechanisms into a service, without it being aware.
+Authorization is best left to individual services to avoid coupling the API gateway with domain logic.
+
+The API gateway passes through a security token into internal services. They can obtain the user identity and roles via it.
+
+Tokens can be:
+ * Opaque - services call an external service to get the information they need about a user.
+ * Transparent - the token contains the user information within it.
+
+Opaque tokens require an external call, while transparent ones save you from it, but it is harder to revoke them if they're compromised.
+If we want to revoke transparent tokens, we'll need to store them in a "revoked_tokens" store or similar.
+
+The most popular transparent token standard is JWT - json payload with expiration date, user identity, roles, metadata.
+The payload is signed via a certificate, trusted by internal services.
+
+Another popular auth mechanism is using API keys - popular for implementing third-party APIs.
+
+### Caveats
+The API Gateway has some caveats: 
+ * It can become a development bottleneck since it's tightly coupled with the internal APIs its proxying to.
+ * Whenever an internal API changes, the API gateway needs to be changed as well.
+ * It needs to scale to the request rate for all the services behind it.
+
+If an application has many services and APIs, an API gateway is usually a worthwhile investment.
+
+How to implement it:
+ * Build it in-house, using a reverse proxy as a starting point (eg NGINX)
+ * Use a managed solution, eg Azure API Management, Amazon API Gateway
+
+# Control planes and data planes
