@@ -700,3 +700,66 @@ How to implement it:
  * Use a managed solution, eg Azure API Management, Amazon API Gateway
 
 # Control planes and data planes
+The API Gateway is a single point of failure. If it goes down, so does our application. Hence, this component should be scalable & highly available.
+
+There are some challenges related to external dependencies - eg gateway has a "configuration" endpoint which updates your rate-limits for endpoints.
+This endpoint has a lot less load than normal endpoints. In those cases, we should favor availability vs. consistency. In this case, we should favor consistency.
+
+Due to these differing requirements, we're splitting the API gateway into a "data plane" which handles external requests and a "control plane" which manages configuration & metadata.
+This split is a common pattern.
+
+The data plane includes functionality on the critical path that needs to run for each client request - it needs to be highly available, fast & scale with increase in load.
+A control plane is not on the critical path & has less need to scale. Its job is to manage the configuration for the data plane.
+
+There can be multiple control planes - one which scales service instances based on load, one which manages rate limiting configuration.
+
+However, this separation introduces complexity - the data plane needs to be designed to withstand control plane failures.
+If the data plane crashes as control plane crashes, there is a hard dependency on the control plane.
+
+When there's a chain of components that depend on each other, the theoretical availability is their independent availability's product (ie 50% * 50% = 25%).
+A system can be as available as its least available hard dependency.
+
+The data plane, ideally, should continue running with the last seen configuration vs. crashing in the event of control plane failures.
+
+## Scale imbalance
+Since data planes & control planes have different scaling requirements, it is possible for the data plane to overload the control plane.
+
+Example - there's a control plane endpoint which the data plane periodically polls. 
+If the data plane restarts, there can be a sudden burst in traffic to that endpoint as all of the refreshes align.
+
+If part of the data plane restarts but can't reach the control plane, it won't be able to function.
+
+To mitigate this, one could use a scalable file store as a buffer between the control & data planes - the control plane periodically dumps its configuration into it.
+
+This is actually quite reliable & robust in practice, although it sounds naive.
+![file-store-as-buffer](images/file-store-as-buffer.png)
+
+This approach shields the control plane from read load & allows the data plane to continue functioning even if the control plane is down.
+This comes at the cost of higher latency and weaker consistency since propagating changes from control plane to data plane increases.
+
+To decrease propagation latency, we can fallback to our original approach but this time, the control plane propagates configuration changes to the data plane.
+
+This way, the control plane can control its pace. 
+
+An optimization one can use is for the control plane to only push the changes from one configuration version to another to avoid sending too much data in cases where the configuration is too big.
+
+The downside is that the data plane will still need to read the initial configuration on startup.
+To mitigate this, the intermediary data store can still be used for that purpose:
+![control-plane-data-plane](images/control-plane-data-plane.png)
+
+## Control theory
+Control theory is an alternative way to think about control & data planes.
+
+The idea is to have a controller which monitors a system & applies a corrective action if there's anything odd - eg desired state differs from actual one.
+
+Whenever you have monitor, compare and action, you have a closed loop - a feedback system.
+The most commonly missing part in similar systems is the monitoring.
+
+Example - chain replication. The control plane doesn't just push configuration to the nodes. It monitors their state & executes corrective actions such as removing a node from the chain.
+
+Example - CI/CD pipeline which deploys a new version of a service. A naive implementation is to apply the changes & hope they work.
+A more sophisticated system would perform gradual roll out, which rolls back the update in the event the new version leads to an unhealthy system.
+
+In sum, When dealing with a control plane, one should ask themselves - what's missing to close the loop?
+
+# Messaging
