@@ -763,3 +763,136 @@ A more sophisticated system would perform gradual roll out, which rolls back the
 In sum, When dealing with a control plane, one should ask themselves - what's missing to close the loop?
 
 # Messaging
+Example use-case:
+ * API Gateway endpoint for uploading a video & submitting it for processing by an encoding service
+ * Naive approach - upload to S3 & call encoding service directly. 
+   * What if service is down? What to do with ongoing request?
+   * If we fire-ang-forget, but encoding service fails during processing, how do we recover from that failure?
+ * Better approach - upload to S3 & notify encoding service via messaging. That guarantees it will eventually receive the request.
+
+How does it work?
+ * A message channel acts as temporary buffer between sender & receiver.
+ * Sending a message is asynchronous. It doesn't require the receiver to be online at creation time.
+ * A message has a well-defined format, consisting of a header and payload (eg JSON).
+ * The message can be a command, meant for processing by a worker or an event, notifying services of an interesting event.
+
+Services can use inbound and outbound adapters to send/receive messages from a channel:
+![inbound-outbound-adapters](images/inbound-outbound-adapters.png)
+
+The API Gateway submits a message to the channel & responds to client with `202 Accepted` and a link to uploaded file.
+If encoding service fails during processing, the request will be re-sent to another instance of the encoding service.
+
+There are a lot of benefits from decoupling the producer (API Gateway) from the consumer (encoding service):
+ * Producer can send messages even if consumer is temporarily unavailable
+ * Requests can be load-balanced across a pool of consumer instances, contributing to easy scaling.
+ * Consumer can read from message channel at its own pace, smoothing out load spikes.
+ * Messages can be batched - eg a client can submit a single read request for last N messages, optimizing throughput.
+
+Message channels can be several kinds:
+ * Point-to-point - message is delivered to exactly one consumer.
+ * Publish-subscribe - message is delivered to multiple consumers simultaneously.
+
+Downside of message channel is the introduced complexity - additional service to process and an untypical flow of control.
+
+### One-way messaging
+Also referred to as point-to-point, in this style a message is received & processed by one consumer only.
+Useful for implementing job processing workflows.
+
+![one-way-messaging](images/one-way-messaging.png)
+
+### Request-response messaging
+Similar to direct request-response style but messages flow through channels.
+Useful for implementing traditional request-response communication by piggybacking on message channel's reception guarantee.
+
+In this case, every request has a corresponding response channel and a `response_id`. Producers use this `response_id` to associate it to the origin request.
+
+![request-response-messaging](images/request-response-messaging.png)
+
+### Broadcast messaging
+The producer writes a message to a publish-subscribe channel to broadcast it to all consumers.
+Used for a process to notify other services of an interesting event without being aware of them or dealing with them receiving the notification.
+
+![broadcast-messaging](images/broadcast-messaging.png)
+
+## Guarantees
+Message channels are implemented by a messaging service/broker such as Amazon SQS or Kafka.
+
+Different message brokers offer different guarantees.
+
+An example trade-off message brokers make is choosing to respect the insertion order of messages.
+Making this guarantee trumps horizontal scaling which is crucial for this service as it needs to handle vast amount of load.
+
+When multiple nodes are involved, guaranteeing order involves some form of coordination.
+
+For example, Kafka partitions messages into multiple nodes. To guarantee message ordering, only a single consumer process is allowed to read from a partition.
+
+There are other trade-offs a message broker has to choose from:
+ * delivery guarantees - at-most-once or at-least-once
+ * message durability
+ * latency
+ * messaging standards, eg AMQP
+ * support for competing consumer instances
+ * broker limits, eg max size of messages
+
+For the sake of simplicity, the rest of the sections assume the following guarantees:
+ * Channels are point-to-point & support many producer/consumer instances
+ * Messages are delivered at-least-once
+ * While a consumer is processing a message, other consumers can't process it. Once a `visibility` timeout occurs, it will be distributed to a different consumer.
+
+## Exactly-once processing
+A consumer has to delete a message from the channel once it's done processing it.
+
+Regardless of the approach it takes, there's always a possibility of failure:
+ * If message is deleted before processing, processing could fail & message is lost
+ * If message is deleted after processing, deletion can fail, leading to duplicate processing of the same message
+
+There is no such thing as exactly-once processing. To workaround this, consumers can require messages to be idempotent and deleting them after processing is complete.
+
+## Failures
+When a consumer fails to process a message, the visibility timeout occurs & the message is distributed to another consumer.
+
+What if message processing consistently fails?
+To limit the blast radius of poisonous messages, we can add a max retry count & move the message to a "dead-letter queue" channel.
+
+Messages that consistently fail will not be lost & they can later be addressed manually by an operator.
+
+## Backlogs
+Message channels make a system more robust to outages, because a producer can continue writing to a channel while a consumer is down.
+This is fine as long as the arrival rate is less than or equal to the deletion rate.
+
+However, when a consumer can't keep up with a producer, a backlog builds up. The bigger the backlog, the longer it takes to drain it.
+
+Why do backlogs occur?
+ * Producer throughput increases due to eg more instances coming online.
+ * The consumer's performance has degraded
+ * Some messages constantly fail & clog the consumer who spends processing time exclusively on them.
+
+To monitor backlogs, consumers can compare the arrival time of a message with its creation time.
+
+There can be some differences due to physical clocks involved, but the accuracy is usually sufficient.
+
+## Fault isolation
+If there's some producer which constantly emits poisonous messages, a consumer can choose to deprioritize those into a lower-priority queue - once read, consumer removes them from the queue & submits them into a separate lower-priority queue.
+
+The consumer still reads from the slow channel but less frequently in order to avoid those messages from clogging the entire system.
+
+The slow messages can be detected based on some identifier such as a `user_id` of a troublesome user.
+
+# Summary
+Building scalable applications boils down to:
+ * breaking down applications to separate services with their own responsibilities. (functional decomposition)
+ * Splitting data into partitions & distributing them across different nodes (partitioning)
+ * Replicating functionality or data across nodes (replication)
+
+One subtle message which was conveyed so far - there is a pletora of managed services, which enable you to build a lot of applications.
+Their main appeal is that others need to guarantee their availability/throughput/latency, rather than your team.
+
+Typical cloud services to be aware of:
+ * Way to run instances in the cloud (eg. AWS EC2)
+ * Load-balancing traffic to them (eg. AWS ELB)
+ * Distributed file store (eg AWS S3)
+ * Key-value document store (eg DynamoDB)
+ * Messaging service (eg Kafka, Amazon SQS)
+
+These services enable you to build most kinds of applications you'll need. 
+Once you have a stable core, you can optimize by using caching via managed Redis/Memcached/CDN.
