@@ -120,5 +120,87 @@ We need to measure probability & impact of occurring. Afterwards, prioritize the
 Once we decide to tackle a specific fault, we can focus on reducing its impact or probability.
 
 # Redundancy
+Redundancy == replication of functionality or state. This is the first line of defense against failures.
 
+When functionality (or state) is replicated across multiple nodes, others can take over in the event of failure.
 
+This is the main reason distributed applications can achieve better availability than single-node apps.
+
+However, in order for redundancy to be effective, there are some prerequisites:
+ * Complexity introduced by redundancy mustn't cost more availability than it adds.
+ * The system must reliably detect which components are healthy and which aren't.
+ * System must be able to run in degraded mode.
+ * System must be able to recover to fully redundant mode.
+
+Example - adding redundancy to protect against hardware faults:
+ * A load balancer can mitigate this type of fault using a pool of redundant nodes.
+ * The load balancer increases the system's complexity, but the benefits in terms of scalability and availability outweigh the costs.
+ * Load balancer detects faulty nodes using health checks.
+ * When a server is taken out of the pool, the rest of the replicas must have enough capacity to handle the load increase.
+ * The load balancer also enables the system to go back to fully redundant mode as new servers are added to the pool, requests get routed to them.
+
+Replication for stateful services is a lot more challenging and was discussed at length at previous chapters.
+
+## Correlation
+Redundancy helps only if the nodes can't fail all at once for the same reason - ie, failures are not correlated.
+
+Example:
+ * Memory corruption on one server is unlikely to occur on another at the same time. 
+ * However, a data center outage (eg natural disaster) can cause all servers to go down unless they're replicated across multiple data centers.
+
+Cloud providers (eg AWS, Azure) replicate their entire stack in multiple regions for that reason:
+ * Each region comprises of multiple data centers, called availability zones (AZ). Those are cross-connected with high-speed network links.
+ * AZs are far enough from each other to minimize the risk of correlated failures.
+ * However, they are still close enough to have low network latency among themselves.
+ * The low latency enables supporting synchronous replication protocols across multiple AZs.
+ * Using AZs, we can create apps resilient to data center outages by load balancing instances across multiple AZs, behind a shared load balancer.
+
+But, if we want to have even more redundancy in the event a catastrophic disaster brings down all AZs, we can duplicate the entire application stack in multiple regions:
+ * Load balancing can be achieved by using global DNS load balancing. 
+ * Using this approach, though, requires application state to be replicated asynchronously due to the high network latency between the DCs.
+ * Before doing this, though, you should have pretty good reason to, because it is expensive to pull off & maintain.
+ * A common reason for doing this is legal compliance since European customer data must be processed and stored within Europe.
+![dc-replication](images/dc-replication.png) 
+
+# Fault isolation
+Infrastructure faults can be controlled using redundancy. However, there are faults where redundancy won't help due to the high degree of correlation.
+
+Example:
+ * Specific user sends malformed requests that causes servers handling them to crash due to a bug.
+ * Since bug is in the code, it doesn't matter how redundant your application is.
+ * These kinds of requests are often referred to as poison pills.
+ * A similar case is when a particular request requires a lot of resources to serve it and that degrades everyone else's performance (the noisy neighbor problem).
+
+The main issue with this example is that the blast radius of such a fault is the entire application. 
+Hence, we can focus on reducing it by partitioning user requests, therefore reducing the blast radius to a particular partition where the user is assigned.
+
+Even if a user is degrading a partition, the rest of the partitions will be isolated from that fault.
+
+For example, if we partition a set of 6 instances into three partitions, a noisy neighbor can only impact 33% of users. As the number of partitions increases, the blast radius is reduced.
+![partitioning](images/partitioning.png)
+
+This is also referred to as the "bulkhead pattern", named after the pattern of splitting a ship's hull into compartments. If one compartment is damaged and filled with water, the rest of the compartments are left intact.
+
+## Shuffle sharding
+The problem with partitioning is that unlucky users who end up on the degraded partition are consistently impacted as well.
+
+A way to mitigate this is by using shuffle sharding:
+ * Instead of assigning an application instance to a single partition, it is assigned to multiple "virtual partitions".
+ * This makes it much more unlikely that two users will be assigned to the same partition - eg, 6 application instances can form up to 15 partitions.
+ * The downside is that virtual partitions partially overlap. So faults in one partition can impact users in another one.
+ * However, clients can be made fault tolerant and retry requests, so that they hit a different instance within a partition every time.
+ * The net effect is that impacted users within the system will only experience partial degradation instead of consistent degradation. 
+![shuffle-sharding](images/shuffle-sharding.png)
+
+## Cellular architecture
+We can enhance partitioning even more by partitioning the entire application stack with its dependencies into cells based on the user.
+Each cell is completely independent of another one and a gateway service is responsible for routing requests to the right cell.
+
+Azure Storage, for example, uses a cellular architecture. The storage clusters are the cells in the cellular architecture:
+![azure-storage-cellular-architecture](images/azure-storage-cellular-architecture.png)
+
+What makes a cellular architecture appealing is that a cell can have a maximum capacity.
+When the system needs to scale, a new cell is added vs. scaling out existing ones.
+This enables you to thoroughly test & benchmark your application for the maximum cell size as you won't suddenly face a surprise surge in traffic.
+
+# Downstream resiliency
