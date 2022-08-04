@@ -204,3 +204,73 @@ When the system needs to scale, a new cell is added vs. scaling out existing one
 This enables you to thoroughly test & benchmark your application for the maximum cell size as you won't suddenly face a surprise surge in traffic.
 
 # Downstream resiliency
+This section is about tactical resiliency with regards to stopping faults from propagating from one component to another.
+
+## Timeout
+When you make a network call, it's best practice to add a timeout. If timeout is not set, it is possible that a request will never return which is effectively a resource leak.
+Timeouts detect connectivity issues & stop them from propagating from one component to another.
+
+One practical consideration to have in mind is that most HTTP libraries don't have a timeout set by default, so you have to explicitly configure it.
+Rule of thumb - always set timeouts when making external calls.
+
+How to determine timeout duration? - you could base it on the desired false timeout rate - ie you want up to 0.1% of timeouts to be false.
+You can determine then the duration by setting it to the 99.9th percentile of the downstream service's response time.
+
+It is also important to have good monitoring in place on integration points between systems (such as this one) - status codes, latency, success/error rates, etc.
+This can be managed by a reverse proxy, located on our pod, to not have to do it ourselves explicitly. This is the sidecar pattern, which was already mentioned.
+
+## Retry
+What to do when a request times out? - you can either fail fast or retry.
+
+If the timeout is due to a short-lived connectivity issue, then retry with backoff is highly probable to succeed.
+
+However, if the downstream service is degraded, retrying immediately will only make matters worse.
+This is why retries need to be slowed down with increasing delays between them until a max number of retries is reached.
+
+### Exponential backoff
+To configure delay between retries, we can use a capped exponential function - delay is derived by multiplying it by a constant, which exponentially increases with each retry:
+```
+delay = min(cap, initial_backoff * 2^attempt)
+```
+
+Example - cap is set to 8 -> Retries are at seconds 2, 4, 8, 8, 8, etc.
+
+If however, multiple clients get timeouts at the same time & they all apply exponential backoff concurrently, it is highly likely that they'll cause load spikes, aka retry storm:
+![retry-storm](images/retry-storm.png)
+
+To avoid this, you can apply random jitter so that your retry time doesn't collide with other clients:
+```
+delay = random(0, min(cap, initial_backoff * 2^attempt))
+```
+
+Actively waiting between retries isn't the only way to achieve retry. In batch applications, it is common for a process to be parked in a retry queue.
+The same process (or another) can later read from that queue & retry the requests.
+
+Retries only make sense when a service is down due to a short-lived connectivity issue. If the error is consistent - eg service is not authorized to access endpoint, retrying won't help.
+Additionally, one should be wary of retrying calls to non-idempotent endpoints.
+
+### Retry amplification
+If a request goes through a chain of services and each one of them retries, downstream retries are going to get amplified, leading to significant load on the deepest service:
+![retry-amplification](images/retry-amplification.png)
+
+When there's a long dependency chain like this, it makes sense to retry at a single level and fail fast in all others.
+
+## Circuit breaker
+Retries are useful when there are transient errors. If, however, a service is down due to a more persistent error, retries will not help.
+
+There's an alternative approach which detect long-term degradations to a service & stops all requests until they are resolved - circuit breaker.
+It is useful when the downstream errors are non-transient.
+
+Goal of circuit breaker - allow a subsystem to fail without slowing down the caller.
+
+Here's how it works:
+![circuit-breaker](images/circuit-breaker.png)
+ * When it's in `closed` state, all requests go through.
+ * When it's in `open` state, all requests are blocked.
+ * Once in `open` state, occasionally a request is passed through to detect if degradation is resolved. If so, transition to `closed` state again.
+
+Understanding the pattern is easy, but the devil is in the details - how many failures are enough to transition to the open state? How long should it wait to attempt retransmission?
+
+Configuring this properly relies on accumulating data about past failures & the system's behavior.
+
+# Upstream resiliency
