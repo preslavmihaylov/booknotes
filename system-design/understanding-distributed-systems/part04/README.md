@@ -274,3 +274,129 @@ Understanding the pattern is easy, but the devil is in the details - how many fa
 Configuring this properly relies on accumulating data about past failures & the system's behavior.
 
 # Upstream resiliency
+This chapter focuses on patterns for protecting your own service from upstream clients.
+
+## Load shedding
+A server can't control how many requests it receives at a time. The OS has a limit on the number of ongoing connections, but the server typically reaches its limit way sooner than the OS exhausts its physical limit.
+This is due to running out of resources such as memory, threads, sockets, etc. It leads to requests being significantly degraded until the server eventually crashes.
+
+To mitigate this issue, a server should reject excess requests once its capacity is reached so that it can effectively process on-going requests.
+
+A counter can be used to measure the number of on-going concurrent requests. It's incremented when a new request comes in and decremented once it's processed.
+Once the counter passes a predefined threshold (we choose it as the operators), follow-up requests are rejected with eg 503 (Service Unavailable).
+
+This technique is referred to as load shedding.
+
+One nuance we can implement is differentiating between low-priority and high-priority requests & only rejecting low-priority ones.
+
+Although this technique is effective, rejecting a request doesn't fully shield a server from it as it is still effectively handled. 
+This depends on implementation - eg whether you establish a TCP connection & decode the request to make a decision.
+
+Hence, load shedding can only help so much as if the load keeps increasing, the cost of rejecting requests will still lead to a degradation.
+
+## Load leveling
+An alternative to load shedding which can be leveraged when clients don't need a prompt response is load leveling.
+
+It involves leveraging a message queue to let the service handle requests at its own pace.
+
+This pattern is useful for leveling off short-lived load spikes until the service catches up. It doesn't work as well, though, if the load spike is consistent, leading to a backlog.
+![load-leveling](images/load-leveling.png)
+
+Both load shedding and load leveling don't address load increase directly. Instead, they protect a service from getting overloaded.
+Both mechanisms are usually combined with autoscaling so that the service can scale out to handle a consistent increase in load.
+
+## Rate-limiting
+Rate-limiting (aka throttling) is a mechanism for rejecting requests once a certain quota is met.
+
+Multiple quotas can be maintained - eg both requests per second and bytes per second, and they are typically applied per user, API key or IP address.
+
+For a quota of 10 requests per second and an average load of 12 requests per second, 2 of those will will be rejected per second.
+These kinds of failures need to be designated with a special error code so that clients are aware to retry after a while - a common HTTP code for that is 429 (Too Many Requests).
+
+Additional info such as which quota was exceeded + `Retry-After` header can be included.
+
+Use-cases:
+ * Preventing well-intended clients from hammering the service & letting them gracefully back-off and retry.
+ * Shield against client bugs which lead to excessive downstream load.
+ * Applying pricing tiers for platform/infra style products.
+
+Rate-limiting only partially protects against DDoS attacks as nothing is stopping malicious actors from continuing to hammer the service even after a 429 status code.
+
+It isn't free either - you still have to open a TCP connection & inspect the payload to eg extract the API key & determine the user's available quota.
+
+To effectively protect against DDoS, you need to leverage Economy of scale - multiple services shielded behind a gateway which protects both of them against DDoS. 
+The cost of running the gateway is amortized across all the services.
+
+Difference with load shedding - load shedding rejects requests based on the local state of an application instance, whereas rate-limiting is applied across all service instances.
+Due to this caveat, some form of coordination is required.
+
+### Single-process implementation
+How to implement rate-limiting for a single process?
+
+Naive approach - store a linked list of requests per API key. Periodically, old entries are purged from the list.
+The problem with this approach is the large memory footprint.
+
+Better Alternative:
+ * Divide time into buckets with fixed duration (eg 1s) and keep track of seen requests per bucket.
+![epochs-1m](images/epochs-1m.png)
+ * When a request comes, we increment the corresponding bucket's counter by one based on the request's timestamp - this technique doesn't scale memory consumption with the number of requests.
+![incrementing-bucket-counter](images/incrementing-bucket-counter.png)
+ * We only maintain at most two buckets, since we don't care about buckets older than one epoch (ie older than 1s).
+ * A sliding window is used to calculate the current quota in the middle of an epoch - based on epoch overlap, % of the quota is taken (ie 60% of 3 requests is ~2).
+![sliding-window](images/sliding-window.png)
+ * The sliding window technique is an approximation but it's good enough & is worth it for the smaller memory footprint. Also, the smaller the epoch, the better the approximation.
+
+### Distributed implementation
+When you want to scale rate-limiting beyond a single instance, you'll need to move the logic, described above from in-memory into an external key-value storage.
+
+The challenge then is synchronizing concurrent reads/writes:
+ * One option is to leverage transactions, but that is not effective enough for such a critical path component. A subtler issue is that the service has a hard dependency on the external data store.
+ * A better alternative is using the atomic `compare-and-swap (CAS)` style APIs distributed data stores provide. A particularly useful one is `getAndIncrement`.
+ * To remove the hard dependency, we can batch updates in-memory and we periodically flush them to the distributed store. This makes the calculations slightly inaccurate but accurate enough.
+ * In the event the data store is down, we temporarily fallback to using in-memory store exclusively.
+![batch-update](images/batch-update.png)
+
+## Constant work
+In the event an application gets overloaded, some of its mechanisms start behaving differently - eg how a query is executed in an overloaded database is different from how it's executed in happy times.
+
+This type of behavior is referred to as multi-modal. 
+Some of the modes can trigger rare bugs due to code assuming the happy path at all times.
+They also make life harder for operators because the mental model of the application's behavior expands.
+
+Hence, as a general rule of thumb - strive to reduce the number of modes in an application.
+
+For example, prefer a key-value store vs. a traditional relational database in a data plane due to their predictable performance.
+A relational database has a lot of hidden optimizations based on the load, which leads to a multi-modal system.
+
+in an ideal world, the worst and average-case behavior shouldn't differ. You can use the **constant work pattern** to achieve this.
+
+The idea is to have the system perform the same amount of work under high load as under normal load.
+If there is any variation during stress periods, it better be because the system is performing better.
+
+Such a system is **antifragile**. A resilient system keeps operating under increased load. An antifragile system performs better.
+
+An example of the constant work pattern is propagating changes from the control plane to the data plane:
+ * The control plane stores a bag of settings for each user, like the quotas used by the rate limiter.
+ * When a setting changes, the control plane needs to broadcast the change to the data plane. This mechanism makes the work proportional to the number of changes.
+ * This can lead to an issue if multiple configuration changes are made for all users concurrently, leading to a burst of update messages, which the data plane can't handle.
+ * Alternatively, the control plane can periodically dump the configuration in a highly-available file store (eg Amazon S3), which includes the configuration for all users, not just updated ones.
+ * Data planes then periodically lead the dump in bulk and refresh their local state.
+ * No matter how many updates happen, the work done by the control & data planes is constant.
+
+A niche extension is preallocating the configuration with keys for every user in the system.
+If the data plane can process that configuration, this guarantees that the processing time will stay the same regardless of what happens.
+This is typically used in cellular architectures where the maximum number of users in a system is limited.
+
+Advantages:
+ * Not only is it reliable, it's also easier to implement than an event-sourcing approach where you have to process individual stacked updates.
+ * This is robust against all sorts of failures due to its self-healing properties. If eg the config file gets corrupted, the next update will automatically resolve the issue.
+
+The main disadvantage is that constant work is more expensive than doing just the necessary work. But it leads to increased reliability and it reduces the implementation complexity.
+
+# Summary
+As the number of components in a system increases, so does the possible failures. Anything that can happen will happen.
+
+Usually, a production engineer is more worried about minimizing and tolerating failure vs. scaling the system.
+This is because scaling is only necessary until you hit the next scalability bottleneck. Handling failures is a consistent worry, regardless of your scale.
+
+Failures are inevitable. When you can't design them away, focus on reducing their blast radius.
