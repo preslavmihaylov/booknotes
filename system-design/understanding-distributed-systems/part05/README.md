@@ -242,3 +242,112 @@ Example - handling backwards-incompatible message schema change between producer
 An automatic upgrade-downgrade test step can be setup in pre-production to verify a change can be safely rolled back.
 
 # Monitoring
+TODO
+
+# Observability
+A distributed system is not always 100% healthy.
+Using some of the techniques described in the book, we can tolerate and mitigate failures but with every moving part, the system becomes more complex.
+
+With more complexity, it becomes very hard to reason about the possible emergent behaviors the system can have.
+
+Human operators are still needed for a distributed systems as there are things which cannot be automated - eg debugging a failure.
+
+To effectiely debug a failure, an operator needs to inspect metrics & dashboards. But that's not sufficient.
+
+Observability is a set of tools that provide granular insights into a production system. A good observability system minimizes the time it takes to validate a failure hypothesis.
+
+This requires a rich suite of granular events, as one can't know what will be useful in the future upfront.
+At the core of observability are metrics, event logs and traces.
+
+Metrics are stored in time-series databases, that have high throughput, but struggle with high dimensionality (having many columns).
+Event logs and traces are stored in stores that support highly-dimensional data (a lot of columns), but have lower throughput.
+
+Metrics are used for monitoring, event logs and traces are used for debugging.
+
+Monitoring is part of observability. Monitoring is focused on tracking a system's health, while observability also includes tools for debugging production issues.
+
+## Logs
+Log == immutable list of time-stamped events which happened over time.
+
+The format can be either free text or a structured format such as JSON or protobuf.
+
+Example structured log:
+```
+{
+    "failureCount": 1,
+    "serviceRegion": "EastUs2",
+    "timestamp": 1614438079
+}
+```
+
+Logs can originate from services we write or external dependencies such as a message broker or data store.
+Most languages have structure logging libraries, which help with creating these kinds of logs.
+
+Logs are typically dumped in a file, which is then sent to a log collector (ie ELK stack, AWS CloudWatch) asynchronously.
+
+Logs provide a lot of information about what's happening in a service, given they're instrumented properly.
+They help with tracing the execution of a particular request or tracing back eg a service crash.
+
+They are simple to emit, but that's about the only advantage they have compared to metrics and other telemetry data:
+ * Logging libraries can add overhead to our services if they don't flush logs to disk asynchronously.
+ * If the disk gets full, either we stop emitting logs or the service starts degrading.
+ * They're not cheap to store & ingest regardless of whether we use cloud or in-house deployment due to the volume.
+ * Structured logs are more expensive than free-form ones due to their high dimensionality.
+ * Usually have low signal to noise ratio as they're very fine-grained and service specific.
+
+### Best practices
+To make logs more effective, all the data related to a particular context (eg a user request) needs to be tagged with eg a request id.
+To effectively implement this, code paths typically need to pass through a context object which enriches the logs.
+This is effective to avoid joining data, but you still might have to do it if a request spans multiple services.
+
+Additionally, events should have useful data about the work unit - who created it, what it was for, whether it succeeded or failed, how long it took.
+Finally, logged data should be stripped from any sensitive information such as PII.
+
+### Costs
+To keep the cost under control, you could:
+ * Setup log levels and only log the more interesting ones (ie ERROR). You can control this via a flag an operator can toggle.
+ * Use sampling - only log every Nth event. Events can also be prioritized, ie errors are more interesting than successful calls.
+
+Even so, someone can unintentionally introduce a bug which leads to a surge of logs. Therefore, log collectors should rate limit requests.
+What's more, these options help with a single-node system. As we add more nodes, logging will inevitably increase.
+
+Finally, we can always decide to aggregate metrics & emit those vs. raw logs but we lose the ability to drill down if necessary.
+
+# Traces
+Tracing captures the entire lifespan of a request throughout the services of our distributed system.
+
+Trace == a list of related spans, that represent the execution flow of a request.
+Span == a time interval which represents a logical operation with a bag of key-value pairs.
+![trace-example](images/trace-example.png)
+
+When a request is initiated, it is assigned a unique trace ID. It is propagated across services so that you can trace the entire lifecycle.
+Each stage of a trace, is represented by a span. Once a span ends, it is propagated to a collector service which assembles it into a trace.
+Popular distribute trace collectors - Open Zipkin, AWS X-Ray.
+
+Traces enable a developer to:
+ * Debug issues caused by specific requests. Useful for client-raised issues.
+ * Debug rare issues which affect a small number of requests.
+ * Debug common issues which affect a large number of requests and they all have an issue in common.
+ * Identify bottlenecks in an end-to-end request.
+ * Identify which users hit what downstream services. Can be used for rate-limiting or billing purposes.
+
+Tracing is challenging to retrofit into an existing system as it requires each component to proactively instrument them.
+
+In addition to that, third-party services and libraries we use also need to support traces.
+
+## Putting it all together
+The main drawback of event logs is that they are too fine-grained and service-specific.
+
+When a user request passes through a system, it can go through several services. 
+Logs can only be used within the context of a single service.
+
+Similarly, a single event doesn't give much info about the health or state of the system.
+
+Metrics and traces are much more useful. They can be thought of as derived views built from event logs & optimized for specific use-cases.
+ * Metrics == time series of summary statistics, derived by aggregating counters or observations over multiple events.
+ * Traces == aggregation of events belonging to the lifecycle of a specific user request.
+
+In both cases, we can emit individual counters or spans and have the backend aggregate them into more useful metrics/traces.
+
+# Manageability
+
