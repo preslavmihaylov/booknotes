@@ -150,3 +150,95 @@ Approach seems reasonable but it doesn't guarantee that both stores will eventua
 Regardless of the specific problem, the point is that using a formal verification system such as TLA+ can help us catch these kinds of errors before any code is written.
 
 # Continuous delivery and deployment
+Once a change is merged in a repository, it needs to get released to production.
+If the rollout happens manually, it won't happen often.
+
+This leads to several unreleased changes being merged & the eventual rollout becomes more and more risky.
+Also, if an issue is discovered, it's hard to figure out which change exactly caused the issue.
+
+Furthermote, the developer who deployed the change needs to monitor dashboards and alerts to ensure the change is working.
+
+In a nutshell, manual deployments are a waste of time and should be automated.
+Once a change hits the main branch, it should be automatically deployed to production.
+
+Once that's done, the developer is free to pick up their next task vs. babysitting the deployment process.
+This whole process can be automated via a continuous delivery pipeline (CD).
+
+Releasing changes is among the main root causes of failures. This is why, significant time needs to be invested in safeguards, monitoring and automation.
+Whenever a bad version is detected, the pipeline should automatically rollback to the previous stable version.
+
+There is a balance between rollout safety & the time it takes to release a change to production. A good pipeline makes a balance between the two.
+
+## Review and build
+There are four stages involved in deployment:
+![deployment-stages](images/deployment-stages.png)
+
+It starts with a pull request, which is reviewed. A pipeline needs to validate the change by running a set of linters & tests to ensure it's valid.
+
+A team member needs to review and approve the change. A checklist helps here:
+ * Does the change include unit/integration/end to end tests as needed?
+ * Does the change incldue metrics, logs, traces?
+ * Can this change break production by introducing a backwards-incompatible change?
+ * Can the change be rollbacked safely?
+
+This process can be reused for non-code related changes as well - static assets, end to end tests, configuration files.
+All of this should be version controlled in a repository.
+
+It's very important to release configuration changes via a CD pipeline. They are a common source of outages.
+
+Infrastructure should also be defined as code - Infrastructure-as-code. Terraform is the most popular tool for that.
+This enables all infra changes to be version controlled & reviewed just like normal code.
+
+Once a change is moved into the main branch, we proceed to the build stage, where the code is built & release artifacts are created.
+
+## Pre-production
+In this stage, the change is released in a non-production environment where end-to-end tests are run.
+Although this environment isn't as realistic as production, it's helpful for verifying end to end integration.
+
+There can be multiple pre-production environments. 
+One can have simple smoke tests, while another can have part of production traffic mirrored to it to make it more realistic.
+
+The CD pipeline should assess an artifact's health using the same metrics used in production.
+
+## Production
+Once pre-production passes, the artifact can be deployed to production.
+
+It should be released to a small number of instances initially. The goal is to surface problems not detected so far before hitting all production instances.
+If this stage passes, it is then gradually rolled out to the rest of the instances.
+
+During deployment, part of the instances can't serve production traffic, hence, the rest of the instances need to compensate.
+You should ensure there is sufficient capacity to handle this operation.
+
+If there are multiple regions the service is deployed to, it should first be deployed to the lower traffic region.
+The remaining region rollouts should be divided into sequential stages to minimize risk.
+
+The more stages there are, the longer the deployment will take. 
+To mitigate this, you can make a parallel rollout once enough confidence has been built in the initial stages.
+
+## Rollbacks
+For every step, the CD pipeline needs to verify the artifact's health. If it's not OK, an automatic rollback should be triggered.
+Example indicators you could use - end to end tests, health metrics, errors and alerts.
+
+Just monitoring the health metrics is often not enough. The CD pipeline should also monitor the health of upstream/downstream dependencies to detect any indirect impact.
+
+The pipeline should wait some time between stages (bake time) to ensure it's successful since some issues can take a while to surface.
+The bake time can be reduced after each successful stage.
+
+You could also determine the bake time based on the number of requests you've received so that your API can be properly exercised to raise confidence it works properly.
+
+When any indicator fails, the CD pipeline stops - at this stage, it can either trigger a rollback or alert the oncall engineer for manual intervention.
+Based on the engineer's input, the CD pipeline can either retry or rollback entirely.
+
+In some circumstances, the operator might choose to wait for a new version to get released and roll it forward.
+This might be necessary due to a backwards incompatible change. One of the common reasons is changing the serialization format for persistence or IPC.
+
+For safely introducing a backwards incompatible change, it can be broken down into several smaller backward-compatible changes.
+
+Example - handling backwards-incompatible message schema change between producer and consumer:
+ * Prepare change - consumer is modified to support new and old formats.
+ * Activate change - producer is modified to write messages in the new format.
+ * Cleanup change - The consumer stops supporting the old messaging format altogether. This is only released once enough confidence is accumulated.
+
+An automatic upgrade-downgrade test step can be setup in pre-production to verify a change can be safely rolled back.
+
+# Monitoring
