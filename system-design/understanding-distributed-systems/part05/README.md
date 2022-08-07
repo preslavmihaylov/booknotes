@@ -350,4 +350,36 @@ Metrics and traces are much more useful. They can be thought of as derived views
 In both cases, we can emit individual counters or spans and have the backend aggregate them into more useful metrics/traces.
 
 # Manageability
+Operators use observability tools to understand the behavior of a system, but they also need a way to modify it without making any code changes.
 
+Examples - releasing a new version to production or changing the way a system behaves via a configuration change.
+
+An application generally depends on various configuration settings. Some affect its behavior (ie max cache size), others contain secrest (eg GCP credentials).
+Since these settings vary per environment, they shouldn't be hardcoded.
+
+To decouple the application from its configuration, you can use a dedicated store - eg AWS AppConfig or Azure App Configuration.
+
+The CD pipeline can read the configuration at deployment time & override your defaults for the specific environment.
+
+The drawback is that you can't change the configuration without redeploying the service.
+Alternatively, the configuration can be made to react to configuration changes by periodically re-reading the configuration and applying the changes.
+
+Once that's possible, new features can be released with feature flags you can toggle.
+This enables you to release a new build with a disabled feature at first and enable it later for eg a fraction of application users to build up confidence.
+
+The same mechanism can be used to implement A/B tests.
+
+# Summary
+Everyone who spends a few months in a team that operates a production system should be quite familiar with these topics.
+
+Although we all want to design new services, the majority of time is spent on maintaining existing ones - fixing bugs, adding new features, operating the service.
+
+In the author's opinion, the only way to become a better system designer is by embracing these maintenance activities.
+Aspire to make your systems easy to modify, extend and operate so that they can be easily maintained.
+
+This enables you to have a sixth-sense that enables you to critique the design of other services and ultimately you become a better systems designer.
+
+Take every chance you get to learn from production systems. Be on call. 
+Participate in as many post-mortems as possible. Ask yourself - how could the incident have been avoided.
+
+These activities will pay off in the long-term way more than reading about the latest architectural trends.
