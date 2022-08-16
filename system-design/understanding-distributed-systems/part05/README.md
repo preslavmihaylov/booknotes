@@ -242,7 +242,233 @@ Example - handling backwards-incompatible message schema change between producer
 An automatic upgrade-downgrade test step can be setup in pre-production to verify a change can be safely rolled back.
 
 # Monitoring
-TODO
+Monitoring is used to detect production issues quickly & alert human operators responsible for the system.
+Another use-case is to provide high-level health information about a system via dashboards.
+
+Initially, monitoring was black-box - reporting only if service was up. After a while, developers started instrumenting their code to track the health of specific features (white-box monitoring).
+Black-box monitoring is useful to detect symptoms of a failure, white-box monitoring is useful to identify the root cause.
+
+Main use-case for black box monitoring is to track health of external dependencies and validate the impact to users.
+A common approach is to run periodic scripts (synthetics) which send periodic requests to test endpoints and monitor latency & success rate.
+
+A benefit of using synthetics is that they can catch issues not visible to the application (eg connectivity issues) and they can be used to exercise endpoints which aren't used by users that often.
+Example - DNS server is down & service thinks it's just not receiving a lot of requests. Synthetics would catch that issue as they are unable to resolve a service's IP address.
+
+## Metrics
+Metric == time series of raw measurements for resources (ie CPU load) or behavior (ie number of requests).
+Each sample is represented by a floating-point number and a timestamp.
+
+A metric can also be tagged with labels - set of key-value pairs. This can be used to filter metrics for eg specific region, environment, node, etc.
+Labels are very useful to be able to filter without creating separate metrics for different environments. 
+But they're also harder to store & process because every label combination is a distinct metric.
+
+Minimum metrics for a service to consider:
+ * Request throughput
+ * Internal state (eg in-memory cache)
+ * Dependencies availability and performance
+
+This requires, however, deliberate effort by developers to instrument their code.
+
+Example simple call with various metrics you might want to consider instrumenting:
+```python
+def get_resource(id):
+    resource = self._cache.get(id) # in-process cache
+    # Is the id valid?
+    # Was there a cache hit?
+    # How long has the resource been in the cache?
+
+    if resource is not None:
+        return resource
+
+    resource = self._repository.get(id)
+    # Did the remote call fail, and if so, why?
+    # Did the remote call time out?
+    # How long did the call take?
+
+    self._cache[id] = resource
+    # What's the size of the cache?
+
+    return resource
+    # How long did it take for the handler to run?
+```
+
+How does metric reporting work? - one way is via event-based reporting:
+ * Whenever the handler fails, it reports a failure count of 1 in an event, sent to a local telemetry agent:
+```
+{"failureCount": 1, "serviceRegion": "EastUs2", "timestamp": 1614438079}
+```
+ * Agent batches the events & periodically sends them to a remote telemetry service, which persists them in a specialized store.
+ * To reduce the storage costs, events can be pre-aggregated into time buckets of eg 1m, 5m, 1h, etc.
+```
+"00:00", 561,
+"01:00", 42,
+"02:00", 61,
+...
+```
+ * This pre-aggregation can be done client-side by the telemetry agent and server-side. The technique dramatically reduces the cost of metrics.
+ * But the downside is that we lose the ability to re-aggregate on a lower scale - eg aggregating per 5m, when we've pre-aggregated on 1h.
+
+## Service-level indicators
+Just because we can alert on anything due to the advent of metrics, doesn't mean we should alert on everything. 
+It doesn't make sense to be alerted during the middle of the night when there was a spike in memory consumption.
+
+One specific metric category which is good to alert on is SLI (service-level indicator) - this is a metric tied to the level of service we provide to our users, eg. response time, error rate, throughput.
+
+SLIs are typically aggregated over a rolling time window & represented via a summary statistic, ie average or percentile.
+They are also typically a ratio of two items - "good events" over the total number of events. This makes it easy to measure - 0 means service is broken, 1 means that whatever is measured has no issues.
+
+Commonly used SLIs:
+ * Response time - how many requests occurred faster than a given threshold
+ * Availability - how long was the service usable, ie. - (successful requests / total requests)
+![sli-example](images/sli-example.png)
+
+Where should we measure - eg with response time, should we measure response time as seen by service, load balancer or clients?
+Ideally, we should measure as close to the user's experience as possible. If too costly, pick the next best candidate.
+
+How should we measure response time?
+Usually via a long-tailed, right-skewed distribution.
+Distribution can be summarized via a statistic - ie average, but it's not very good because one large outlier skews the whole average. In example 99 requests of 1s and one request of 10m make for an average of 7s.
+
+Percentiles are a better way to summarize a distribution - the value below which a percentage of response times fall. 
+For example, if 99th percentile is 1s, then 99% of requests are below 1s. Rightmost percentiles (ie 99.9th percentile) are referred to as long-tailed latencies.
+They represent a small fraction of requests and their latencies.
+
+It might be important to monitor those because although they're small in quantity, they could be the most important business users of our application.
+
+Don't underestimate latencies - studies show that 100ms delay in load time hurts conversion rates by 7%.
+Long-tail response times can dramatically impact the service - if you have 2k threads serving 10k requests and 1% of requests start taking 20s to complete, you'll need 2k more threads to handle the load.
+
+Also, reducing long-tail latencies usually improves our average-case scenarios as well.
+
+## Service-level objectives
+Servive-level objective (SLO) == range of acceptable values for an SLI which indicate the service is healthy.
+SLOs can be used to define SLAs with users - a contractual agreement that dictates what are the consequences once an SLA is not met, usually a fine of sorts.
+
+Eg, an SLO can define that 99% of API calls to endpoint X should complete below 200ms over a rolling window of 1 week.
+
+Another point of view is that only 1% of requests are allowed to have more than 200ms latency. This 1% is the error budget, which represent the number of failures which can be tolerated.
+SLOs are helpful for alerting and help the team prioritize repair tasks. 
+![slo-example](images/slo-exmaple.png)
+
+Examples: 
+ * Team can agree that repair items are prioritized over new features once error budget is exhausted.
+ * Incident importance can be measured by the amount of error budget burned.
+
+Small time windows force the team to act quickly and prioritize bug fixes and repair items. 
+Longer time windows are better suited for longer term decisions on which projects to invest in.
+
+How strict should an SLO be?
+ * Too lenient - we won't detect user-facing issues.
+ * Too strict - engineering time is wasted with micro optimizations that yield diminishing returns.
+
+Note that 100% reliability doesn't guarantee 100% reliable experience to users since we can't eg guarantee their last-mile connection.
+
+It's reasonable to start with comfortable ranges for an SLO at first & adjust over time.
+Overall, anything above 3 nines (99.9%) is very costly & provides diminishing returns.
+
+Strive to keep things simple & have as few SLOs as possible that provide good enough indication of service health.
+
+SLOs need to be agreed on with stakeholders. If error budger is burned too quickly, repair items need to be prioritized over features.
+
+From Google's SRE book:
+> if you can’t ever win a conversation about priorities by quoting a particular SLO, it’s probably not worth having that SLO.
+
+Users might become over-reliant on actual behavior of our service rather than documented SLA. 
+It might make sense to introduce [controlled failures](https://en.wikipedia.org/wiki/Chaos_engineering) to ensure dependencies can cope with targeted SLA - eg, we do weekly DC failovers at Uber to make sure critical services can withstand a disaster where one of the DCs goes down.
+
+## Alerts
+The part of a monitoring system which triggers an action once a metric crosses a threshold.
+
+Depending on the severity & type, an alert can:
+ * Trigger an automated script to eg restart the service.
+ * Paging the engineer who is on-call for the impacted service.
+
+For an alert to be useful, it has to be actionable - The operator should be able to quickly assess the impact & urgency.
+For example, an alert on CPU usage is not useful, but an alert on an SLO is more useful as it directly impacts users and you know how.
+
+One could monitor the SLO's error budget and trigger an alert once a large fraction of it has been consumed.
+
+When defining alerts, there is a trade-off between precision and recall:
+ * Precision - fraction of significant events over total number of alerts. (ie how many alerts actually indicate an incident?)
+ * Recall - fraction of significant events which triggered an alert. (ie are you missing any significant events you should have alerted on?)
+
+Low precision leads to a lot of alerts which are noisy and not actionable. Low recall leads to outages which is often not alerted on.
+
+Although it would be great to have 100% of both, improving one typically lowers the other.
+
+Practical example on defining an alert:
+ * We have a SLO target of 99% over 30 deys
+ * A naive approach for alerting would be to alert whenever the alert goes down below 99%, but it can be a transient failure.
+ * We can increase the time an alert needs to be active to trigger, but now the alert will take longer to trigger even during an actual outage.
+ * A better approach is to trigger based on how fast the error budger is being burned (burn rate).
+ * Burn rate == % of error budget consumed / % of elapsed SLO time window.
+ * Burn rate = 1 => error budget is exhausted in 30 days, Burn rate = 2 => error budget is exhausted in 15 days, etc.
+ * To improve recall, we can configure the alert to be low-severity for burn rate of 2 and high-severity for burn rate of 10.
+
+Most alerts should be configured based on SLOs. 
+But we should also have alerts on known failure modes such as memory leaks we haven't had time to design away.
+In this case, automatic mitigation by restarting the service should suffice.
+
+## Dashboards
+Apart from alerting, metrics are used to render dashboards which present the system's real-time health.
+Dashboards can, however, become a dumping ground for charts which are not useful and forgotten.
+
+When creating dashboards, we need to first consider who the audience is and work backwards.
+![dashboards-example](images/dashboards-example.png)
+
+Example dashboards:
+ * SLO Dashboard - used by org's stakeholders to gain quick insight into the system's health. During an incident, it shows user impact.
+ * Public API Dashboard - show health of public endpoints, used by operators to trace the error path during an outage.
+ * Service dashboard - service-specific implementation details used by developers who have more context about the service.
+    * Apart from service metrics, it should also track upstream and downstream health of dependencies/dependents.
+    * These include other services, but also infra components such as message queues or load balancers.
+
+### Best practices
+Dashboards should be defined using domain-specific languages and version-controlled like code.
+This lets them be kept in sync across different environments. They're updated from a single pull request without the need for manual steps, which is error-prone.
+
+The most important charts should be at the top of the dashboards because that's what the operators see first.
+They should also be rendered with a default timezone to ease communication between operators.
+
+All charts in the dashboard should use the same time resolution - 1m, 5m, 1h, etc, and range - 24h, 7d, etc.
+We can pick the default resolution based on most frequent use-case - 1h range & 1m resolution is useful for incidents, while 1y range & 1d resolution is useful for capacity planning.
+
+The number of metrics and data points on a chart should be kept to a minimum as it makes dashboards slow & hard to understand.
+
+A chart should contain metrics within a similar range, otherwise, the largest one will hide all others.
+You can split related statistics in multiple charts - eg 10th, average & 90th percentile can be one chart, 99.9th and 0.1th percentile can be another.
+
+A chart should also contain annotations:
+ * Description, links to runbooks, related dashboards and escalation contacts.
+ * Horizontal lines for alert thresholds.
+ * Vertical line for each relevant deployment.
+
+Metrics shouldn't just be emitted when there are errors. 
+Otherwise, charts will render will gaps, from which you can't derive whether there were no errors or your service stopped emitting metrics.
+To avoid this, emit a metric with 0 in case there are no errors and 1 when there are.
+
+## Being on call
+Healthy on-call is possible when services are built with realiability and operatbility in mind.
+To incentivize developers to do that, they can be the ones on-call so that they aim to reduce operational toll to minimum.
+They are also the ones which make most sense to be on-call, because they know the service most intimately.
+
+Being on-call is stressful. Even if there are no alerts, it is stressful to not be able to freely leave your desk after working hours.
+This is why, being on-call should be compensated and on-call engineer shouldn't be expected to progress on feature work.
+
+Healthy on-call is possible when alerts are actionable - they link to relevant dashboards & runbook.
+
+Unless a false positive, all actions taken by operator should be communicated in a global outages channel.
+This lets other engineers more quickly catch up and pick up from where the on-call engineer left off in case of escalations.
+
+The first step during an outage should be to mitigate it, not fix it. Once mitigated, understand the root-cause (in normal working hours) and figure out a way to prevent it from happening again.
+The greater the outage impact (measured by the SLOs), the more time you ought to spend on preventing it.
+
+When an incident burns a significant amount of the error budget, there should be a postmortem. 
+Its goal is to understand the root cause & come up with repair items that prevent it from happening again.
+
+Additionally, if the incident spiraled out of control, there should be an agreement within the team to spot feature work and focus solely on the repair items.
+
+The [SRE books](https://sre.google/books/) are a great reference to learn more about creating a healthy on-call rotation.
 
 # Observability
 A distributed system is not always 100% healthy.
