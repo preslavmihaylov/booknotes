@@ -2,27 +2,11 @@
 
 - [Introduction](#introduction)
 - [Reliable links](#reliable-links)
-  - [Reliability](#reliability)
-  - [Connection lifecycle](#connection-lifecycle)
-  - [Flow Control](#flow-control)
-  - [Congestion control](#congestion-control)
-  - [Custom Protocols](#custom-protocols)
 - [Secure links](#secure-links)
-  - [Encryption](#encryption)
-  - [Authentication](#authentication)
-  - [Integrity](#integrity)
-  - [Handshake](#handshake)
 - [Discovery](#discovery)
 - [APIs](#apis)
-  - [HTTP](#http)
-  - [Resources](#resources)
-  - [Request methods](#request-methods)
-  - [Response status codes](#response-status-codes)
-  - [OpenAPI](#openapi)
-  - [Evolution](#evolution)
-  - [Idempotency](#idempotency)
 
-## Introduction
+# Introduction
 In order for processes to communicate, they need to agree on a set of rules which determine how data is transmitted and processed. Network protocols define these rules.
 
 Network protocols are arranged in a stack - every protocol piggybacks on the abstraction provided by the protocol underneath.
@@ -34,7 +18,7 @@ Taking a closer look:
  * The transport layer enables transmitting data between processes (different from machines, because you might have N processes on 1 machine). Most important protocol at this layer is TCP - it adds reliability to the IP protocol.
  * The application layer is a high-level protocol, targetted by applications - eg HTTP, DNS, etc.
 
-## Reliable links
+# Reliable links
 Communication between nodes happens by transmitting packages between them. This requires 1) addressing nodes and 2) a mechanism for routing packets across routers.
 
 Addressing is handled by the IP protocol. Routing is handled within the routers' routing tables. Those create a mapping between destination address and the next router along the path.
@@ -44,13 +28,13 @@ IP, however, doesn't guarantee that data sent over the internet will arrive at t
 It provides a reliable communication channel on top of an unreliable one (IP). A stream of bytes arrives at the destination without gaps, duplication or corruption.
 This protocol also has backoff mechanisms in-place to avoid congesting the transportation network, making it a healthy protocol for the internet.
 
-### Reliability
+## Reliability
 Achieved by:
  * splitting a stream of bytes into discrete segments, which have sequence numbers and a checksum.
  * Due to this, the receiver can detect holes, duplicates and corrupt segments (due to the checksum).
  * Every segment needs to be acknowledged by the receiver, otherwise, they are re-transmitted.
 
-### Connection lifecycle
+## Connection lifecycle
 With TCP, a connection must be established first. The OS manages the connection state on both sides via sockets.
 
 To establish a connection, TCP uses a three-way-handshake:
@@ -68,7 +52,7 @@ This is typically mitigated by:
  * Leveraging connection pools
  * Not closing a TCP connection between subsequent request/response pairs
 
-### Flow Control
+## Flow Control
 Flow control is a back-off mechanism which TCP implements to prevent the sender from overflowing the receiver.
 
 Received segments are stored in a buffer, while waiting for the process to read them:
@@ -79,7 +63,7 @@ The receive buffer size is also communicated back to the sender, who uses it to 
 
 This mechanism is similar to rate limiting, but at the connection level.
 
-### Congestion control
+## Congestion control
 TCP protects not only the receiver, but the underlying network as well.
 
 An option called `congestion window` is used, which specifies the total number of packets which can be in-flight (sent but not ack).
@@ -93,7 +77,7 @@ Timeouts & missed packets adjusts the congestion window down. Successful transmi
 
 Effectively, slower round trip times yield larger bandwidths. Hence, favor placing servers close to clients.
 
-### Custom Protocols
+## Custom Protocols
 TCP delivers reliability and stability at the expense of extra latency and reduced bandwidth.
 
 UDP is an alternative protocol, which doesn't provide TCP's reliability mechanisms. It is used as a canvas for custom protocols to be built on-top which have some of TCP's functionalities but not all.
@@ -103,12 +87,12 @@ If a client misses a single game frame sent from the server, TCP would attempt t
 
 However, for games that is unnecessary because the game state would have already progressed once the packet gets retransmitted.
 
-## Secure links
+# Secure links
 We can now transmit bytes over the network, but they're transmitted in plain-text. We can use TLS to secure the communication.
 
 TLS provides encryption, authentication and integrity for application-layer protocols (eg HTTP).
 
-### Encryption
+## Encryption
 Encryption guarantees that transmitted data can only be read by sender and receiver. To everyone else, the data is obfuscated.
 
 When a TLS connection is first opened, the sender and receiver negotiate a shared encryption secret using asymmetric encryption.
@@ -116,7 +100,7 @@ When a TLS connection is first opened, the sender and receiver negotiate a share
 The shared secret, which was exchanged, is then used for secure communication between the client and server using symmetric encryption.
 Periodically, the shared secret key is renegotiated to mitigate the risk of someone decrypting the shared secret during the on-going exchange.
 
-### Authentication
+## Authentication
 So far, we've managed to encrypt the data exchange, but we haven't established a way for clients to authenticate who the server is and vice versa.
 
 This is achieved via digital signatures and certificates:
@@ -143,7 +127,7 @@ The chain of certificates always ends with a root CA, who self-signs their certi
 One of the most common mistakes made when using TLS is to let a certificate expire. That prevents clients from connecting to your server via TLS.
 This is why, automation is important to prevent this from happening.
 
-### Integrity
+## Integrity
 Encryption prevents middleman from reading transmitted data, while authentication enables us to verify the identity of the server.
 
 However, what's stopping a middleman from tampering the transmitted data?
@@ -160,7 +144,7 @@ In addition to tampering, this process also allows us to detect data corruption.
 
 Typically, we can rely on TCP to prevent data corruptions via its checksum, but that mechanism [has a flaw](https://dl.acm.org/doi/10.1145/347057.347561) where once every ~16GB-1TB, a data corruption issue is not detected.
 
-### Handshake
+## Handshake
 When a new TLS connection is opened, a handshake occurs which exchanges the variables used throughout the connection for achieving any of the purposes mentioned so far - encryption, authentication, integrity.
 
 During this handshake, the following events occur:
@@ -177,7 +161,7 @@ The operations don't necessarily happen in this order as there are some optimiza
 
 The bottom line, though, is that instantiating a TLS connection is not free. Hence, put servers close to clients & reuse connections when possible.
 
-## Discovery
+# Discovery
 How do we find out what's the IP address of the server we want to connect to?
 
 DNS to the rescue - distributed, hierarchical, eventually consistent key-value store of hostname -> ip address
@@ -206,7 +190,7 @@ A smart mitigation is to let resolvers serve stale entries vs. returning an erro
 
 The property of a system to continue to function even when a dependency is down is referred to as "static stability".
 
-## APIs
+# APIs
 When a client makes a call to a server via their hostname + port, that calls goes through an adapter which maps the request to interface calls within the server, invoking its business logic.
 
 Communication can be direct or indirect:
@@ -239,7 +223,7 @@ These principles include:
  * requests are stateless - each request contains all the necessary information required to process it.
  * responses are implicitly or explicitly labeled as cacheable, allowing clients to cache them for subsequent requests.
 
-### HTTP
+## HTTP
 HTTP is a request-response protocol for client to server communication.
 ![http-request-response-example](images/http-request-response-example.png)
 
@@ -273,7 +257,7 @@ With HTTP 3, a package loss only blocks the affected stream, not all of them.
 
 Examples in the book use HTTP 1.1 due to its human-readability.
 
-### Resources
+## Resources
 Example server application we're building - product catalog management for an e-commerce site.
 Customers can browse the catalog, administrators can create, update or delete products.
 
@@ -301,7 +285,7 @@ Example JSON-serialized product:
 }
 ```
 
-### Request methods
+## Request methods
 URLs designate what resource you're targeting. HTTP methods define what operation you're performing on the resource.
 
 Most commonly used operations \w example `product` entity:
@@ -321,7 +305,7 @@ Table of methods & safe/idempotent properties:
  * PUT - not safe & idempotent
  * DELETE - not safe & idempotent
 
-### Response status codes
+## Response status codes
 Responses contain a status code, which indicates whether the request is successful or not:
  * 200-299 - indicate success, eg 200 OK
  * 300-399 - used for redirection, eg 301 Moved Permanently indicates the resource is moved to a different URL. The new URL is specified in the `Location` header.
@@ -335,7 +319,7 @@ Responses contain a status code, which indicates whether the request is successf
    * 502 Bad Gateway - server, while acting as proxy, received a downstream server error
    * 503 Service Unavailable - server is unavailable due to eg a temporary heavy load on it.
 
-### OpenAPI
+## OpenAPI
 The server's API can be defined via an Interface Definition Language (IDL) - a language-agnostic format, which specifies what the API contains.
 
 This can be used for generating the server's adapter & the client's library for interacting with the server.
@@ -391,7 +375,7 @@ components:
 
 This can be then used to generate an API's documentation, boilerplate adapters and client SDKs.
 
-### Evolution
+## Evolution
 An API starts out as a well-designed interface but it would eventually need to change due to change in requirements.
 
 The last thing we need is to change the API & introduce a breaking change. 
@@ -406,7 +390,7 @@ To tackle this, REST APIs should be versioned (eg `/v1/products`). As a general 
 
 Backwards compatible APIs are usually not elegant, but they're practical.
 
-### Idempotency
+## Idempotency
 If an API request times out without knowing the result, a sensible way to tackle this on the client side is to retry the request (one or more times).
 
 Idempotent HTTP requests are susceptible to this technique as executing multiple identical requests yields the same result as executing it once.
