@@ -12,7 +12,7 @@
 
 So far, focus is on making nodes communicate. Focus now is to make nodes coordinate as if they're a single coherent system.
 
-## System Models
+# System Models
 To reason about distributed systems, we must strictly define what can and cannot happen.
 
 A system model is a set of assumptions about the behavior of processes, communication links and timing while abstracting away the complexities of the technology being used.
@@ -41,7 +41,7 @@ Finally, we can model timing assumptions:
 
 Throughout the book, we'll assume a system model with fair-loss links, crash-recovery processes and partial synchrony.
 
-## Failure Detection
+# Failure Detection
 When a client sends a request to a server & doesn't get a reply back, what's wrong with the server?
 
 One can't tell, it might be:
@@ -58,7 +58,7 @@ However, a client need not wait until they have to send a message to figure out 
 
 Pings and heartbeats are used in situations where processes communicate with each other frequently, eg within a microservice deployment.
 
-## Time
+# Time
 Time is critical in distributed systems:
  * On the network layer for DNS TTL records
  * For failure detection via timeouts
@@ -70,7 +70,7 @@ The challenge with that is that in distributed systems, there is no single globa
 
 We'll be exploring a family of clocks which work out the order of operations in a distributed system.
 
-### Physical Clocks
+## Physical Clocks
 Processes have access to a physical wall-time clock. Every machine has one. The most common one is based on a vibrating quartz crystal, which is cheap but not insanely accurate.
 
 Because quartz clocks are not accurate, they need to be occasionally synced with servers with high-accuracy clocks.
@@ -87,7 +87,7 @@ An alternative is to use a clock, provided by most OS-es - monotonic clock. It's
 
 This is useful for measuring time elapsed between timestamps on the same machine, but not for timestamps across multiple ones.
 
-### Logical Clocks
+## Logical Clocks
 Logical clocks measure passing of time in terms of logical operations, not wall-clock time.
 
 Example - counter, incremented on each operation. This works fine on single machines, but what if there are multiple machines.
@@ -103,7 +103,7 @@ To break ties, the process ID can be included as a second ordering factor.
 
 Regardless of this, logical clocks don't imply a causal relationship. It is possible for event A to happen before B even if B's timestamp is greater.
 
-### Vector Clocks
+## Vector Clocks
 Vector clocks are logical clocks with the additional property of guaranteeing that event A happened before event B if A's timestamp is smaller than B.
 
 Vector clocks have an array of counters, one for each process in the system:
@@ -127,12 +127,12 @@ In the above example:
 A downside of vector clocks is that storage requirements grow with every new process.
 Other types of logical clocks, like [dotted version clocks](https://queue.acm.org/detail.cfm?id=2917756) solve this issue.
 
-### Summary
+## Summary
 Using physical clocks for timestamp is good enough for some records such as logs.
 
 However, when you need to derive the order of events across different processes, you'll need vector clocks.
 
-## Leader Election
+# Leader Election
 There are use-cases where 1 among N processes needs to gain exclusive rights to accessing a shared resource or to assign work to others.
 
 To achieve this, one needs to implement a leader-election algorithm - to elect a single process to be a leader among a group of equally valid candidates.
@@ -143,7 +143,7 @@ There are two properties this algorithm needs to sustain:
 
 This chapter explores a particular leader-election algorithm - Raft, and how it guarantees these properties.
 
-### Raft leader election
+## Raft leader election
 Every process is a state machine with one of three states:
  * follower state - process recognizes another process as a leader
  * candidate state - process starts a new election, proposing itself as a leader
@@ -164,7 +164,7 @@ State transition happens when:
  * No one wins election - due to split vote. Then, after a random timeout (to avoid consecutive split votes), a new election starts.
 ![raft-state-machine](images/raft-state-machine.png)
 
-### Practical considerations
+## Practical considerations
 There are also other leader election algorithms but Raft is simple & widely used.
 
 In practice, you would rarely implement leader election from scratch, unless you're aiming to avoid external dependencies.
@@ -179,7 +179,7 @@ This has [lead to big outages in the past](https://ravendb.net/articles/avoid-ro
 
 As a rule of thumb, leaders should do as little work as possible & we should be prepared to occasionally have more than one leaders.
 
-## Replication
+# Replication
 Data replication is fundamental for distributed systems.
 
 One reason for doing that is to increase availability. If data is stored on a single process and it goes down, the data is no longer available.
@@ -233,7 +233,7 @@ What if a follower dies & comes back alive afterwards?
  * When the message is rejected, the leader sends the last two messages. If those are also rejected, the last three are sent and so forth.
  * Eventually, the follower will receive all log entries they've missed and make their state up-to-date.
 
-### Consensus
+## Consensus
 Solving state machine replication lead us to discover a solution to an important distributed systems problem - achieving consensus among a group of nodes.
 
 Consensus definition:
@@ -251,7 +251,7 @@ Two widely used options are etcd and zookeeper. These data stores replicate thei
 To implement acquiring a lease, clients can attempt to create a key \w a specific TTL in the key-value store. 
 Clients can also subscribe to state changes, allowing them to reacquire the lease if the leader dies.
 
-### Consistency models
+## Consistency models
 Let's take a closer look at what happens when a client sends a request to a replicated data store.
 
 Ideally, writes are instant:
@@ -266,7 +266,7 @@ In a replicated data store, writes need to go through the leader, but what about
 
 Consistency models help define the trade-off between consistency and performance.
 
-#### Strong Consistency
+### Strong Consistency
 If all reads and writes go through the leader, this can guarantee that all observers will see the write after it's persisted.
 ![strong-consistency](images/strong-consistency.png)
 
@@ -275,7 +275,7 @@ This is a `strong consistency` model.
 One caveat is that a leader can't instantly confirm a write is complete after receiving it. It must first confirm that they're still the leader by sending a request to all followers.
 This adds up to the time required to serve a read.
 
-#### Sequential consistency
+### Sequential consistency
 Serializing all reads through the leader guarantees strong consistency but limits throughput.
 
 An alternative is to enable followers to serve reads and `attach clients to particular followers`. 
@@ -286,7 +286,7 @@ This is a `sequential consistency` model.
 
 Example implementation is a producer/consumer system synchronized with a queue. Producers and consumers always see the events in the same order, but at different times.
 
-#### Eventual consistency
+### Eventual consistency
 In the sequential consistency model, we had to attach clients to particular clients to guarantee in-order state changes.
 This will be an issue, however, when the follower a client is pinned to is down. The client will have to wait until the follower is back up.
 
@@ -299,7 +299,7 @@ The only guarantee a client has is that it will eventually see the latest state.
 Using an eventually consistent system can lead to subtle bugs, which are hard to debug. However, not all applications need a strongly consistent system.
 If you're eg tracking the number of views on a youtube video, it doesn't matter if you display it wrong by a few users more or less.
 
-#### The CAP Theorem
+### The CAP Theorem
 When a network partition occurs - ie parts of the system become disconnected, the system has two choices:
  * Remain highly available by allowing clients to query followers & sacrifice strong consistency.
  * Guarantee strong consistency by declining reads that can't reach the leader.
@@ -324,7 +324,7 @@ Others allow you to configure how consistent you want them to be - eg Amazon's C
 Taken from another angle, PACELC implies that there is a trade-off between the required coordination and performance.
 One way to design around this is to move coordination away from the critical path.
 
-### Chain Replication
+## Chain Replication
 Chain replication is a different kettle of fish, compared to leader-based replication protocols such as Raft.
  * With this scheme, processes are arranged in a chain. Leftmost process is the head, rightmost one is the tail.
  * Clients send writes to the head, it makes the state change and forwards to the next node
@@ -370,7 +370,7 @@ But can we go further? Can we achieve replication without the need for consensus
 
 That's the next chapter's topic.
 
-## Coordination avoidance
+# Coordination avoidance
 There are two main ingredients to state-machine replication:
  * A broadcast protocol which guarantees every replica eventually receives all updates in the same order
  * A deterministic update function for each replica
@@ -379,7 +379,7 @@ Implementing fault-tolerant total order requires consensus. It is also a scalabi
 
 We'll explore a form of replication which doesn't require total order but still has useful guarantees.
 
-### Broadcast protocols
+## Broadcast protocols
 Network communication over wide area networks like the internet offer unicast protocols only (eg TCP).
 
 To broadcast a message to a group of receivers, a multicast protocol is needed. Hence, we need to implement a multicast protocol over a unicast one.
@@ -404,7 +404,7 @@ This approach is particularly useful when there are large number of nodes as det
 Reliable broadcast protocols guarantee messages are delivered to non-faulty processes, but they don't make ordering guarantees.
 **Total order broadcast** guarantees both reception & order of messages, but it requires consensus, which is a scalability bottleneck.
 
-### Conflict-free replicated data types
+## Conflict-free replicated data types
 If we implement replication without guaranteeing total order, we don't need to serialize all writes through a single node.
 
 However, since replicas can receive messages in different order, their states can diverge.
@@ -486,7 +486,7 @@ That's what a MV register does. It uses a vector clock and the merge operation r
 CRDTs can be composed - eg, you can have a dictionary of LWW or MV registers.
 Dynamo-style data stores leverage this.
 
-### Dynamo-style data stores
+## Dynamo-style data stores
 Dynamo is the most popular eventually consistent and highly available key-value store.
 
 Others are inspired by it - Cassandra & Riak KV.
@@ -513,7 +513,7 @@ To solve this issue, there are two possible anti-entropy mechanisms you can use:
  * Read repair - if a client detects that a replica doesn't have the latest version of a key, it sends a write request to that replica.
  * Replica synchronization - Replicas periodically exchange state information to notify each other of their latest states. To minimize amount of data transmitted, replicas exchange merkle tree hashes instead of the key-value pairs directly.
 
-### The CALM theorem
+## The CALM theorem
 When does an application need coordination (ie consensus) and when can it use an eventually consistent data store?
 
 The CALM theorem states that a program can be consistent and not use coordination if it is monotonic.
@@ -531,7 +531,7 @@ CAP refers to consistency in terms of reads and writes. CALM refers to consisten
 
 It is possible to build applications which are consistent at the application-level but inconsistent on the storage level.
 
-### Causal consistency
+## Causal consistency
 Eventual consistency can be used to write consistent, highly available and partition-tolerant applications as long as they're monotonic.
 
 For many applications, though, eventual consistency guarantees are insufficient.
@@ -572,14 +572,14 @@ One caveat is that there is a possibility of data loss if a replica commits a wr
 
 This is considered acceptable in COPS case to avoid paying the price of waiting for long-distance requests before acknowledging a write.
 
-### Practical considerations
+## Practical considerations
 In summary, replication implies that we have to choose between consistency and availability.
 
 In other words, we must minimize coordination to build a scalable system.
 
 This limitation is present in any large-scale system and there are data stores which allow you to control it - eg Cosmos DB enables developers to choose among 5 consistency models, ranging from eventual consistency to strong consistency, where weaker consistency models have higher throughput.
 
-## Transactions
+# Transactions
 Transactions allow us to execute multiple operations atomically - either all of them pass or none of them do.
 
 If the application only deals with data within a SQL database, bundling queries into a transaction is straightforward.
@@ -587,7 +587,7 @@ However, if operations are performed on multiple data stores, you'll have to exe
 
 In microservice environments, however, this scenario is common.
 
-### ACID
+## ACID
 If you eg have to execute a money transfer from one bank to another and the deposit on the oher end fails, then you'd like your money to get deposited back into your account.
 
 In a traditional database, transactions are ACID:
@@ -598,7 +598,7 @@ In a traditional database, transactions are ACID:
 
 Let's explore how transactions are implemented in centralized, non-distributed databases before going into distributed transactions.
 
-### Isolation
+## Isolation
 One way to achieve isolation is for transactions to acquire a global lock so that only one transaction executes at a time.
 This will work but is not efficient.
 
@@ -620,7 +620,7 @@ Our goal as developers is to maximize concurrency while preserving the appearanc
 
 The concurrency strategy is determined by a concurrency control protocol and there are two kinds - pessimistic and optimistic.
 
-### Concurrency control
+## Concurrency control
 Pessimistic protocols use locks to block other transactions from accessing a shared object.
 
 The most common implementation is two-phase locking (2PL):
@@ -660,7 +660,7 @@ A limited form of OCC is used in distributed applications:
  * A transaction assigns a new version number to the object & proceeds with the operation.
  * Once it is ready to commit, the object is only updated if the original version tag hasn't changed.
 
-### Atomicity
+## Atomicity
 Either all operations within a transaction pass or all of them fail.
 
 To guarantee this, data stores record changes in a write-ahead log (WAL) persisted on disk before applying the operations.
@@ -671,7 +671,7 @@ In most circumstances, that log is not read. But if the data store crashes befor
 This WAL-based recovery mechanism guarantees atomicity only within a single data store.
 If eg you have two transactions which span different data store (money transfer from one bank to the other), this mechanism is insufficient.
 
-### Two-phase commit
+## Two-phase commit
 Two-phase commit (2PC) is a protocol used to implement atomic transactions across multiple processes.
 
 One process is a coordinator which orchestrates the actions of all other processes - the participants.
@@ -697,7 +697,7 @@ One way to mitigate 2PC's shortcomings is to make it resilient to failures - eg 
 Atomically committing a transaction is a type of consensus called **uniform consensus** - all processes have to agree on a value, even faulty ones.
 In contrast, standard consensus only guarantees that non-faulty processes agree on a value, meaning that uniform consensus is harder to implement.
 
-### NewSQL
+## NewSQL
 Originally, we had SQL databases, which offered ACID guarantees but were hard to scale.
 In late 2000s, NoSQL databases emerged which ditched ACID guarantees in favor of scalability.
 
@@ -720,7 +720,7 @@ One of the most successful implementations is Google's Spanner:
 
 Another system inspired by Spanner is CockroachDB which works in a similar way, but uses hybrid-logical clocks to avoid having to provision highly costly atomic clocks.
 
-## Asynchronous transactions
+# Asynchronous transactions
 2PC is synchronous & blocking. It is usually combined with 2PL to provide isolation.
 
 If any of the participants is not available, the transaction can't make progress.
@@ -737,7 +737,7 @@ Solution from real world - fund transfer:
 
 Checks are an example of persistent messages - in other words, they are processed **exactly once**.
 
-### Outbox Pattern
+## Outbox Pattern
 Common issue - persist data in multiple data stores, eg Database + Elasticsearch.
 
 The problem is the lack of consistency between the non-related services.
@@ -747,7 +747,7 @@ Solution - using the outbox pattern:
  * A process periodically starts which queries the outbox table & sends pending messages to the second data store.
  * A message channel such as Kafka can be used to achieve idempotency & guaranteed delivery.
 
-### Sagas
+## Sagas
 Problem - we're a travel booking service which coordinates booking travels + hotels via separate third-party services.
 
 Bookings must happen atomically & both the travel & hotel booking services can fail.
@@ -773,14 +773,14 @@ It also has to checkpoint a transaction's intermediary state to persistent stora
 
 In practice, one doesn't need to implement workflow engines from scratch. One can leverage workflow engines such as Temporal which already do this for you.
 
-### Isolation
+## Isolation
 A sacrifice we endured when we used distributed transactions is the lack of isolation - distributed transactions operate on the same data & there is no isolation between them.
 
 One way to work around this is to use "semantic locks" - the data used by a transaction is marked as "dirty" and is unavailable for use by other transactions.
 
 Other transactions reliant on the dirty data can either fail & rollback or wait until the flag is cleared.
 
-## Summary
+# Summary
 Takeaways:
  * Failures are unavoidable - systems would be so much simpler if they needn't be fault tolerant.
  * Coordination is expensive - keep it off the critical path when possible.
