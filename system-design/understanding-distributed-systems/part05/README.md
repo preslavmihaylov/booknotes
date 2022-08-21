@@ -1,4 +1,12 @@
 # Maintainability
+- [Testing](#testing)
+- [Continuous delivery and deployment](#continuous-delivery-and-deployment)
+- [Monitoring](#monitoring)
+- [Observability](#observability)
+- [Traces](#traces)
+- [Manageability](#manageability)
+- [Summary](#summary)
+
 The majority of the cost of software is spent in maintaining it after its initial development:
  * Fixing bugs
  * Adding new features
