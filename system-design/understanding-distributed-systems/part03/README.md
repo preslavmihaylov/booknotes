@@ -1,5 +1,4 @@
 # Scalability
-- [Scalability](#scalability)
 - [HTTP Caching](#http-caching)
 - [Content delivery networks](#content-delivery-networks)
 - [Partitioning](#partitioning)
