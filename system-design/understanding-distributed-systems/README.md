@@ -1,3 +1,4 @@
+![UDS Cover](./images/uds-cover.png)
 # [Understanding Distributed Systems](https://www.goodreads.com/book/show/56977420-understanding-distributed-systems)
 Book notes taken during my read-through of UDS. Check out my [review of the book](https://pmihaylov.com/understanding-distributed-systems)
 
