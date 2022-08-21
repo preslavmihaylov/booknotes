@@ -1,4 +1,10 @@
 # Resiliency
+- [Common failure causes](#common-failure-causes)
+- [Redundancy](#redundancy)
+- [Fault isolation](#fault-isolation)
+- [Downstream resiliency](#downstream-resiliency)
+- [Upstream resiliency](#upstream-resiliency)
+- [Summary](#summary)
 
 The three fundamental scalability patterns discussed so far:
  * functional decomposition - splitting a monolithic system into independent parts which composed provide the same functionality
