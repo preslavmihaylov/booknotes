@@ -228,7 +228,7 @@ This can be fixed by making the variable `volatile`, which doesn't incur very la
 However, the necessity for this technique has long passed and it shouldn't be used in modern codebases.
 
 ## Initialization safety
-The final fields of a **properly constructed** object will be observed in an inconsistent state even if an object is not safely published.
+The final fields of a **properly constructed** object will not be observed in an inconsistent state even if an object is not safely published.
 This extends to all fields reachable from a final field.
 
 This means that if an object has only final fields and is not safely published, the only possible problem is observing a not initialized reference to the object.
