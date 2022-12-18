@@ -1,7 +1,7 @@
 # Chapter 16 - The Java Memory Model
 Throughout the book, the topic of the Java Memory Model (JMM) was avoided as this includes some low-level details answering the question "why" certain design decisions work.
 
-Throughout your practice, sticking to those design desicions suffices for you to write effective concurrent code. 
+Throughout your practice, sticking to those design decisions suffices for you to write effective concurrent code. 
 However, understanding the why behind those decisions might help some to understand them better.
 
 ## What is a memory model and why would I want one?
@@ -170,7 +170,7 @@ If the method is not invoked way too much throughout the program, the contention
 
 The JVM provides a special guarantee for static initializers that all static initializers will happen before initial usage, hence no additional synchronization is needed for them.
 
-This can be leveraged to avoid synchronization alltogether like this:
+This can be leveraged to avoid synchronization altogether like this:
 ```java
 @ThreadSafe
 public class EagerInitialization {
@@ -220,7 +220,7 @@ public class DoubleCheckedLocking {
 This was used back in the days when thread contention was way too costly and techniques like this one promised substantial performance improvements.
 The rationale behind it is that in the usual code path, when the object is already initialized, there is no contention altogether.
 
-If it is observed to not be initialized, the synchronized block guarantees that if the object was indeed intialized in another thread, it won't be reinitialized again.
+If it is observed to not be initialized, the synchronized block guarantees that if the object was indeed initialized in another thread, it won't be reinitialized again.
 
 However, there is still a problem with this code as the worst-case scenario is that a thread would observe that an object's reference is initialized, but its fields are not (fully) initialized.
 

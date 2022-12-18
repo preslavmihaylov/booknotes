@@ -45,8 +45,8 @@ public class Examples {
         }
     }
 
-    public static class LockStrippingExample implements LockScopeExample {
-        // ConcurrentHashMap implements lock stripping. No need to implement your own :))
+    public static class LockStripingExample implements LockScopeExample {
+        // ConcurrentHashMap implements lock striping. No need to implement your own :))
         private final Map<String, String> locations = new ConcurrentHashMap<>();
 
         public void addUserLocation(String user, String loc) {
