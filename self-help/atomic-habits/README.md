@@ -241,3 +241,49 @@ Your habits are shaped by the systems in your life.
 
 # 1st Law - Make it Obvious
 ## The Man Who Didn't Look Right
+Author shares a story about a skilled medical worker who was able to recognize that her father-in-law was about to get a heart attack based on the color of his skin.
+
+He got to the hospital and was undergoing a lifesaving surgery a few hours later.
+
+This is all due to the brain's ability to absorb experience and enable you to identify patterns invisible to the untrained eye. Our brains can do a lot not through active thinking.
+
+Similarly, our habits can initiate based on a cue without actively thinking about the cue. This is what makes them remarkable but also dangerous as once a habit has settled in, it occurs without us thinking about it.
+
+Examples:
+ * You cover your mouth when laughing
+ * You apologize before asking a question
+ * You finish other people's sentences
+
+All this happens unconsciously and you'd need someone to point this out for you to notice.
+
+Due to this, we must begin the process of behavior change with awareness. Before building new habits, we need to get a handle on our current ones.
+
+### The Habits Scorecard
+The japanese workers at train stations use a technique called "pointing-and-calling" which is meant to minimize mistakes.
+
+It works by saying facts they see out loud, ie current time, speed of train, signal is green, etc.
+
+This mechanism works surprisingly well - it reduces errors by 85% and accidents by 30%.
+
+This process works so well because it raises the level of awareness from a non-conscious habit to a conscious one.
+
+The habits scorecard steps on this process and is meant to raise your awareness about your habits.
+
+Start by jotting down all the behaviors you exhibit during the day, ie:
+ * Wake up
+ * Turn off alarm
+ * Check phone
+ * Go to bathroom
+ * etc...
+
+Assign + (good), - (bad), = (neutral) to each of your habits.
+
+It's challenging to determine whether a habit is good or not as it depends on what your goals are. One way to think about good/bad habits is to consider whether a habit will give you net positive benefit in the long-term.
+
+For example, smoking a cigarette can reduce stress now but cost you your health in the long-run.
+
+In addition, to listing your habits, try pointing and calling them to raise your awareness of them. If you're about to eat a cookie, say out loud "I'm about to eat this cookie although I'm not hungry and I will gain weight as a result".
+
+Hearing your bad habits spoken out loud makes the consequences seem more real and you'll be more likely to avoid doing them.
+
+## The Best Way to Start a New Habit
