@@ -287,3 +287,74 @@ In addition, to listing your habits, try pointing and calling them to raise your
 Hearing your bad habits spoken out loud makes the consequences seem more real and you'll be more likely to avoid doing them.
 
 ## The Best Way to Start a New Habit
+In a research, scientists found that people who make a plan to workout were much more likely to do it compared to people who relied on motivation alone.
+
+The technique which helped the successful group stick to their workouts is called "implementation intention" - a plan you make beforehand about when and where to act. In particular, the participants had to write out a sentence "During the next week, I will partake in at least 20 mins of exercise on [day] at [time] in [location]"
+
+The cues that trigger a habit can manifest in many forms - phone buzzing, smell of chocolate, etc.
+
+But the most common cues are time and location. Implementation intention leverages both of them.
+
+Researchers have also found that being more granular increases the odds of success, ie detailing what route you're going to get to the gym, what transport you're going to use, etc.
+
+The main takeaway is that people who make a specific plan for when and where they will perform a new habit are more likely to do it.
+
+It is insufficient to plan to perform a habit when you feel like it, or the right time comes, etc.
+
+If you aren't sure when to start a new habit, try the first day of the year, month, week, because people are more likely to take action in these times as hope is higher.
+
+Another benefit to implementation intentions is that they make it easy to say no to distractions which take you off course.
+
+When your dreams are vague, it is easy to rationalize little exceptions all day vs. doing what you have to do to succeed.
+
+One of the best ways to use implementation intentions is to leverage a technique called habit stacking.
+
+A well-known example of how this manifests is the Diderot effect. It comes from the story about a french philosopher called Diderot, who acquired a new, beautiful dress and that lead to him refurnishing his whole house as an effect because all his old possessions looked out of place compared to the new dress.
+
+In summary, the diderot effect states that obtaining a new possession often leads to a spiral of consumption.
+
+Examples:
+ * You buy a new couch and now you have to change the layout of your whole living room
+ * You get new earrings and now you have to get new dress & shoes to match
+
+People often decide what to do next based on what they just finished doing - ie going to the bathroom reminds you to brush your teeth, wash clothes, etc.
+
+This caveat of our behavior can be leveraged for forming new habits.
+
+One of the best ways to start a new habit is to attach it to an existing habit you're already doing. This is called habit stacking.
+
+It's a variation of implementation intention where instead of pairing your habit with a date & time, you pair it with an existing habit.
+
+Examples:
+ * After I pour my cup of coffee, I will meditate
+ * After I take off my work shoes, I will exercise
+ * After I get into bed, I will kiss my partner
+
+Once you master the basic version, you can start chaining numerous habits like this to form larger stacks. You're leveraging the positive momentum of performing a habit to initiate in the next one.
+![habit-stacking](images/habit-stacking.png)
+
+Example habit stack - after I pour my morning cup of coffee, I will medidate. After I meditate, I will write my todo list, etc.
+
+Once you get comfortable with habit stacks, you can develop a more general version, which guides you when the situation is appropriate:
+ * When I see a set of stairs, I will take them instead of using the elevator
+ * When I walk into a party, I will introduce myself to someone I don't know yet
+
+The secret to creating a successful habit stack is to choose the right time and location to initiate the cue.
+
+If you want to start meditating in the mornings, but they tend to be chaotic because of kids, that might not be the right moment.
+
+Additionally, take into consideration frequency. If you want to do something every day, but the habit you stack it on only happens on Monday, that might not be the right habit to stack on.
+
+To make this right, consider brainstorming a list of your current habits and deciding which one to turn into a stack from there.
+
+Habit stacks work best when the cue is highly specific and actionable. If it's vague, it might not happen.
+
+Example - doing push-ups during lunch break. But when exactly? Before you eat, after you eat, where, etc?
+
+Better alternative - when I close my laptop for lunch, I will do my push-ups.
+
+The more specific you are, the higher your likelihood of success.
+
+The first law of behavior change is "make it obvious". Implementation intentions and habit stacks are practical ways to create obvious cues for your new habits.
+
+# Motivation Is Overrated; Environment Often Matters More
