@@ -358,3 +358,69 @@ The more specific you are, the higher your likelihood of success.
 The first law of behavior change is "make it obvious". Implementation intentions and habit stacks are practical ways to create obvious cues for your new habits.
 
 # Motivation Is Overrated; Environment Often Matters More
+Author begins chapter by mentioning a study which had the ambition to change hospital personnel's eating habits without demanding willpower or motivation.
+
+To accomplish that, they rearranged the cafeteria room in a way that bottled water was available everywhere vs only in one location.
+
+This lead to 11% drop in sales of soda and 25% increase in bottled water sales without anyone mentioning a thing.
+![bottled-water-rearchitecture](images/bottled-water-rearchitecture.png)
+
+In the above picture, shaded areas are where bottled water was stored before/after the study.
+
+People choose products not because of what they are but where they are - eg if you see a plate of cookies as you walk into the kitched, you'll grab some even if you're not hungry.
+
+Environment is the invisible hand shaping human behavior.
+
+The most common form of change is external, not internal.
+
+A prominent formula states that behavior is a function of the person and their environment:
+ * Eg you tend to purchase items in the store at eye level more commonly than items close to the floor
+ * People tend to buy starbucks because its at every corner
+
+People have many receptors, both internal and external but the most impactful one is vision.
+
+A small change in what you see can lead to a big change in what you do.
+
+## How to design your environment for success
+Some dutch researchers noticed how certain households spent 30% less electricity than others.
+
+Turns out that's the case because their electricity meter is in the main hallway, easy to see, so having that visible lead to less consumption.
+
+When energy use is obvious and easy to track, people changed their behaviors.
+
+Every habit is initiated by a cue and we are more likely to notice cues that standout:
+ * It's hard to practice the guitar if it's tucked in the basement
+ * It's hard to read a book when it's at a bookshelf in the guest room
+
+However, creating obvious cues can draw your attention toward a desired habit:
+ * Putting apples in the middle of the kitchen will make you eat more apples
+ * If you want to practice guitar more, place it in the middle of the living room
+
+If you want to make a habit a big part of your life, make the cue a big part of your environment.
+
+In fact, you can have multiple triggers around your environment to increase the likelihood you'll engage in your target habit.
+
+## The Context is The Cue
+Cues that trigger a habit can start specific but over time, your habit becomes associated with the environment, surrounding the cue, eg people tend to drink more in social situations.
+
+Think of your environment not as a set of objects, but a set of relationships w/ the objects in it.
+
+In one study, insomniacs were told to stay in a room different than their bedroom and only go to bed if they feel tired. This lead them to fall asleep more quickly because bed was associated with sleeping.
+
+An important strategy involving context is changing your environment in order to build new habits.
+
+It is easier to build a new habit in a new environment, than build it in an environment already associated with other habits.
+
+If you can't build a new environment, try redefining your current one by segregating it into spaces for work, study, exercise, etc.
+
+Use the mantra "one space, one purpose". Avoid mixing the context of one habit with another, usually the easier ones win out.
+
+This is why using your phone can be powerful because of all the things you can do with it, but oftentimes, you default to using it for distracting yourself because that's the easiest habit within that context.
+
+If you're limited by the size of your apartment, try dividing your room into activity zones, ie use your computer for work, tablet for reading, desk for writing, etc.
+
+Focus comes easier in the desk you only use for working, sleep comes easier in the bedroom if that's all you do there.
+
+If you want stable and predictable behaviors, you need a stable and predictable environment.
+
+# The Secret to Self-Control
