@@ -240,7 +240,7 @@ Every goal is doomed to fail if it goes against human nature.
 Your habits are shaped by the systems in your life. 
 
 # 1st Law - Make it Obvious
-## The Man Who Didn't Look Right
+# The Man Who Didn't Look Right
 Author shares a story about a skilled medical worker who was able to recognize that her father-in-law was about to get a heart attack based on the color of his skin.
 
 He got to the hospital and was undergoing a lifesaving surgery a few hours later.
@@ -424,3 +424,48 @@ Focus comes easier in the desk you only use for working, sleep comes easier in t
 If you want stable and predictable behaviors, you need a stable and predictable environment.
 
 # The Secret to Self-Control
+Around the end of the vietnam war, some congressman visited soldiers and found out most of them were heroin addicts.
+
+This lead to some programs to help addicted give up heroin once they come back home from the war.
+
+But guess what, when they came back home, most of them gave up on heroin, only ~10% relapsed in 3y.
+
+Why? - there was a radical change in the environment.
+
+In Vietnam, there were cues everywhere - stress from war, easy to get, etc. Once they came back home, all those where gone and no one around them was taking heroin.
+
+When the context changed, so did the habit.
+
+Normal drug addicts have a harder time getting off addiction because it's within their environment.
+
+They can go to a clinic and stop it for a while but once they go back home, the old cues start resurfacing again.
+
+~90% of heroin users get re-addicted once they go back home.
+
+The idea that a little bit of discipline would solve all our problems is deeply embedded in our culture. Recent research, however, suggests something else.
+
+Most people who are seen as strongly disciplined are not that different from non-disciplined folks. They just structure their environment in a way which makes it easier to stay healthy.
+
+The people with the best self-control are the ones that need to use it the least.
+
+Once a habit is encoded in the brain, it is ready to be used whenever the relevant situation arises.
+
+Author tells a story about long-time smoker who used to smoke while riding a horse. They stopped smoking but 20y later, when they rode a horse again, they felt the urge to smoke again.
+
+What's more if you stress out a person by eg suggesting they're overweight, they tend to reach out to old bad habits and overeat more.
+
+You can break a habit but you're unlikely to forget it. Once it's encoded, it stays for life. This is why resisting temptation is not an effective strategy as you can't do it all the time.
+
+A more reliable strategy is to cut habits at the source - reduce exposure to the cue that causes it:
+ * If you can't get any work done, leave your phone in the other room
+ * If you continually feel you're not enough, stop following social media
+ * If you're wasting too much time watching TV, move the TV outside the bedroom
+
+This practice is an inversion of the first principle - make it invisible.
+
+Self-control is a short-term strategy, not a long-term one. Instead, spend your energy optimizing your environment.
+
+Make the cues of your good habits obvious and the cues of the bad ones invisible.
+
+# 2nd Law - Make it Attractive
+# How to Make a Habit Irresistible
