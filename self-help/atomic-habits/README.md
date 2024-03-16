@@ -469,3 +469,87 @@ Make the cues of your good habits obvious and the cues of the bad ones invisible
 
 # 2nd Law - Make it Attractive
 # How to Make a Habit Irresistible
+Some scientist experimented with birds & found that they're pre-programmed to act when a certain cue is observed:
+ * some baby birds poking red dots because they're mother birds have them
+ * some gooses curling round objects into their nests, because they're preprogrammed to do that with their eggs so that they don't lose them
+
+Furthermore, when larger than usual versions of the cues were observed, that triggered an even more exaggerated response, ie gooses trying to curl back big volleyballs into their nests.
+
+These are called `supernormal stimuli`.
+
+Humans are also prone to fall for exaggerated versions of reality, ie consuming junk food which is an exaggerated version of the traditional food we use. This kind of cue drives our reward system crazy.
+
+This stems from the fact that we are pre-programmed to find & consume food rich in salt, sugar & fat in quick fashion. This made sense when we were fighting for survival in the savanas, but is detrimental to our health nowadays.
+
+Junk food tends to be so delicious because it has dynamic contrast - items with a combo of sensations, ie crunchy & creamy.
+
+Eating traditional, unprocessed foods keeps your brain bored & it feels full quicker, whereas eating junk food is a novel experience, making it crave more food.
+
+This is a manifestation of the second law of behavior change - **Make it attractive**. The more attractive something is, the more likely it is to become habit forming.
+
+Society leverages this fact & engineers exaggerated versions of reality:
+ * social media delivers more likes & praise than we can get at home or at the office
+ * Ads have ideal lightning & photoshopped models, more beautiful than the models in real life
+ * Porn sites give us stimulating scenes at a rate, impossible to replicate in real life
+
+All this is designed so that we are dragged into excessive shopping, social media, porn, eating, etc habits.
+
+If you want to make it likely that a behavior will occur, you have to make it attractive. It might not be possible to transform every habit into a supernormal stimulus, but you can make any habit more enticing.
+
+To achieve this, we need to start by understanding what a craving is and how it works.
+
+## The Dopamine-Driven Feedback Loop
+The neutotransmitter that is the source of cravings is dopamine. Scientists figured it out by blocking dopamine from some mice & they stopped wanting to do anything, until they died.
+
+A modded version of the experiment had them block dopamine but give them sugar. Turns out they still enjoyed it, but without dopamine, they didn't have the desire, hence action stopped.
+
+On the other hand, when they flooded the mice with dopamine, they started forming habits at breakneck speed. When mice poked their nose in a box, they were given a powerful reward. They started doing it 800 times per hour as a result.
+
+Dopamine plays a key role in many processes - motivation, learning & memory, punishment & aversion, voluntary movement.
+
+The key takeaway when it comes to habits is that dopamine is released not only when you experience pleasure, but also when you anticipate it:
+ * Gamblers have a dopamine spike before they place a bet, not after they win
+ * Drug addicts experience a dopamine surge when they see the powder, not when they consume it
+
+Whenever dopamine rises, so does your motivation to act.
+
+The anticipation of a reward is often more rewarding than the reward itself - ie anticipating a vacation is more rewarding than experiencing it.
+
+## The Dopamine Spike
+![dopamine-spike](images/dopamine-spike.png)
+ * A) When you haven't learnt a habit yet, dopamine rises when you first experience the reward
+ * B) When you've learnt the habit, you already anticipate the reward, so you don't get a dopamine spike once you get it, only while you're anticipating it
+ * C) Anticipating the reward but not getting it leads to disappointment & dopamine drop
+ * D) However, getting a reward late leads to a greater dopamine spike once you get the reward
+
+The "wanting rewards" part of the brain is much larger than the "liking" parts of it, hence why the dopamine effect is much larger in the anticipation phase.
+
+This insight highlights the importance of this law of behavior change - we need to make something attractive in the first place, because it is the expectation of the reward that drives us to act.
+
+A strategy that can be utilized for this purpose is temptation bundling.
+
+## Temptation Bundling
+Someone who enjoyed watching Netflix wanted to create a bike-riding habit so he made Netflix only run if he was riding the bike. Slowing down would pause netflix.
+
+This is an example of temptation bundling - linking an action you want to do with one you have to do.
+
+Businesses use temptation bundling to their advantage - some TV broadcasting company created the Thank God It's Thursday (TGIT) habit in viewers by prompting them to watch their shows that day while eating popcorn and drinking red wine.
+
+This made viewers mode likely to watch their shows, because that was associated with something they wanted to do (eat popcorn & drink wine).
+
+You're more likely to find a behavior attractive if you get to do one of your favorite things at the same time.
+
+A way to upgrade this strategy is to combine it with habit stacking:
+```
+AFTER [current habit], I will [habit I need]
+After [habit I need], I will [habit I want]
+```
+
+Examples:
+ * After I get my morning coffee, I will say smth I'm grateful about (need), afterwards, I will read the news (want)
+ * After I get back from lunch, I will call 3 clients (need), after that I will watch sports (want)
+ * After I pull out my phone, I will do 10 burpees (need) and then check my facebook (want)
+
+Eventually, you will be looking forward to doing the things you need to do, because that means it lets you do the things you want to do.
+
+# The Role of Family and Friends in Shaping Your Habits
