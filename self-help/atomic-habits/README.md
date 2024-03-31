@@ -553,3 +553,71 @@ Examples:
 Eventually, you will be looking forward to doing the things you need to do, because that means it lets you do the things you want to do.
 
 # The Role of Family and Friends in Shaping Your Habits
+In the 20th century, a Hungarian man decided to dedicate his life to coaching his kids to become chess prodigies. He believed that no one is born a genius and one could become one with the proper upbringing and environment.
+
+So he raised three girls, who were taught to play chess since 4yo. Their house was full of chess books & posters of chess masters.
+
+All of them became grandmasters, the youngest one became the youngest grandmaster of all time. She was the No 1 ranked female player in the world for 27 years.
+
+Despite having an atypical childhood, all sisters reported to have found it quite enjoyable as they all loved playing chess.
+
+Whatever habits are normal in your culture are among the most attractive behaviors.
+
+## The Seductive Pull of Social Norms
+We are herd animals - we want to be accepted, respected and liked by others. Being cast out was a death sentence in times of old. The lone wolf dies but the pack survives.
+
+Those who collaborated & bonded with others enjoyed increased safety, mating opportunities & access to resources.
+We don't choose our earliest habits, we imitate them. We follow the script given to us by those in our environment/our society. 
+
+There are ingrained "rules" in our communities - when to get married/how many kids to have/which holidays to celebrate/etc.
+These are the invisible rules, guiding your everyday behavior.
+
+If you're in a family that rewards you for playing chess, you will enjoy playing it. If you work in a place where everyone wears suit, you'll feel inclined to wear one as well.
+
+We imitate three groups in general - The close, The many, The powerful.
+
+Each of these groups makes habits more attractive, leveraging the 2nd law of behavior change.
+
+## Imitating the Close
+Proximity impacts our behavior. It's true of our physical and social environment.
+
+We pick up habits from folks around us - parents, partners, etc.
+
+One evidence for this is a study that found that if you have a friend who's obese, you are 57% more likely to become obese as well.
+
+People around us provide peer pressure. This is only bad if that pressure is in a bad direction. But it can be a force for good if it's for something you want to achieve.
+
+Hence, the most effective thing you can do for your habits is to join a culture where your desired behavior is the normal behavior.
+To make this even more effective, you can always strive to join a culture where you have something in common with the group.
+
+Example given in the book is of some enterpreneur who started a fitness for nerds, which prompted nerds to go there & make the change faster because they identified that people like them already exhibited the new behavior (working out).
+
+Belonging to a tribe sustains motivation - your personal quest becomes a shared one. Your shared group identity reinforces your personal one.
+
+Remaining part of a group after achieving your goal is crucial to sustaining habits long-term.
+
+## Imitating the Many
+Someone conducted an experiment in 1950s where a subject was put in a group of people, who were instructed to answer some obvious questions in a wrong way.
+
+The initial answers to obvious questions were the same as the subject's one (they were correct). But after some point, the actors started deliberately answering the wrong answer.
+
+This made the subject start doubting their own eyes and also converge to the group's obviously wrong choice.
+
+One interesting caveat is that the more actors there were in the room, the more likely was that the subject would give the wrong answer. If it's just one person, that would have no impact, but if it's 8, there's a 75% chance they'll answer incorrectly.
+
+Whenever we are unsure how to act, we use the group's judgement to guide our behavior, ie we look up Amazon reviews before buying something to make sure the group would approve our purchase.
+
+This can be both good and bad. A similar study found that some monkey that learnt to break nuts effectively, reverted to using a legacy, ineffective method, when put in a group that uses it, just so it fits in. Humans are similar.
+
+We typically prefer to be wrong with the crowd than right by ourselves.
+
+## Imitating the Powerful
+Humans pursue power, prestige and status. We want to be directors and presidents in our organizations for status purposes. We want to be acknowledged and praised.
+
+This seems vain, but it is overall a smart move. Historically, someone with greater power and status has access to more resources and is a more attractive mate. This maximizes their chance of survival and procreation.
+
+We naturally want to stand out from the crowd. This is why we care so much about habits of successful people - we copy them because we also want to be successful!
+
+We are also motivated to avoid behaviors that harm our status - eg mowing the lawn so neighbors don't shame us. We are continuously thinking "what do others think of me?" and adapting our behaviors based on the answer.
+
+# How to Find and Fix the Causes of Your Bad Habits
