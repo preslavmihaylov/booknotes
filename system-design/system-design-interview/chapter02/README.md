@@ -85,7 +85,7 @@ Web tier looks lit now. But what about the data tier?
 Database replication can usually be achieved via master/slave replication (side note - nowadays, it's usually referred to as primary/secondary replication).
 
 A master database generally only supports writes. Slave databases store copies of the data from the master & only support read operations.
-This setup works well for most applications as there's usually a higher write to read ratio. Reads can easily be scaled by adding more slave instances.
+This setup works well for most applications as there's usually a higher read to write ratio. Reads can easily be scaled by adding more slave instances.
 ![master-slave-replication](images/master-slave-replication.png)
 
 Advantages:
