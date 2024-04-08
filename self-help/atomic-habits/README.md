@@ -621,3 +621,78 @@ We naturally want to stand out from the crowd. This is why we care so much about
 We are also motivated to avoid behaviors that harm our status - eg mowing the lawn so neighbors don't shame us. We are continuously thinking "what do others think of me?" and adapting our behaviors based on the answer.
 
 # How to Find and Fix the Causes of Your Bad Habits
+Author kicks off the chapter w/ a story about vising a friend in Istanbul who managed to quit smoking despite being surrounded by smokers.
+
+When asked how, the friend explained it was after reading a book, which turned every smoke-related cue to something unattractive, ie:
+ * You think you are quitting smoking, but you are not quitting anything because cigarettes do nothing for you
+ * You don't need cigarettes to be social
+ * Smoking is not relieving stress, it is destroying your nerves
+
+By the time you finish the book, smoking looks like the most ridiculous thing anyone would do. If you no longer expect smoking to bring any benefits, you have no reason to do it.
+
+This is an inversion of the 2nd law of behavior change - make it unattractive.
+
+## Where Cravings Come From
+Every behavior has a craving and a deeper underlying motive.
+
+You might have a craving "I want to eat tacos" and if asked, you won't say you're eating to survive, but that's the underlying reason.
+
+Some of our underlying motives:
+ * Conserve energy
+ * Obtain food & water
+ * Find love & reproduce
+ * Connect and bond with others
+ * Win social acceptance and approval
+ * Reduce uncertainty
+ * Achieve status & prestige
+
+A craving is a specific manifestation of a deeper underlying motive. Most products we use don't create new motivations, but latch onto our underlying motives:
+ * Find love & reproduce - Tinder
+ * Connect & bond with others - Facebook
+ * Win social acceptance & approval - post on Instagram
+ * etc...
+
+Your habits are modern-day solutions to ancient problems. Your habits are not necessarily the best solution to the problem you're trying to solve. They are merely the ones you're accustomed to:
+
+Example - One might smoke to reduce stress, whereas another goes for a run.
+
+We are constantly running predictions in our mind - every time you notice a cue in your environment, your brain makes a prediction about what to do in the next moment.
+
+Example - (cue) you see traffic light go green, (prediction) if you step on the gas, you will make it safely across.
+
+The cause of your habits is the prediction that precedes them. Also, note that predictions are not objective reality - two people can look at a cigarette and predict opposite things.
+
+The predictions lead to feelings, which is what we describe as a craving. It is a sense that something is missing, the desire to change your internal state.
+Desire == difference between where you are now and where you want to be.
+
+When our emotions or feelings are impaired, scientists have found, that impairs our ability to make a decision. We have no signal of what to pursue and what to avoid.
+
+Habits are attractive when we associate them with positive feelings. We can use that to our advantage.
+
+## How to Reprogram Your Brain to Enjoy Hard Habits
+You can make hard habits attractive by associating them with a positive experience.
+
+One easy way to achive this is to reframe when to highlight their benefits, rather than drawbacks:
+ * Don't say "I have to cook dinner, I have to get out of bed", say "I get to cook dinner, I get to go out of bed"
+ * A wheelchair is not confining you in one place, it is liberating you so you can get out of bed
+ * Instead of saying "I need to run in the morning", you can say "I get to build endurance and speed"
+ * Instead of thinking of saving as making a sacrifice, you can see it as something liberating you to spend more in the future
+ * Reframe "I am nervous before a speech" to "I am excited before a speech"
+
+These little mindset shifts can help change the feelings you associate with a particular habit.
+
+A step further is to create motivation rituals - associate a habit with something you enjoy by eg listening to your favorite song before workout.
+
+One example is some writer mentioned in the book, who gets into focus state just by putting on their headphones. In the beginning, they did it to listen to music that helps them get conditioned.
+Later, their mind started associating the headphones with focus work.
+
+Athletes use a similar strategy - the author used a stretching ritual before every baseball game which always went the same way for 10 mins.
+It helped him feel competitive and focused.
+
+This can be adapted to nearly anything - ie you can breathe three times & smile before petting your dog. Over time, you will associate breathing & smiling w/ feeling happy.
+
+The key to finding and fixing your bad habits is to reframe the associations you have about them. If you can reprogram your predictions, you can transform a hard habit into an attractive one.
+
+# 3rd Law - Make It Easy
+# Walk Slowly, but Never Backward
+
