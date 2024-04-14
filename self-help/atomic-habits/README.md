@@ -695,4 +695,34 @@ The key to finding and fixing your bad habits is to reframe the associations you
 
 # 3rd Law - Make It Easy
 # Walk Slowly, but Never Backward
+The author starts the chapter with a story about an experiment where students were divided into two photography groups - one judged based on how many photos it produces and the other judged on the quality of one specific photo they make at the end of the period.
+
+Turns out that the quantity group produced much better photos than that quality ones by a wide margin.
+
+This is the difference between being in motion and taking action - the latter produces outcomes, whereas the former is all about preparing, strategizing, learning, etc.
+
+Sometimes being in motion is useful but it will never produce outcomes on its own - you will not lose weight regardless of how many times you speak to a personal trainer. You will do it by getting on a diet.
+
+We tend to do motion because we tend to feel the feeling of progress without the risk of failure. Preparation by itself is a form of procrastination.
+
+To master a habit, the key is to start with repetition, not perfection.
+
+## How Long Does it Actually Take to Form a Habit?
+The more an activity is repeated, the more automatic it becomes for us. In fact, repeating a habit leads to physical changes to the brain.
+ * eg musicians tend to have certain parts of their brains bigger than other humans because those parts are responsible for helping them play the guitar.
+ * eg taxi drivers have a bigger hippocampus, responsible for spatial memory.
+
+What's more, retiring from the activity leads to the impacted area of the brain to become smaller.
+
+This is why getting in your reps is more important than theoretizing about building habits. Eventually, performing the habit will become automatic:
+![habit-line](images/habit-line.png)
+
+Another way to look at this is that habits form based on frequency, not time. 
+Hence, the correct question is not how long it takes to form a habit but how much repetitions does it take.
+
+In practice, it doesn't matter how long it takes to form a habit. What matters is that you take action to make progress. Sooner or later, you will cross the habit line and the behavior will become automatic.
+
+The most effective way to practice a habit is to follow the 3rd law of behavior change - make it easy. The following chapters explore how to do that.
+
+# The Law of Least Effort
 
