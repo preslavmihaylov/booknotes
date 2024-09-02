@@ -236,7 +236,7 @@ In case of race conditions, the counter might not be updated correctly when muta
 Locks are a typical way to solve this issue, but they are costly.
 Alternatively, one could use Lua scripts or Redis sorted sets, which solve the race conditions.
 
-If we maintain user information within the application memory, the rate limiter is stateless and we'll need to use sticky sessions to make sure requests from the same user is handled by the same rate limiter instance.
+If we maintain user information within the application memory, the rate limiter is stateful and we'll need to use sticky sessions to make sure requests from the same user is handled by the same rate limiter instance.
 ![synchronization-issue](images/synchronization-issue.png)
 
 To solve this issue, we can use a centralized data store (eg Redis) so that the rate limiter instances are stateless.
