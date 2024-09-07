@@ -790,5 +790,80 @@ Other examples:
  * Hide beer in back of fridge
 
 # How to Stop Procrastinating by Using the Two-Minute Rule
+One of the greatest dancers/choreographer who got awarded some genius grant attributes much of her success to daily habits.
 
+She begins each day at 05:30 AM, put on workout clothes and take a taxi to her gym to workout for two hours.
+The ritual is not the strength training, but the cab. The moment she's told the cab driver where to go, the ritual is complete.
 
+Researchers estimate that ~50% of daily actions are done out of habits. But the influence is even greater, because the habits shape your decisions and actions that follow.
+
+They're like an entrance ramp to a highway. Once you go through, there is no going back until you're done.
+
+It's easier to continue than stop at this point, eg:
+ * You persist for 2 hours through a bad movie
+ * You continue snacking even though you're full
+
+The author has a critical choice each evening around 05:15 PM - either he puts on workout clothes and goes to the gym or crashes on the couch and watches a TV series.
+
+Every day, there are a handful moments like these which have an outsized impact if you make the right choice.
+
+The accumulation of these choices ultimately leads to a good or bad day:
+![good-or-bad-day](images/good-or-bad-day.png)
+
+The decisive moments set the options available to your future self. If you walk into a restaurant, there's only so much you can order.
+Your options are shaped by your first choice.
+
+This is why mastering these decisive moments is key to behavior change. Each day has a lot of moments, but it is only a few we need to take care of to lead us to a good trajectory.
+
+Habits are the entry point, not the end point - the cab, not the gym.
+
+## The Two-minute Rule
+Even when you know you should start small, it's easy to start too big. Excitement leads you to try and do too many things at the same time.
+
+The most effective way to counteract this tendency is to follow the two-minute rule - when you start a new habit, it should not take you more than two minutes to complete.
+
+Any habit can be scaled down to two minutes:
+ * Read before bed - read one page before bed
+ * Do thirty minutes of yoga - take out the yoga mat
+ * Study - open your notes
+ * Fold the laundry - fold one pair of socks
+ * Run three miles - put on running shoes
+
+The idea is to make the new habit as easy as possible to start.
+
+This is a powerful strategy because once you've started doing the right thing, it is easy to keep going.
+You need a gateway habit that naturally leads you down to a productive path.
+
+You can figure out the gateway habit by mapping out your goals on a scale of very easy to very hard.
+![habit-scales](images/habit-scales.png)
+
+It might feel weird to get excited about reading one page, but the idea is not to do one thing. It is to master the habit of showing up.
+
+A habit must be established before it can be improved. Instead of trying to engineer a perfect habit from the get-go, do the easy thing first on a consistent basis.
+
+As you master the first two minutes, those become a ritual that leads to the beginning of a larger routine.
+Make it easy to start and the rest will follow.
+
+To understand the impact of the first two minutes, try doing the first two minutes of a routine and then stopping:
+ * Start running for two minutes and stop
+ * Start meditating for two minutes and stop
+
+You'll find that it's much more challenging to stop once you've started.
+
+An example of this put into practice - someone lost a lot of weight by sticking to going to the gym for 2 minutes and leaving. After a while, he started staying more and more as he was already there.
+
+Another one is journaling - people typically give up after trying it for a few days as it feels like a chore. The secret is to always stay below the point where it feels like work.
+
+Another reason this strategy works is that you are reinforcing the identity you want to build. Going to the gym 5 days in a row casts votes in favor if you being a "gym person".
+
+People are typically consumed by the end goal of a habit, but one push up is better than not exercising. It's much better to do less than you hoped for than do nothing at all.
+
+Once you've mastered the two-minute rule, you can combine this with the habit shaping technique to scale your habit towards your ultimate goal.
+Move on to the next phase where you're doing a bit more and focus on the first two-minutes of that new stage. Do this until you reach your ultimate goal.
+
+Eventually, you will end up with the habit you wanted while still keeping your focus where it should be - on the first two minutes.
+
+Examples of habit shapings:
+![habit-shapings](images/habit-shapings.png)
+
+Nearly any habit can be scaled down to a simple two-minute version. It's a simple way to make your habits easy.
