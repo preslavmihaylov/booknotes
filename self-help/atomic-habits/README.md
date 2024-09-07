@@ -938,5 +938,98 @@ When working in your favor, automation can make good habits inevitable and bad h
 
 # 4th Law - Make It Satisfying
 # The Cardinal Rule of Behavior Change
+In the 1990s, some guy went to Karachi, Pakistan to solve the issue of widespread disease and illness.
 
+A contributing factor was that the city was very densely populated, there were no waste-removal systems and the city was polluted.
+
+In such an environment, one of the most impactful activities one can do to avoid illness is to wash their hands. Everyone knew that but almost no one had made a habit out of that.
+
+Hence, the guy supplied all neighborhoods with some premium, feel-good soap. Suddenly, almost everyone started washing their hands and illness levels dropped by more than 50%.
+
+This is a perfect example of the 4th law of behavior change - make it satisfying. We are more likely to repeat a behavior when the experience is satisfying. Pleasure teaches your brain that a behavior is worth remembering and repeating.
+
+Chewing gum got massively adopted only when some enterpreneur added nice flavor to it and made it leave a refreshing breath in your mouth. This lead to skyrocketing sales. Same story with toothpaste.
+
+Conversely, if an experience is not satisfying, we are reluctant to repeat it. Author shares a story of someone who was forced to spend time with someone they didn't like. To get rid of them, they started acting boring and not talking, which lead to the other person refrain from spending time with them in the future
+
+Conversely, if an experience is not satisfying, we are reluctant to repeat it. Author shares a story of someone who was forced to spend time with someone they didn't like. To get rid of them, they started acting boring and not talking, which lead to the other person refrain from spending time with them in the future.
+
+What is rewarded is repeated. What is punushed is avoided.
+
+The first three laws of behavior change increase the odds that a behavior will be performed this time. The fourth law increases the odds of repeating it next time. It closes the habit loop.
+
+The trick is, though, that we are not looking for any kind of satisfaction. We are looking for an immediate one.
+
+## The Mismatch Between Immediate and Delayed Rewards
+Animals in Africa tend to live in immediate-return environments. Ones in which your actions deliver clear and immediate outcomes.
+They are always thinking about what to eat or where to go to avoid a predator. The actions are focused on the very near future only.
+
+In our modern society, many of our choices will not benefit us immediately:
+ * If you do a good job, you will get a paycheck in a few weeks.
+ * If you train, you will lose weight in a couple of months
+
+This is a delayed-return environment that we live in. Our brains did not evolve for this kind of environment.
+
+We still have the hardware of our ancestors from 200k years ago. Only recently (500 years or so), did our world evolve into this kind of environment.
+The world has change a lot in recent years, but human nature hasn't.
+
+We still prefer quick payoffs rather than long-term ones.
+
+This is typically beneficial for us, but oftentimes, our tendency for instant gratification causes problems.
+
+The consequences of bad habits are delayed, while the rewards are instant:
+ * Overeating feels good now, but leads to you becoming obese
+ * Smoking can lead to lung cancer, but relieves stress in the present
+
+Every habit produces multiple outcomes over time:
+ * Bad habits make immediate outcomes feel good, but the ultimate ones feel bad
+ * Good habits make immediate outcomes feel bad but the ultimate ones feel good
+
+Put another way - the cost of bad habits is in the future, whereas the cost of good habits is in the present.
+
+Our brain's tendency to prioritize the present means we can't rely on good intentions. 
+
+When you make a plan, you are doing it for your future self. It is easy to envision a bright future where you are fit, healthy, smart, etc.
+But when the decisive moment comes, typically instant gratification wins.
+
+As a general rule, the more immediate pleasure you get from an action, the more you should question its long-term effects.
+
+With this in mind, we can update the cardinal rule of behavior change:
+> What is **immediately** rewarded is repeated. What is **immediately** punished is avoided.
+
+Because of how we are wired, most people will spend their time chasing quick hits of satisfaction. The road less traveled is one of delayed gratification.
+Hence the saying - the last mile is the least crowded.
+
+This explains why people who are better at delayed gratification tend to have better results in life - higher SAT scores, less obesity rates, better response to stress, etc.
+
+Success in any field at some point requires you to ignore an immediate reward in favor of a delayed one.
+
+Most people know this, but still find it hard to make the right choice in the decisive moment. Fortunately, we can train ourselves to delay gratification. To do so, however, we need to work with the grain of human nature, not against it.
+
+The best way to do this is to add a bit of immediate pleasure to the habits that pay off in the long-run and a little bit of immediate pain to the ones that don't.
+
+## How to Turn Instant Gratification to Your Advantage
+The vital thing to get a habit to stick is to feel successful, even if it's in a small way. The feeling of success is a signal that your habit paid off and was worth the effort.
+
+In a perfect world, the habit itself is the reward for doing it. In the real one, good habits feel worthwhile once they have provided you with something.
+
+When going to the gym, it takes a few months until you start seeing the rewards of your effort - losing weight or getting some gains.
+
+At that point, you can continue doing the habit for its own sake. But in the beginning, it's all sacrifice. This is why you need to have immediate rewards for that early phase while the delayed ones accumulate in the background.
+
+In particular, the ending of a behavior should feel satisfying because that's what tends to be remembered.
+
+The best way to do this is via reinforcement. That works particularly well for habits you want to stop doing, ie stop drinking alcohol or shopping too much.
+
+When you don't do these behaviors, you typically don't experience any satisfaction as you haven't really done anything. However, you can use reinforcement to make the avoidance visible - open a bank account labeled with something you want to buy, ie "new shoes" and start putting the money you were gonna spend on drinking in there. You are making it satisfying to do nothing.
+
+One caveat is to choose rewards that don't go against your target identity - ie don't reward yourself with a bowl of ice cream every time you exercise.
+
+Eventually, once intrinsic rewards start kicking in - feeling less stress, having a better mood, etc - you will start doing the behavior for that purpose alone, rather than the secondary reward. The identity itself becomes the reinforcer. Incentives can start a habit, identity sustains it.
+
+That being said, it takes time for the evidence of your new identity to accumulate, so immediate reinforcement helps in the short term, while you're waiting for the longer term benefits.
+
+In summary, a habit needs to be enjoyable for it to last. Change is easy when it is enjoyable.
+
+# How to Stick with Good Habits Every Day
 
