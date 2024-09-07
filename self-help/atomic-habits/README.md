@@ -867,3 +867,76 @@ Examples of habit shapings:
 ![habit-shapings](images/habit-shapings.png)
 
 Nearly any habit can be scaled down to a simple two-minute version. It's a simple way to make your habits easy.
+
+# How to Make Good Habits Inevitable and Bad Habits Impossible
+In 1830, Victor Hugo was given a deadline by his publisher to finish his book. Until then, he was constantly delaying it and spending time on other projects and activities.
+
+But when he was given a 6-month deadline, he asked his assistant to lock his clothes so he can't go outside and he was forced to stay in and furiously wrote The Hunchback of Notre Dame during that time.
+
+Oftentimes, success is not about making good habits easy, but about making bad ones hard. If you are finding yourself continually struggling to follow through on your plans, you can make your bad habits more difficult by creating a commitment device.
+
+That is a choice you make in the present which controls your actions in the future. That's what Victor Hugo did by locking away his clothes.
+
+There are many ways to create a commitment device:
+ * Reduce overeating by purchasing food in individual packages rather than bulk size.
+ * Ask to be banned from casinos voluntarily.
+ * Leave wallet at home when going out to avoid getting fast food.
+ * Program an adapter to cut off electricity to the router so internet stops at 10 pm.
+ * Ask waiter to box half of a meal for home before it's ordered as you'd otherwise not do it once it's delivered
+
+Commitment devices enable you to take advantage of good intentions before you can fall victim to temptation.
+
+The key is to change the task so it takes more work to get out of the good habit than to get started on it.
+
+Commitment devices increase the odds of doing a good habit by making bad habits difficult in the present.
+
+## How to Automate a Habit and Never Think About it Again
+We can do even better - make good habits inevitable and bad habits impossible.
+
+An american enterpreneur in the mid-1800 found it challenging to make a profit as employees were stealing from him.
+
+It was easy to steal receipts and money for the employees. To tackle that, he bought the first cash register - it locks itself automatically after each transaction.
+
+This lead to employee theft vanishing overnight.
+
+The best way to break a bad habit is to make it impractical to do. Increase the friction until you don't even have an option to act.
+
+There are a lot of one-time things one can do which will significantly improve their lives 3 years from now even if everything else in the book is discarded:
+![one-time-habit-actions](images/one-time-habit-actions.png)
+
+There are many ways to automate good habits and eliminate bad ones via technology. This is the most reliable way to guarantee the right behavior.
+
+This is particularly useful for behaviors that happen too infrequently to become habitual - things you have to do monthly or yearly.
+
+These kinds of behaviors particularly benefit from leveraging technology to remember them for you.
+
+Other examples:
+ * Medicine - prescriptions can be automatically refilled
+ * Personal finance - automatically save for retirement via wage deductions
+ * Cooking - meal delivery services can do your grocery shopping
+ * Productivity - cut off social media browsing via a website blocker
+
+When you automate as much of your life as possible, you can spend your effort on the tasks machines can't do yet.
+
+Each habit that we delegate to machines frees us up to focus on the next stage of growth.
+
+Technology can also work against us, unfortunately:
+ * Binge-watching becomes a habit when you have to put more effort to stop watching at the screen - instead of clicking a button to advance to the next episode, Netflix will do it for you
+ * At the slightest whim of hunger, you can get food delivered to you
+ * When you are bored, you can instantly start scrolling social media
+
+The issue with automation is that we tend to jump from easy task to the next without doing the more difficult and rewarding ones.
+
+The author often finds himself gravitating to social media when they are bored and this accumulates to a serious issue over time.
+The average person spends two hours per day on social media - that's 600 hours per year.
+
+One time management technique the author tested was to make their assistant reset their social media accounts password every week. This logged them out on each device. All week, author worked without distraction and get the new passwords on friday so that he can use it on the weekend.
+
+The author adapted to this quite quickly - the first week that he tried it, he realized that he doesn't need to open social media every day.
+
+When working in your favor, automation can make good habits inevitable and bad habits impossible. It helps you lock in future good behavior without the need for willpower.
+
+# 4th Law - Make It Satisfying
+# The Cardinal Rule of Behavior Change
+
+
