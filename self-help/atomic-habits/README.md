@@ -1032,4 +1032,62 @@ That being said, it takes time for the evidence of your new identity to accumula
 In summary, a habit needs to be enjoyable for it to last. Change is easy when it is enjoyable.
 
 # How to Stick with Good Habits Every Day
+In 1993, a stockbroker started doing a daily habit to drive more sales - he started each day with 120 paper clips in a jar and aimed to move all of them to another empty jar. Each time he made a sales call, he moved a paper clip. Eventually, he became very successful and brought in a lot of sales and made a lot of money.
 
+Author refers to this technique as the paper clip strategy. Making progress is satisfying and visual measures provide clear evidence of your progress.
+This reinforces your behavior and adds a little bit of immediate satisfaction to any activity.
+
+Visual measures can come in many forms - food journals, workout logs, punch cards, progress bars, etc. But perhaps the best way to measure progress is via a habit tracker.
+
+## How to Keep Your Habits on Track
+The most basic version of a habit tracker is to get a calendar and cross off the days you do a habit. As time goes by, the calendar becomes a record of your streak.
+
+Example - a comedian aims to write one joke per day and just focus on never breaking the chain. The focus is not on how good that particular joke was. It's that he just does it.
+
+Habit tracking is so powerful because it leverages multiple laws of behavior change:
+ * It's obvious - recording your last action creates a trigger for your next one. People who measure their progress tend to progress more. It's also harder to lie to yourself when you have a visual indication of how much work you've done.
+ * It's attractive - The most effective form of motivation is progress. When we get a signal that we are moving forward, we are more likely to continue.
+ * It's satisfying - it's satisfying to cross off an item in a todo list and watch results grow. Ie watching your investments grow is satisfying.
+
+Habit tracking also helps you focus on the process, not the results.
+
+One reason people are reluctant to start habit tracking despite its benefits is that it can feel like performing two habits instead of one. It's easier to say "I'll just eat less" or "I'll try harder".
+
+Tracking isn't for everyone and there is no need to measure your whole life, but nearly everyone can benefit from it at least temporarily.
+
+What can we do to make it easier?
+ * Automate measurement as much as possible
+ * Limit manual tracking to your most important habits only
+ * Record each measurement immediately after the habit occurs. This nicely synergises with habit stacking.
+
+Even if you aren't the tracking kind of person, a few weeks of tracking can be insightful.
+
+However, any habit chain eventually breaks and it's important to have a good plan for when you fall off track.
+
+## How to Recover Quickly When Your Habits Break Down
+No matter how consistent you are, it is inevitable that life will interrupt you at some point.
+
+Whenever this happens, remind yourself of this - never miss twice.
+
+If you miss one day, get back to it as soon as possible. The first mistake is never the one that ruins you. It is the spiral of mistakes that follow.
+Lost days hurt you more than successful days benefit you.
+
+Hence, don't try to have all-or-nothing habits. Have fallback plans for when you can't do a full workout.
+
+## Knowing When (and When Not) to Track a Habit
+Another potential danger is measuring the wrong thing.
+
+If you're running a restaurant and track how many people pay for a meal as a proxy for measuring food quality, you might end up in a situation where there are numerous discounts and promotions to make up for the reduced food quality.
+
+The dark side of tracking a behavior is that you start getting driven by the number, not by its purpose.
+
+We tend to optimize for what we measure. If we choose the wrong measurement, we get the wrong behavior.
+
+Sometimes referred to as Goodhart's Law - When a measure becomes a target, it ceases to be a good measure.
+Measurement is only useful when it guides you and adds context to a larger picture, not when it consumes you.
+
+We tend to focus on measurable things, but there are many, just as important, soft things you can't measure.
+
+This is why non-scale victories are important for weight loss. Sometimes, the number on the scale doesn't move as much but you start getting other improvements like better mood, more energy, etc.
+
+# How an Accountability Partner Can Change Everything
