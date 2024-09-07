@@ -725,4 +725,70 @@ In practice, it doesn't matter how long it takes to form a habit. What matters i
 The most effective way to practice a habit is to follow the 3rd law of behavior change - make it easy. The following chapters explore how to do that.
 
 # The Law of Least Effort
+At some point, a biologist mentioned that continents have different shapes and that impacts human behavior. For example - North, South America, Africa generally stretch North-South, whereas Europe, Asia and Middle East go East-west. This impacted eg the spread of agriculture, as it was more prone to develop in the east-west continents as these landmasses generally had a similar climate.
+![continent-types](images/continent-types.png)
+
+On the other hand, growing Florida oranges is not as easy to do in eg Canada, despite them being on the same continent. This lead to agriculture spreading two to three times faster in Europe and Asia than the Americas.
+
+These differences had small impact at first - populations grew slightly faster, crops spread slightly farther. Over time, these differences compounded which lead to substantial differences over time.
+
+This phenomenon is an example of the 3rd law of behavior change at a global scale. Conventional wisdom says that motivation is key to habit change. Instead, we tend to be lazy and do what's convenient.
+
+Our brains are wired in a way which leans us towards choosing the option with the least amount of work.
+
+The more energy a certain action requires, the least inclined we are to do it. If you want to do 100 push-ups per day, initially you could muster the energy to do it but after a few days, such a massive effort feels exhausting.
+
+On the other hand, sticking to doing one push up per day requires barely any energy so that is much more likely to happen.
+
+In a sense, habits are obstacles to getting what we want - dieting -> being fit, meditation -> feeling calm, etc.
+
+The key to a sustainable habit is to make it as convenient as possible to do, so that you can stick with it even in your bad days.
+
+## How to Achieve More with Less Effort
+You are holding a garden hose that is bent in the middle. How can you make more water come through? You can either increase the rate of water flow or just remove the bent.
+
+Trying to pump yourself up to perform a habit is like attempting to increase the water flow. You can do it but it requires a lot of effort and tension.
+Meanwhile, making your habits simple and easy is like removing the bent preventing the water from flowing. Rather than trying to overcome the friction, you reduce it.
+
+One of the most effective ways to achieve this is to practice environmental design. You can optimize your environment to make actions easier.
+
+For example, you can practice your habit in a location that's already along the path of your daily routine.
+You are more likely to go to the gym if it's on your way to work. On the other hand, if the gym is located several blocks away from your regular commute, you have to go out of your way to workout.
+
+Even more effective is removing friction in your home environment. It is hard to concentrate if your phone is next to you, follow a diet when out on dinner with friends, etc.
+
+Example of this in action is Japanese manufacturing in the 70s. What they did to optimize their products is to design their factories in a way where workers didn't have to turn and twist to get their tools. This lead to a significant improvement in product quality compared to their American counterparts.
+
+This strategy is referred to as "Addition by Subtraction" by the author. When we remove points of friction that sap our time and energy, we can achieve more with less.
+
+The best habit-forming products are ones which remove little points of friction in our lives - food-delivery services remove the friction of going for groceries, dating apps reduce the friction of making social intros, etc.
+
+The central idea is to create an environment where doing the right thing is as easy as possible, while doing the bad thing is as hard as possible.
+
+## Prime the Environment for Future Use
+The author shares a strategy for tidying up called "resetting the room" - when you finish watching TV, place the remote back on the TV stand and tidy the cushions, when you leave your car, throw your trash away, etc.
+
+Following this strategy ensures that rooms stay clean by default.
+
+Whenever you organize a space for its indended purpose, you are priming it to make the next action easy.
+
+An example shared in the book is about the author's wife having a box of greeting cards for different occasions. Whenever one comes up, she picks up a card and ships it to the recipient. The author, on the other hand, finds this much more challenging as they have to go to the store proactively to get a card, etc.
+
+Other examples:
+ * If you want to cook a healthy breakfast, prepare the stove and utensils the night before so everything is primed for you in the morning.
+ * Want to draw more? - put pencils and paper on your desk within easy reach.
+ * Want to exercise? - setup your workout clothes, shoes, water ahead of time.
+ * Want to improve diet? - chop up some fruit & vegetables over the weekend in containers so they're easy to consume.
+
+You can inverse this principle as well to make bad habits more challenging:
+ * To avoid watching TV, unplug it after each use. Only plug it back in if you can shout out the name of the show you want to watch.
+ * You want more friction? - move the TV to the closet after each use and remove the batteries from the remote.
+
+Other examples:
+ * Leave phone in separate room so you are too lazy to go and pick it up to mindlessly scroll.
+ * Delete social media from your phone after each use
+ * Hide beer in back of fridge
+
+# How to Stop Procrastinating by Using the Two-Minute Rule
+
 
