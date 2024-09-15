@@ -1129,4 +1129,85 @@ This strategy worked and the guy lost the weight he wanted to lose.
 An example of doing this in an automated way - Thomas Frank (youtuber) has a tweet scheduled at 06:10 AM to go out and tell people he's lazy and anyone who replies gets 5$. This forces him to wake up at 05:55 AM.
 
 # Advanced Tactics
-# How to Go from Being Merely Good to Being Truly Great
+# The Truth About Talent (When Genes Matter and When They Don't)
+If you get top swimmer and top runner in the olympics and switch their places, it is highly unlikely that either would be as good in the other sport, because one sport favors tall & heavy people, whereas the other one favors short & lean ones.
+
+The key to maximizing your odds of success is to choose the right field of competition. This is true with habits as well. 
+Habits are easier to perform and stick to if they align with your natural inclinations.
+
+Genes can't be easily changed, but we can change our environment to better suit us. Genes don't predetermine your faith, they predetermine your areas of opportunity.
+
+To find those areas of opportunity, you need to understand your personality.
+
+## How your Personality Influences Your Habits
+Everything is influenced by genes - how obedient or rebellious you are, whether you are easily bored in a concert, etc. Everything has a genetic component.
+
+Bundled together, your unique cluster of genetic traits predisposes you to a particular personality. Your personality is the set of characteristics consistent from situation to situation.
+
+There are five spectrums of core behaviors that shape our personalities:
+ * Openness to experience - curious & inventive on one end, cautious and consistent on the other.
+ * Conscientiousness - Organized & efficient -> Easygoing & spontaneous.
+ * Extroversion - Outgoing & energetic -> Solitary & reserved.
+ * Agreeableness - Friendly & compassionate -> Challenging & detached.
+ * Neuroticism - Anxious & sensitive -> Confident, calm, stabe.
+
+These five characteristics have biological underpinnings. When a doctor plays a loud sound, extroverted babies turn to sound, introverted ones turned away.
+
+People who are high in agreeableness tend to have higher oxytocin. These people are more inclined towards habits like writing thank-you notes & organizing social events.
+
+Our deeply rooted preferences make certain behaviors easier for some people than for others.
+
+This is why you should build the habits that are suited to you, not the ones that people tell you to build.
+
+## How to Find a Game Where the Odds are in Your Favor
+This is critical for maintaining motivation and feeling successful.
+
+In theory you can enjoy almost anything. In practice, you are more likely to enjoy the things that come naturally to you.
+People who are talented in a given area tend to stick to it as they're progressing more quickly and receiving praise.
+
+Pick the right habit and progress is easy. Pick the wrong one and life is a struggle.
+
+How? - pick a habit that is easy. When taking the wrong habit, it tends to be too difficult.
+
+Regardless of what area you pick, at some point it will inevitably become challenging. Hence, it's important to ensure you're on the right track.
+
+How? - you can do a period of exploration in the start of a new activity. Cast a wide net and see which is the best solution among all options.
+
+Once figured out, double down on it.
+
+Examples:
+ * Dating before committing to a relationship
+ * Studying liberal arts before studying something actually serious in college
+ * Split testing different ideas in business
+ 
+In the long run, it is best to spend 80-90% of time in the area that yields best results and spend the rest on consistent exploration.
+
+This also depends on how much time you have - we tend to explore more in the beginning of a career when we have more time.
+On the other hand, if you have a deadline, double down on the best solution you've found so far.
+
+A couple of questions to help you narrow down the habits and areas you want to exploit:
+ * **What feels like fun to me, but work to others?** - Whether you are made for a task depends on how tolerable you are to the pain of performing it compared to other people. You tend to enjoy yourself while others are complaining.
+ * **What makes me lose track of time?** - If you are in flow state while performing a certain task, this is a good indication you are made for it.
+ * **Where do I get greater returns than the average person?** - If you get better results for the same amount of time spent compared to other people, you're likely on a good track
+ * **What comes naturally to me?** - Ignore what others tell you for a moment and ask yourself about what you were doing that made you feel genuine and authentic.
+
+Finally, if there are no areas of opportunity that you are good at, create one.
+
+The dilbert comics creator shared how he was not a great artist but top 25% and also not greatest comedian but top 25%, so he invented an area involving drawing and being fun. Not a lot of people are good in both areas.
+
+When you can't win by being better, you can win by being different. A good player works hard to win the game everyone else is playing. A great player invents their own game that favors their strengths and avoids their weaknesses.
+
+Finally, specialization is a powerful way of overcoming the accident of bad genetics. The more you master a particular skill, the harder it is for people to compete with you.
+
+Many bodybuilders are stronger than the average arm wrestler but they typically lose at arm wrestling due to the latter's specialization.
+
+## How to Get the Most of Your Genes
+Genes don't eliminate the need for hard work. They clarify it.
+
+We know which types of opportunities to look for and which ones to avoid. The better we understand ourselves, the better our strategy can be.
+
+Despite biological limits, it is not productive to get obsessed about having limits. It's more productive to try hard and reach them.
+
+Genes can't make you successful if you're not doing the hard work.
+
+# The Goldilocks Rule: How to Stay Motivated in Life and Work
