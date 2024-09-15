@@ -1091,3 +1091,42 @@ We tend to focus on measurable things, but there are many, just as important, so
 This is why non-scale victories are important for weight loss. Sometimes, the number on the scale doesn't move as much but you start getting other improvements like better mood, more energy, etc.
 
 # How an Accountability Partner Can Change Everything
+Some big negotiation guy was thinking of ways to prevent presidents from starting a nuclear war by pressing a button.
+
+The guy came up with the idea of implanting the nuclear codes next to the heart of a volunteer so that the president would have to kill someone to do it.
+
+This way, the President can get a taste for what killing an innocent life is vs. just pressing a button and a lot of people die very far away.
+
+This is an inversion of the 4th law of behavior change - make it immediately unsatisfying.
+
+We are more likely to repeat an experience when the ending is satisfying, but we are also more likely to avoid it if it is painful.
+
+Pain is an effective teacher - if a failure is painful, we are quick to fix it. If it is painless, we will ignore it. The more immediate the pain, the less likely the behavior.
+
+If you want to eliminate a bad habit, adding an immediate cost to it will greatly reduce the odds of it happening.
+
+However, in order for this to be effective, the strength of the punishment must exceed the strength of the behavior. Also, the punishment needs to be immediate, not vague and "in the future".
+
+Examples:
+ * To be productive, the cost of procrastination needs to be higher than the cost of doing the work
+ * To be healthy, the cost of laziness needs to be higher than the cost of exercise
+
+A straightforward way to add an immediate cost to a bad habit is to create a habit contract
+
+## The Habit Contract
+Governments have a way of changing people's habits via laws and regulations - ie adding a law for wearing seat belts made a shift in people wearing seat belts from 16 to 88% in 30 years.
+
+Similarly, you can create a habit contract with yourself to hold yourself accountable - it's a verbal or written statement which states your commitment to a particular habit and the punishment that will occur otherwise.
+
+You also need a handful of accountability partners to sign off on the contract with you.
+
+Example - some guy wanted to lose weight and get fit so he laid out a list of daily habits he needed to do in order to achieve that goal.
+
+He signed off the contract with his wife and personal trainer. If he didn't perform the daily habits, he had to give trainer 200$ and also dress up every day till end of quarter (wearing shirts vs. hoodies).
+
+This strategy worked and the guy lost the weight he wanted to lose.
+
+An example of doing this in an automated way - Thomas Frank (youtuber) has a tweet scheduled at 06:10 AM to go out and tell people he's lazy and anyone who replies gets 5$. This forces him to wake up at 05:55 AM.
+
+# Advanced Tactics
+# How to Go from Being Merely Good to Being Truly Great
