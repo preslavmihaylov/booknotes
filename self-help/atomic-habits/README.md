@@ -1211,3 +1211,61 @@ Despite biological limits, it is not productive to get obsessed about having lim
 Genes can't make you successful if you're not doing the hard work.
 
 # The Goldilocks Rule: How to Stay Motivated in Life and Work
+TODO
+
+# The Downside of Creating Good Habits
+Habits are the foundation for mastery.
+
+In chess, one can start focusing on more advanced topics once the basic moves are automatic. Each chunk of memorized information, opens up the mental space for more effort elsewhere.
+
+The benefits of habits, however, come at the cost of becoming less sensitive to feedback. When you can do something "good enough", you stop thinking about how to make it better.
+
+This can prevent you from achieving mastery. For some things, this is fine, ie brushing your teeth or other daily routines.
+
+However, if you want to achieve elite leves of performance, developing the habits is not sufficient.
+
+What you need is a mix of habits and deliberate effort.
+
+Once you've mastered a given skill, you have to start focusing your attention to the next one. It's an endless cycle.
+![mastering-a-field](images/mastering-a-field.png)
+
+To get on the route to mastery, you need to establish a system of reflection and review so you can continue to refine and improve. This is needed to avoid becoming complacent.
+
+## How to Review Habits and Make Adjustments
+Author shares a story about a period of time when the Lakers were very talented but still failed to win some championships.
+
+To fix this, coach started measuring all stats of players and asked them to improve their averages by 1% per season. He called this Career Best Effort (CBE).
+
+Once they did this, they became beasts and won it all.
+
+Author's personal way of doing reflection and review:
+ * At end of year, he does Annual Review. He then answers `What went well? What didn't go so well? What did I learn?`.
+ * Mid-year, he does Integrity report. Key questions - `What core values drive life & work? Am I living with integrity right now? How can I set higher standard in future?`
+
+These reviews don't take very long but they help with preventing becoming complacent and losing track of what's important.
+
+## How to Break the Beliefs That Hold you Back
+In the beginning, repeating a habit helps reinforce your identity.
+
+As time passes, that identity can hold you back to achieve the next level of growth.
+
+Examples:
+ * school teacher ignoring modern teaching methods and sticking to their tried-and-true methods
+ * veteran manager committed to doing things their way
+ * surgeon dismissing ideas of younger colleagues
+
+To workaround this, focus on keeping your identity small. Don't let any particular part of the identity overtake you.
+
+How can things to wrong otherwise:
+ * you're vegan but health condition forces you to eat meat
+ * your identity is to be the "partner of firm X" and you get laid off
+
+When you cling to a particular identity, you become brittle. Lose that identity, you lose yourself.
+
+To fix things, focus on the important aspects of the identity vs the specific role:
+ * Instead of "I'm an athlete", do "I'm mentally tough and love a physical challenge"
+ * Instead of "I'm a great soldier", do "I'm disciplined, reliable, great on a team"
+
+When chosen well, identity can be flexible rather than brittle.
+
+In summary, lack of self-awareness is poison. The antidote is reflection and review.
