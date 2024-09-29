@@ -1269,3 +1269,10 @@ To fix things, focus on the important aspects of the identity vs the specific ro
 When chosen well, identity can be flexible rather than brittle.
 
 In summary, lack of self-awareness is poison. The antidote is reflection and review.
+
+# Conclusion
+A single atomic habit doesn't change a life. But stacking a thousand of them will.
+
+Focus on 1% improvements over a long period of time.
+
+It's a never-ending treadmill of improving yourself. Small habits don't add up, they compound.
