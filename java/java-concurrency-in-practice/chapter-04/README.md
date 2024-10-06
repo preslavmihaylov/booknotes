@@ -58,7 +58,7 @@ To ensure thread-safety, compound actions involving updating the bounds need to 
 
 On the other hand, if there is a field whose value doesn't depend on its own state, synchronization can be relaxed to achieve better performance.  
 
-But in sum, one must understand a class' invariants first, before designing it for thread-safety.
+But in sum, one must understand a class's invariants first, before designing it for thread-safety.
 
 ## State-dependent operations
 
@@ -184,7 +184,7 @@ Whether you want this behavior or not is based on requirements.
 The java monitor pattern is useful when writing a class composed of non-thread-safe objects.  
 
 If the class, however, is composed of thread-safe objects you might get away with not using any synchronization at all.  
-But in some cases, extra synchronization is needed even if all fields are thread-safe.
+However, in some cases, extra synchronization is needed even if all fields are thread-safe.
 
 Example of delegating thread-safety & not using any explicit synchronization:
 ```java
