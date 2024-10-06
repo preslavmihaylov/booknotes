@@ -1211,7 +1211,38 @@ Despite biological limits, it is not productive to get obsessed about having lim
 Genes can't make you successful if you're not doing the hard work.
 
 # The Goldilocks Rule: How to Stay Motivated in Life and Work
-TODO
+Steve Martin is a successful comedian who started very small, grinding a lot for 15y until he achieved fame & success.
+
+It's a fascinating example of Steve's will to stick with habits for so long.
+
+The key seems to be working on tasks of "just manageable difficulty" - not too easy, not too hard.
+
+This is the Goldilocks rule.
+![goldilocks-rule](images/goldilocks-rule.png)
+
+Humans experience peak motivation when working on tasks that are at the edge of their ability.
+
+Steve Martin is an example of someone who deliberately challenged himself with doing more & longer jokes each year (this part is skipped in the notes, but it's basically a few paragraphs story of motivational hard-working bla bla)
+
+When you start a habit, keep the behavior as easy as possible so you can stick to it.
+Once it's established, it's important to continue advancing in small ways. If you hit the goldilocks zone, you get into a flow state.
+
+Flow state is the experience of being in the zone, fully immersed. It is achieved when working on tasks just beyond your comfort zone.
+
+## How to Stay Focused When you Get Bored Working on your Goals
+The author once asked a very good bodybuilding coach what it takes to be the best.
+
+He mentioned luck, genetics, talent but also, the ability to continue training for years even when it gets boring.
+
+Mastery requires practice, but the more you do it, the more boring it becomes.
+
+The greatest thread to success is not failure, but boredom. We constantly seek novelty. The most successful products over endless novelty - video games, porn, etc.
+
+So, regardless of how we optimize our routines, our habits will inevitably become boring and we must still stick with them.
+
+This is the difference between amateurs and professionals - the former let life get in the way of their routine, professionals push through despite it.
+
+You have to fall in love with boredom.
 
 # The Downside of Creating Good Habits
 Habits are the foundation for mastery.
