@@ -6,3 +6,4 @@ A collection of my book notes on various computer science resources - books, cou
  * [Architecture](/architecture)
  * [System Design](/system-design)
  * [General](./general)
+ * [Self-Help](./self-help)
