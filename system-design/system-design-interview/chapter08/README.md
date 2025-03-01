@@ -11,7 +11,7 @@ A primary key with auto_increment won't work here, because generating IDs across
  * C: Do IDs contain only numerical values?
  * I: Yes
  * C: What is the ID length requirement?
- * I: 64 bytes
+ * I: 64 bits
  * C: What's the system scale?
  * I: We should be able to generate 10,000 IDs per second
 
