@@ -61,12 +61,12 @@ Cons:
  * Additional latency due to network call.
 
 ## Twitter snowflake approach
-Twitter's snowflake meets our design requirements because it is sortable by time, 64-bytes and can be generated independently in each server.
+Twitter's snowflake meets our design requirements because it is sortable by time, 64-bits and can be generated independently in each server.
 ![twitter-snowflake](images/twitter-snowflake.png)
 
 Breakdown of the different sections:
  * Sign bit - always 0. Reserved for future use.
- * Timestamp - 41 bytes. Milliseconds since epoch (or since custom epoch). Allows 69 years max.
+ * Timestamp - 41 bits. Milliseconds since epoch (or since custom epoch). Allows 69 years max.
  * Datacenter ID - 5 bits, which enables 32 data centers max.
  * Machine ID - 5 bits, which enables 32 machines per data center.
  * Sequence number - For every generated ID, the sequence number is incremented. Reset to 0 on every millisecond.
